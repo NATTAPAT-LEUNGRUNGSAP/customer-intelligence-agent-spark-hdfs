@@ -1,0 +1,312 @@
+{
+  "rag": true,
+  "references": [
+    {
+      "id": "metric.orders",
+      "source": "metrics.md",
+      "text": "Completed orders / invoices / จำนวนคำสั่งซื้อ / กี่ใบ = COUNT(*) from orders. One orders row is ONE INVOICE. A sales_lines row is ONE PRODUCT LINE, not an invoice. Never COUNT(*) from sales_lines to answer how many orders/invoices. Anonymous / unidentified / ไม่ระบุตัวตน orders are retained. ONLY when asked for anonymous orders alone, filter customer_id IS NULL. With no customer_id filter, COUNT(*) already includes both identified and anonymous invoices.",
+      "sha256": "e5f37b85b10b44cf47915f2c2b45915e9650fcad9d5b101d2dfb14a43776931f",
+      "score": 34.50165866951857,
+      "selection": "explicit_metric"
+    },
+    {
+      "id": "policy.period",
+      "source": "thai_glossary.md",
+      "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Exception: an unqualified question asking which month has the most orders may use the whole observed dataset when the application explicitly supplies this scope and displays it to the user. Compare calendar year-months, count completed invoices from orders, retain all ties, and label potentially partial boundary months. Do not merge the same month across different years. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+      "sha256": "bb2c4ad8ffe792024015628c0dc64acce95e22a3b5adebd67e71d6a3b9ad1334",
+      "score": 69.86765913290414,
+      "selection": "lexical_head"
+    },
+    {
+      "id": "schema.sales_lines",
+      "source": "schema.md",
+      "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.",
+      "sha256": "526fd57d60ccd056d3948738f4f3d600984e0c374d29d68869b3fd173de67484",
+      "score": 24.273169267601812,
+      "selection": "grain_dependency"
+    },
+    {
+      "id": "schema.orders",
+      "source": "schema.md",
+      "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+      "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+      "score": 21.050589799156683,
+      "selection": "schema_dependency"
+    },
+    {
+      "id": "syntax.ranking",
+      "source": "spark_sql.md",
+      "text": "Top N needs explicit ORDER BY metric DESC followed by an ascending deterministic ID/country tie break, then LIMIT N. row_number(), rank(), lag() and lead() are allowed read-only analytics functions. Generate SQL for the question: these are not query templates.",
+      "sha256": "e13e26f2460713e9c663f33e457f42ff5f50b1ef2f95429232cf4b7f7dc07169",
+      "score": 15.642622615816112,
+      "selection": "syntax_dependency"
+    },
+    {
+      "id": "syntax.time",
+      "source": "spark_sql.md",
+      "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+      "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+      "score": 29.586596142029162,
+      "selection": "syntax_dependency"
+    },
+    {
+      "id": "policy.availability",
+      "source": "thai_glossary.md",
+      "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+      "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+      "score": null,
+      "selection": "mandatory_policy"
+    },
+    {
+      "id": "policy.snapshot",
+      "source": "thai_glossary.md",
+      "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+      "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+      "score": null,
+      "selection": "mandatory_policy"
+    }
+  ],
+  "retrieval": {
+    "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+    "ranked_ids": [
+      "metric.orders",
+      "policy.period",
+      "schema.sales_lines",
+      "schema.orders",
+      "syntax.ranking",
+      "syntax.time"
+    ],
+    "context_ids": [
+      "metric.orders",
+      "policy.period",
+      "schema.sales_lines",
+      "schema.orders",
+      "syntax.ranking",
+      "syntax.time",
+      "policy.availability",
+      "policy.snapshot"
+    ],
+    "corpus_sha256": "22482c8ec00924f39255129361a41b10a503460dc6ae08b3a7113c022d2d21ef",
+    "corpus_chunks": 20,
+    "context_characters": 3882,
+    "ontology": {
+      "status": "validated",
+      "format": "RDF/OWL + SHACL",
+      "sha256": "3a447790ecf784da93f089bbf1537334e94076ef36a0b6da00427f3f2cdd6346",
+      "domain_metrics": 9,
+      "matches": [
+        {
+          "concept": "urn:ci:invoices",
+          "labels": [
+            "invoice count",
+            "completed invoices",
+            "จำนวนคำสั่งซื้อ",
+            "กี่ใบ"
+          ],
+          "table": "orders",
+          "grain": "invoice",
+          "formula": "COUNT(*)",
+          "evidence_ids": [
+            "metric.orders",
+            "schema.orders"
+          ]
+        }
+      ]
+    },
+    "elapsed_ms": 48.657555999852775
+  },
+  "analysis_scope": {
+    "default_applied": true,
+    "start": "2009-12-01 07:45:00",
+    "end": "2011-12-09 12:50:00",
+    "note": "ใช้ข้อมูลทั้งหมดที่มี: 2009-12-01 07:45:00 ถึง 2011-12-09 12:50:00 โดยเปรียบเทียบแยกปีและเดือน นับคำสั่งซื้อสำเร็จเป็นใบ ไม่ใช่จำนวนรายการสินค้า เดือนต้นและท้ายช่วงอาจมีข้อมูลไม่ครบเดือน; แสดงทุกเดือนที่ได้อันดับสูงสุดเท่ากัน"
+  },
+  "context_plan": {
+    "strategy": "managed",
+    "selected_ids": [
+      "metric.orders",
+      "policy.period",
+      "schema.sales_lines",
+      "schema.orders",
+      "syntax.ranking",
+      "syntax.time",
+      "policy.availability",
+      "policy.snapshot"
+    ],
+    "all_selected_evidence_retained": true,
+    "selected_evidence_sha256": "99564d47d57f6e8125121fa0b0002db79eb313e4db8ec70cc45dc69e28b18cd2",
+    "packet_sha256": "5e987adef7c31f0fab870b24424c1ff1ed9d5016f737bb4a7bb5692a1488a50f",
+    "packet_utf8_bytes": 5674,
+    "background_input_characters": 0,
+    "background_supplied_characters": 0,
+    "background_omitted_characters": 0,
+    "requested_evidence_position": "middle",
+    "effective_evidence_position": "selected_evidence_only",
+    "duplicates_removed": 0,
+    "wire_format": "legacy-evidence-json-preserved"
+  },
+  "policy_trace": [
+    {
+      "allow": true,
+      "reasons": [],
+      "stage": "pre",
+      "engine": "OPA/Rego"
+    },
+    {
+      "allow": true,
+      "reasons": [],
+      "stage": "pre",
+      "engine": "OPA/Rego"
+    },
+    {
+      "allow": true,
+      "reasons": [],
+      "stage": "post",
+      "engine": "OPA/Rego"
+    }
+  ],
+  "status": "executed",
+  "sql": "WITH monthly_counts AS (\n  SELECT \n    DATE_TRUNC('MONTH', order_ts) AS month_start,\n    COUNT(*) AS invoice_count\n  FROM orders\n  GROUP BY DATE_TRUNC('MONTH', order_ts)\n),\nmax_count AS (\n  SELECT MAX(invoice_count) AS max_invoice_count\n  FROM monthly_counts\n)\nSELECT \n  mc.month_start,\n  mc.invoice_count\nFROM monthly_counts mc\nCROSS JOIN max_count mc_max\nWHERE mc.invoice_count = mc_max.max_invoice_count\nORDER BY mc.month_start",
+  "executed_sql": "SELECT * FROM (WITH monthly_counts AS (SELECT DATE_TRUNC('MONTH', order_ts) AS month_start, COUNT(*) AS invoice_count FROM orders GROUP BY DATE_TRUNC('MONTH', order_ts)), max_count AS (SELECT MAX(invoice_count) AS max_invoice_count FROM monthly_counts) SELECT mc.month_start, mc.invoice_count FROM monthly_counts AS mc CROSS JOIN max_count AS mc_max WHERE mc.invoice_count = mc_max.max_invoice_count ORDER BY mc.month_start) AS guarded_result LIMIT 201",
+  "explanation": null,
+  "grain": "invoice",
+  "citations": [
+    "metric.orders",
+    "policy.period",
+    "schema.orders"
+  ],
+  "review": {
+    "reason": "SQL correctly counts orders, groups by month, handles ties via MAX comparison, and uses the full dataset. Citations support grain, period policy, and schema.",
+    "citations": [
+      "metric.orders",
+      "policy.period",
+      "schema.orders"
+    ],
+    "approved": true
+  },
+  "result": {
+    "columns": [
+      "month_start",
+      "invoice_count"
+    ],
+    "rows": [
+      [
+        "2011-11-01 00:00:00",
+        2769
+      ]
+    ],
+    "truncated": false
+  },
+  "result_contract": {
+    "status": "passed",
+    "checks": [
+      "result_envelope",
+      "row_width_and_cap",
+      "finite_numbers",
+      "scalar_shape",
+      "nonnegative_integer_counts",
+      "unique_group_keys",
+      "identified_ids_non_null",
+      "fraction_range_when_applicable"
+    ],
+    "scope": "deterministic applicable invariants; full answer correctness is measured separately against gold"
+  },
+  "semantic_contract": {
+    "status": "passed",
+    "checks": [],
+    "scope": "supported source grain, explicit English monthly/date bounds, snapshot and transaction type"
+  },
+  "attempts": [
+    {
+      "sql": "WITH monthly_counts AS (\n  SELECT \n    DATE_TRUNC('MONTH', order_ts) AS month_start,\n    COUNT(*) AS invoice_count\n  FROM orders\n  WHERE order_ts >= TIMESTAMP '2009-12-01 07:45:00'\n    AND order_ts < TIMESTAMP '2011-12-09 12:50:00' + INTERVAL 1 DAY\n  GROUP BY DATE_TRUNC('MONTH', order_ts)\n),\nmax_count AS (\n  SELECT MAX(invoice_count) AS max_invoice_count\n  FROM monthly_counts\n)\nSELECT \n  mc.month_start,\n  mc.invoice_count,\n  CASE \n    WHEN mc.invoice_count = mc.max_invoice_count THEN 'สูงสุด'\n    ELSE ''\n  END AS status\nFROM monthly_counts mc\nCROSS JOIN max_count mc_max\nWHERE mc.invoice_count = mc_max.max_invoice_count\nORDER BY mc.month_start",
+      "error": "All-data invoice comparison requires orders without filters or joins; do not exclude the maximum observed timestamp",
+      "validated_citations": [
+        "metric.orders",
+        "policy.period",
+        "schema.orders"
+      ]
+    },
+    {
+      "sql": "WITH monthly_counts AS (\n  SELECT \n    DATE_TRUNC('MONTH', order_ts) AS month_start,\n    COUNT(*) AS invoice_count\n  FROM orders\n  GROUP BY DATE_TRUNC('MONTH', order_ts)\n),\nmax_count AS (\n  SELECT MAX(invoice_count) AS max_invoice_count\n  FROM monthly_counts\n)\nSELECT \n  mc.month_start,\n  mc.invoice_count,\n  CASE \n    WHEN mc.invoice_count = mc.max_invoice_count THEN 'สูงสุด'\n    ELSE ''\n  END AS status\nFROM monthly_counts mc\nCROSS JOIN max_count mc_max\nWHERE mc.invoice_count = mc_max.max_invoice_count\nORDER BY mc.month_start",
+      "error": "[UNRESOLVED_COLUMN.WITH_SUGGESTION] A column, variable, or function parameter with name `mc`.`max_invoice_count` cannot be resolved. Did you mean one of the following? [`mc`.`invoice_count`, `mc_max`.`max_invoice_count`, `mc`.`month_start`]. SQLSTATE: 42703; line 1 pos 323;\n'GlobalLimit 201\n+- 'LocalLimit 201\n   +- 'Project [*]\n      +- 'SubqueryAlias guarded_result\n         +- 'Sort ['mc.month_start ASC NULLS FIRST], true\n            +- 'Project [month_start#36, invoice_count#37L, CASE WHEN (invoice_count#37L = 'mc.max_invoice_count) THEN สูงสุด ELSE  END AS status#31]\n               +- Filter (invoice_count#37L = max_invoice_count#34L)\n                  +- Join Cross\n                     :- SubqueryAlias mc\n                     :  +- SubqueryAlias monthly_counts\n                     :     +- Project [month_start#46 AS month_start#36, invoice_count#47L AS invoice_count#37L]\n                     :        +- SubqueryAlias monthly_counts\n                     :           +- Aggregate [date_trunc(MONTH, order_ts#41, Some(UTC))], [date_trunc(MONTH, order_ts#41, Some(UTC)) AS month_start#46, count(1) AS invoice_count#47L]\n                     :              +- SubqueryAlias orders\n                     :                 +- View (`orders`, [invoice_id#39, customer_id#40, order_ts#41, country#42, order_amount#43, total_units#44L, distinct_products#45L])\n                     :                    +- Relation [invoice_id#39,customer_id#40,order_ts#41,country#42,order_amount#43,total_unit",
+      "validated_citations": [
+        "metric.orders",
+        "policy.period",
+        "schema.orders"
+      ]
+    }
+  ],
+  "model_calls": 5,
+  "context_usage": [
+    {
+      "method": "utf8-bytes-divided-by-two-plus-framing-heuristic",
+      "estimated_input_tokens": 4798,
+      "input_budget": 6000,
+      "context_window": 8192,
+      "output_reserve": 768,
+      "safety_reserve": 1024,
+      "message_count": 2,
+      "input_utf8_bytes": 9339,
+      "exact_token_count": false,
+      "prompt_eval_count": 2499,
+      "eval_count": 340
+    },
+    {
+      "method": "utf8-bytes-divided-by-two-plus-framing-heuristic",
+      "estimated_input_tokens": 5341,
+      "input_budget": 6000,
+      "context_window": 8192,
+      "output_reserve": 768,
+      "safety_reserve": 1024,
+      "message_count": 4,
+      "input_utf8_bytes": 10297,
+      "exact_token_count": false,
+      "prompt_eval_count": 2769,
+      "eval_count": 169
+    },
+    {
+      "method": "utf8-bytes-divided-by-two-plus-framing-heuristic",
+      "estimated_input_tokens": 4819,
+      "input_budget": 6000,
+      "context_window": 8192,
+      "output_reserve": 256,
+      "safety_reserve": 1024,
+      "message_count": 2,
+      "input_utf8_bytes": 9382,
+      "exact_token_count": false,
+      "prompt_eval_count": 2565,
+      "eval_count": 45
+    },
+    {
+      "method": "utf8-bytes-divided-by-two-plus-framing-heuristic",
+      "estimated_input_tokens": 5359,
+      "input_budget": 6000,
+      "context_window": 8192,
+      "output_reserve": 768,
+      "safety_reserve": 1024,
+      "message_count": 4,
+      "input_utf8_bytes": 10334,
+      "exact_token_count": false,
+      "prompt_eval_count": 2771,
+      "eval_count": 139
+    },
+    {
+      "method": "utf8-bytes-divided-by-two-plus-framing-heuristic",
+      "estimated_input_tokens": 4761,
+      "input_budget": 6000,
+      "context_window": 8192,
+      "output_reserve": 256,
+      "safety_reserve": 1024,
+      "message_count": 2,
+      "input_utf8_bytes": 9266,
+      "exact_token_count": false,
+      "prompt_eval_count": 2535,
+      "eval_count": 52
+    }
+  ],
+  "trace_id": "fdc1ceb3f0124171a8e791d33b12f994",
+  "question": "เดือนไหนออเดอร์เยอะสุด",
+  "model": "qwen3.5:9b",
+  "build_run_id": "c81fa72c3c174a96bf8c03195b9e6f5e",
+  "elapsed_seconds": 13.610346184000264
+}

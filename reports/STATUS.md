@@ -1,5 +1,13 @@
 # Current verification status
 
+Monthly comparison fix: the exact reported question “เดือนไหนออเดอร์เยอะสุด”
+executed through authenticated public HTTPS with Qwen/OPA/Spark and returned
+November 2011, 2,769 completed invoices. Full trace, including rejected/failed
+attempts before successful self-correction, is in month-comparison-https-result.json.
+All 60 unit tests passed (month-comparison-unit-tests.txt). The new scope rule is
+limited to unqualified month/order superlatives and displays its all-data default.
+Historical acceptance metrics below were not rerun for this source change.
+
 Dataset discovery fix: “มีข้อมูลอะไรบ้าง” now returns the three loaded tables,
 actual columns and manifest dates instead of requesting an analysis period.
 Thai policy clarifications are localized. Actual authenticated public HTTPS

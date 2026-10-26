@@ -16,6 +16,7 @@ from result_contracts import result_violations
 from semantic_contracts import validate_business_sql
 from policy_engine import authorize, policy_facts, PolicyUnavailable
 from dataset_info import is_dataset_discovery, overview, localize_policy
+from question_scope import resolve_scope, validate_month_comparison
 
 
 def generate(messages, model, endpoint, timeout=90, max_tokens=768):
@@ -79,8 +80,10 @@ def validate_citations(citations, context):
 
 def answer(question, schema, execute, model, endpoint, knowledge, *,
            context_strategy='managed', background='', evidence_position='middle'):
+    question, scope = resolve_scope(question,schema.get('_dataset_metadata',{}))
     context, retrieval = retrieve_context(question,knowledge)
     base = {'rag':True,'references':context,'retrieval':retrieval}
+    if scope:base['analysis_scope']=scope
     if is_dataset_discovery(question):
         from retrieval import index
         ids={'schema.'+table for table in ('orders','sales_lines','customer_summary') if table in schema}
@@ -144,6 +147,7 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
             guarded = validate_sql(proposed.get('sql'))
             validate_semantics(question,proposed['sql'])
             semantic_contract = validate_business_sql(question,proposed['sql'])
+            if scope:validate_month_comparison(proposed['sql'])
             policy_trace.append(authorize(policy_facts(proposed['sql'],attempt+1)))
             review = generate([
                 {'role':'system','content':

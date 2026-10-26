@@ -1,5 +1,11 @@
 # Local web application
 
+An unqualified “เดือนไหนออเดอร์เยอะสุด” compares calendar year-months across
+the whole loaded dataset. The answer displays this default scope, the observed
+dates and a partial-month warning. It counts completed invoices, retains tied
+highest months, and still asks for a period on general questions such as
+“ยอดขายรวมเท่าไร”. Explicitly qualified questions are not rewritten by this rule.
+
 Ask “มีข้อมูลอะไรบ้าง” to see the tables and columns loaded by the running app,
 the observed date range and the available customer snapshot. This overview uses
 loaded schema/manifest metadata and cites the schema knowledge sections; it does

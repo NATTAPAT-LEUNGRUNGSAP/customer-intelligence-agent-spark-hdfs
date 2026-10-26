@@ -22,6 +22,7 @@ $('question-form').addEventListener('submit', async event => {
     $('answer').hidden = false;
     $('answer-heading').textContent = {information:'ข้อมูลที่มีและคำถามที่รองรับ',executed:'ผลการวิเคราะห์',clarification:'ต้องการข้อมูลเพิ่มเติม',failed:'ยังตอบคำถามนี้ไม่ได้'}[data.status] || data.status;
     $('message').textContent = data.message || data.error || data.explanation || '';
+    if (data.analysis_scope) $('message').textContent += '\n' + data.analysis_scope.note;
     $('table').replaceChildren();
     if (data.result) {
       const table=document.createElement('table'), head=document.createElement('tr');
