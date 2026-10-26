@@ -1,0 +1,28 @@
+time="2026-10-26T22:14:04+07:00" level=warning msg="Found orphan containers ([customer-intelligence-web-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+test_correct_month (test_governance.BusinessTests) ... ok
+test_cte_all_branches_must_be_filtered (test_governance.BusinessTests) ... ok
+test_cte_cannot_filter_after_destroying_population (test_governance.BusinessTests) ... ok
+test_fanout (test_governance.BusinessTests) ... ok
+test_missing_snapshot (test_governance.BusinessTests) ... ok
+test_month_span_is_not_last_month_only (test_governance.BusinessTests) ... ok
+test_or_bypass (test_governance.BusinessTests) ... ok
+test_transparent_cte_can_filter_before_grouping (test_governance.BusinessTests) ... ok
+test_wrong_grain (test_governance.BusinessTests) ... ok
+test_wrong_month (test_governance.BusinessTests) ... ok
+test_wrong_transaction_type (test_governance.BusinessTests) ... ok
+test_bilingual_mapping_has_table_grain_formula_and_evidence (test_governance.OntologyTests) ... ok
+test_conflicting_grain_fails (test_governance.OntologyTests) ... ok
+test_missing_relation_fails_shacl (test_governance.OntologyTests) ... ok
+test_unknown_term_is_not_silently_mapped (test_governance.OntologyTests) ... ok
+test_agent_never_executes_if_opa_unavailable (test_governance.PolicyTests) ... ok
+test_unavailable_opa_denies (test_governance.PolicyTests) ... ok
+test_undefined_decision_denies (test_governance.PolicyTests) ... ok
+test_bad_envelope_width_cap_nan_and_count (test_governance.PostToolTests) ... ok
+test_group_duplicate (test_governance.PostToolTests) ... ok
+test_null_identified_and_fraction (test_governance.PostToolTests) ... ok
+test_valid_count (test_governance.PostToolTests) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.141s
+
+OK

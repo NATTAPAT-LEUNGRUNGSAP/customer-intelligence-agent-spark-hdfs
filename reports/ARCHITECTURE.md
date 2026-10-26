@@ -1,35 +1,44 @@
 # Customer Intelligence
 
+### เส้นทางเตรียมข้อมูล
+
 ```mermaid
 flowchart LR
-  U[UCI ZIP + provenance hashes] --> C[CSV staging]
-  C --> B[Spark ETL + reconciliation]
-  B --> H[Versioned Parquet on HDFS]
-  H --> V[Three Spark temporary views]
-  UI[Local browser UI :8090] --> Q[User question]
-  Q --> R[Cached BM25 + bilingual topic retrieval]
-  K[Schema, metrics, syntax, Thai glossary] --> R
-  O[OWL/RDF domain ontology + SHACL] --> R
-  R --> P[Evidence policies: period, availability, snapshot]
-  P --> M[Local Ollama model generates SQL + citations]
-  P -->|clarification| T
-  V --> S[Actual schemas + dataset bounds]
-  S --> M
-  M --> CV[Citation validation]
-  CV --> G[Read-only AST validation]
-  G --> PC[Identified population contract]
-  PC --> SC[Business SQL contracts]
-  SC --> OPA[OPA/Rego pre-tool decision]
-  OPA --> D[Evidence consistency review]
-  D --> E[Spark execution with deadline and row cap]
-  D -->|bounded correction| M
-  V --> E
-  E --> RC[Result envelope and applicable invariants]
-  RC --> OP[OPA/Rego post-tool decision]
-  OP --> T[Result rows + trace + references]
-  RC -->|bounded error feedback| M
-  E -->|bounded error feedback| M
+    Raw[Online Retail II] --> Stage[CSV staging]
+    Stage --> ETL[Spark ETL and reconciliation]
+    ETL --> HDFS[Parquet on HDFS]
 ```
+
+### เส้นทางตอบคำถาม
+
+```mermaid
+flowchart TD
+    UI[Web UI: question] --> RAG[RAG selects definitions and schema]
+    KB[Knowledge corpus] --> RAG
+    Ont[OWL ontology validated by SHACL] --> RAG
+    RAG --> Policy[Period and data availability check]
+    Policy -->|insufficient or unavailable| Clarify[Clarification to user]
+    Policy -->|sufficient| Context[Assemble evidence and latest repair state]
+    Context --> LLM[LLM generates SQL and citations]
+    LLM --> Pre[Citations, SQL AST, semantic contracts, OPA pre-check]
+    Pre --> Review[Same-model evidence consistency review]
+    Review --> Spark[Spark driver and executors]
+    HDFS[Parquet on HDFS] --> Spark
+    Spark --> Post[Result violations, OPA post-check, result contracts]
+    Post --> Output[Web UI: table, SQL, evidence and trace]
+    Pre -->|repairable rejection| Repair[Latest SQL and error; at most 3 attempts]
+    Review -->|repairable rejection| Repair
+    Spark -->|execution error| Repair
+    Post -->|repairable rejection| Repair
+    Repair --> Context
+    Repair -->|attempts exhausted| Stop
+    Context -->|budget exceeded| Stop
+    Pre -->|OPA unavailable| Stop[Stop without answer]
+    Post -->|OPA unavailable| Stop
+```
+
+RAG ค้นก่อนเริ่มวงรอบแก้ SQL ส่วนรอบแก้เก็บเอกสารเดิมและสถานะล่าสุด การเตรียมข้อมูลเป็นอีกงานหนึ่ง ไม่ได้ทำ ETL ใหม่ทุกคำถาม SHACL ตรวจกราฟนิยาม ส่วน SQL guards, OPA และ result checks ตรวจการเรียกเครื่องมือและผลลัพธ์คนละหน้าที่
+
 
 HDFS has one NameNode and two DataNodes, replication 2. Spark has one master
 and two workers. Everything runs on one physical Windows host under Docker

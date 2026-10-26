@@ -4,7 +4,7 @@
 
 ผลลัพธ์แสดงเป็นตาราง พร้อม SQL และหลักฐานที่ใช้ เพื่อให้ผู้ใช้ตรวจสอบวิธีคำนวณและที่มาของคำตอบได้
 
-[Presentation](presentation/customer-intelligence-docker-guide.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/GOVERNANCE_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
+[Presentation](presentation/customer-intelligence-system-guide.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/GOVERNANCE_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
 
 ## ใช้ทำอะไรได้บ้าง
 
@@ -19,21 +19,45 @@
 
 ## Architecture
 
+### เส้นทางเตรียมข้อมูล
+
 ```mermaid
 flowchart LR
-    Data[Online Retail II] --> ETL[Spark ETL]
-    ETL --> HDFS[Versioned Parquet on HDFS]
-    User[Web UI] --> RAG[RAG: definitions and schema]
-    KB[Knowledge corpus] --> RAG
-    RAG --> Agent[LLM generates SQL]
-    Agent --> Guard[SQL and evidence validation]
-    Guard --> Spark[Spark execution]
-    HDFS --> Spark
-    Spark --> Result[Result checks and trace]
-    Result --> User
-    Guard -->|correction feedback| Agent
-    Result -->|execution or contract error| Agent
+    Raw[Online Retail II] --> Stage[CSV staging]
+    Stage --> ETL[Spark ETL and reconciliation]
+    ETL --> HDFS[Parquet on HDFS]
 ```
+
+### เส้นทางตอบคำถาม
+
+```mermaid
+flowchart TD
+    UI[Web UI: question] --> RAG[RAG selects definitions and schema]
+    KB[Knowledge corpus] --> RAG
+    Ont[OWL ontology validated by SHACL] --> RAG
+    RAG --> Policy[Period and data availability check]
+    Policy -->|insufficient or unavailable| Clarify[Clarification to user]
+    Policy -->|sufficient| Context[Assemble evidence and latest repair state]
+    Context --> LLM[LLM generates SQL and citations]
+    LLM --> Pre[Citations, SQL AST, semantic contracts, OPA pre-check]
+    Pre --> Review[Same-model evidence consistency review]
+    Review --> Spark[Spark driver and executors]
+    HDFS[Parquet on HDFS] --> Spark
+    Spark --> Post[Result violations, OPA post-check, result contracts]
+    Post --> Output[Web UI: table, SQL, evidence and trace]
+    Pre -->|repairable rejection| Repair[Latest SQL and error; at most 3 attempts]
+    Review -->|repairable rejection| Repair
+    Spark -->|execution error| Repair
+    Post -->|repairable rejection| Repair
+    Repair --> Context
+    Repair -->|attempts exhausted| Stop
+    Context -->|budget exceeded| Stop
+    Pre -->|OPA unavailable| Stop[Stop without answer]
+    Post -->|OPA unavailable| Stop
+```
+
+RAG ค้นก่อนเริ่มวงรอบแก้ SQL ส่วนรอบแก้เก็บเอกสารเดิมและสถานะล่าสุด การเตรียมข้อมูลเป็นอีกงานหนึ่ง ไม่ได้ทำ ETL ใหม่ทุกคำถาม SHACL ตรวจกราฟนิยาม ส่วน SQL guards, OPA และ result checks ตรวจการเรียกเครื่องมือและผลลัพธ์คนละหน้าที่
+
 
 - **Data platform:** Hadoop 3.4.1 พร้อม NameNode 1 ตัวและ DataNodes 2 ตัว ตั้ง replication เป็น 2; Spark 4.1.3 พร้อม master 1 ตัวและ workers 2 ตัว
 - **RAG:** BM25 ร่วมกับคำศัพท์ไทย/อังกฤษ ดึงนิยาม metric, schema, syntax และ policy ที่เกี่ยวข้อง พร้อม IDs อ้างอิง
