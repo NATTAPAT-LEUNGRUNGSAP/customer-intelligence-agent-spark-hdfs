@@ -5,8 +5,8 @@ exist. Current verified v2.4 results are in DELIVERY_REPORT.md and
 delivery-quality-summary.json: 20/20 new supported-family combinations correct,
 Recall@6=100%, MRR@6=0.8917, nDCG@6=0.8934, warm p95=5.43s. This is a small
 developer-authored benchmark, not external validation. Earlier v2.2/v2.3 failed
-gates and all raw evidence remain intact. Git is initialized; publication awaits
-publication was completed and the actual CI unit job passed (github-publication.json).
+gates and all raw evidence remain intact. Public GitHub publication is complete
+and the actual CI unit job passed (github-publication.json).
 Read the following sections as the original requirements,
 not an assertion that implemented items are still pending.
 

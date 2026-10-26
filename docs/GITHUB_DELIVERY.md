@@ -11,9 +11,9 @@ Actual GitHub CI unit job succeeded: actions/runs/40284829764, initial published
 commit98b4c21119e3057fb30deead85ecf5ed391406f8. See reports/github-publication.json.
 
 Actual fresh local clone verification: all host source files and covered frozen
-core hashes match;25 unit tests passed from that clone. Evidence is in
-reports/git-checkout-verification.json. A full new data acquisition/build and
-full new data build has not been repeated on a separate clean machine. GitHub CI
+core hashes match; 25 unit tests passed from that clone. Evidence is in
+reports/git-checkout-verification.json. A full new data acquisition/build
+has not been repeated on a separate clean machine. GitHub CI
 did run and pass its unit-test step; it does not include Spark/HDFS/Ollama execution.
 
 Publish source, knowledge, SQL, tests, Docker configuration, documentation and
