@@ -4,7 +4,7 @@
 
 ผลลัพธ์แสดงเป็นตาราง พร้อม SQL และหลักฐานที่ใช้ เพื่อให้ผู้ใช้ตรวจสอบวิธีคำนวณและที่มาของคำตอบได้
 
-[Presentation](presentation/customer-intelligence-v2.4-release.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/DELIVERY_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
+[Presentation](presentation/customer-intelligence-context-v2.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/DELIVERY_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
 
 ## ใช้ทำอะไรได้บ้าง
 
@@ -50,7 +50,7 @@ flowchart LR
 4. รันบน Spark แล้วตรวจผลบางเงื่อนไข เช่น customer ID ว่างหรือค่าของ fraction
 5. คืนผลให้ผู้ใช้ หรือส่งข้อผิดพลาดกลับให้โมเดลแก้ภายในจำนวนรอบที่กำหนด
 
-Context engineering ครอบคลุมการเลือกหลักฐาน การจำกัดขนาด input แบบประมาณ และการเก็บเฉพาะสถานะแก้ไขล่าสุด พร้อมบันทึกจำนวน token ที่ Ollama ใช้จริง
+Context engineering เก็บหลักฐานที่เลือกไว้ครบ ตรวจ ID ซ้ำที่เนื้อหาขัดกัน และเก็บเฉพาะ SQL กับข้อผิดพลาดล่าสุดเมื่อแก้คำตอบ พร้อมจำกัด input แบบประมาณและบันทึก token ที่ Ollama ใช้จริง ดู [การออกแบบและข้อจำกัด](docs/CONTEXT_ENGINEERING.md)
 
 ## ข้อมูลที่ใช้
 
@@ -82,7 +82,9 @@ Pipeline เก็บ source hashes, จำนวนแถว และผล re
 
 ชุดประเมินประกอบด้วย SQL 17 ข้อและ clarification 3 ข้อ เป็นชุดขนาดเล็กที่ผู้พัฒนาสร้างจากกลุ่มงานที่รองรับ จึงยังไม่สะท้อนความถูกต้องกับคำถามทุกประเภท เวลา warm-query ไม่รวมการเริ่ม Spark application และ citation ID ที่ถูกต้องไม่ได้รับประกันความหมายของคำตอบ
 
-Unit tests ผ่าน 25 ข้อบนเครื่องพัฒนาและจาก local Git checkout; [GitHub Actions](https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs/actions) รัน unit-test workflow ผ่านแล้ว การทดสอบ Spark, HDFS และ Ollama ทำแยกบนเครื่องพัฒนา
+ส่วน Context v2 ที่พัฒนาต่อผ่าน exposed regression 20/20 และ managed-context stress 21/21 รอบทดลอง จาก 3 โจทย์ที่ใช้ซ้ำ โดยเพิ่มข้อความรบกวนและสลับตำแหน่งหลักฐาน ทั้งสองแขนทดลองใช้ RAG ผลนี้แสดงการจัดการ input ในเงื่อนไขที่ทดสอบ ยังไม่พิสูจน์ว่าแก้ context rot ภายในโมเดลได้ทั่วไป ดู [รายงาน Context engineering](reports/CONTEXT_REPORT.md)
+
+Unit tests ปัจจุบันผ่าน 31 ข้อบนเครื่องพัฒนา; [GitHub Actions](https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs/actions) ตรวจ unit tests อัตโนมัติ การทดสอบ Spark, HDFS และ Ollama ทำแยกบนเครื่องพัฒนา
 
 ดูวิธีวัด ผลรายข้อ และข้อผิดพลาดจากรอบก่อนใน [รายงานผล](reports/DELIVERY_REPORT.md) และ [Evaluation protocol](evaluation/README.md)
 

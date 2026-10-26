@@ -1,5 +1,13 @@
 # Presentation
 
+Current deck: customer-intelligence-context-v2.pptx, 15 slides. It adds measured
+Context v2 trials and separates budget stops from other pipeline failures. The
+context results are exposed-case experiments, not a fresh holdout. Actual current
+slide text/notes are in outline-context-v2.json. The v2.4 score slide is explicitly
+historical. Delivery dates/time-box framing are omitted from the current deck.
+
+The following describes the preserved earlier baseline deck:
+
 customer-intelligence-v2.4-release.pptx contains 14 slides in Thai/English. Editable text,
 tables and architecture objects cover the project, value, data, architecture,
 workflow/agent loop, web demo, harness components, context engineering, evaluation

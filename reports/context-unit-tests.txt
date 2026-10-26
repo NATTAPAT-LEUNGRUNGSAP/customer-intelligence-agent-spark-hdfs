@@ -1,0 +1,67 @@
+time="2026-10-26T15:03:30+07:00" level=warning msg="Found orphan containers ([customer-intelligence-web-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+test_clarification_never_executes (test_agent.AgentTests) ... ok
+test_context_budget_rejects_oversized_prompt (test_agent.AgentTests) ... ok
+test_contract_does_not_remove_legitimate_anonymous_groups (test_agent.AgentTests) ... ok
+test_failed_query_retains_only_validated_evidence_ids (test_agent.AgentTests) ... ok
+test_identified_contract_repairs_null_result (test_agent.AgentTests) ... ok
+test_invented_citations_never_execute (test_agent.AgentTests) ... ok
+test_missing_period_and_unavailable_snapshot_never_execute (test_agent.AgentTests) ... ok
+test_population_contract_rejects_or_that_admits_null (test_agent.AgentTests) ... ok
+test_rejected_sql_is_not_executed (test_agent.AgentTests) ... ok
+test_retry_budget (test_agent.AgentTests) ... ok
+test_scalar_pair_contract_rejects_extra_month_column (test_agent.AgentTests) ... ok
+test_semantic_review_blocks_wrong_grain_before_execution (test_agent.AgentTests) ... ok
+test_snapshot_policy_does_not_reject_separate_transaction_range (test_agent.AgentTests) ... ok
+test_result_equivalence_and_duplicates (test_agent.EvaluationTests) ... ok
+test_analytics (test_agent.GuardTests) ... ok
+test_date_trunc_unit_order (test_agent.GuardTests) ... ok
+test_rejects_unsafe (test_agent.GuardTests) ... ok
+test_gold_queries_obey_guard (test_agent.RetrievalTests) ... ok
+test_metric_rule_brings_schema_and_top_n_syntax (test_agent.RetrievalTests) ... ok
+test_ranking_metrics_penalize_missing_and_low_rank_evidence (test_agent.RetrievalTests) ... ok
+test_repeatable_and_relevant (test_agent.RetrievalTests) ... ok
+test_required_policy_documents_and_unknown_corpus (test_agent.RetrievalTests) ... ok
+test_return_instruction_is_not_refund_and_two_or_more_is_repeat (test_agent.RetrievalTests) ... ok
+test_budget_block_does_not_repeat_identical_model_attempt (test_context_engine.ContextTests) ... ok
+test_duplicate_conflicts_fail_closed (test_context_engine.ContextTests) ... ok
+test_fifty_repairs_keep_original_constraints_and_latest_state (test_context_engine.ContextTests) ... ok
+test_position_control_and_same_selected_facts (test_context_engine.ContextTests) ... ok
+test_required_oversize_is_blocked_without_execution (test_context_engine.ContextTests) ... ok
+test_selected_facts_and_all_policies_are_lossless (test_context_engine.ContextTests) ... ok
+test_two_sheets_preserve_missing_customer_return_and_csv_escaping (test_prepare_data.PrepareDataTest) ... ok
+test_http_contract_and_trace (test_web_app.WebTests) ... 127.0.0.1 - - [26/Oct/2026 08:03:31] "POST /api/query HTTP/1.1" 403 -
+127.0.0.1 - - [26/Oct/2026 08:03:31] "POST /api/query HTTP/1.1" 400 -
+127.0.0.1 - - [26/Oct/2026 08:03:31] "POST /api/query HTTP/1.1" 409 -
+127.0.0.1 - - [26/Oct/2026 08:03:31] "POST /api/query HTTP/1.1" 200 -
+ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 0.926s
+
+OK
+{
+  "source_url": "https://archive.ics.uci.edu/static/public/502/online+retail+ii.zip",
+  "dataset_doi": "10.24432/C5CG6D",
+  "license": "CC BY 4.0",
+  "prepared_at_utc": "2026-10-26T08:03:31.936379+00:00",
+  "archive_sha256": "bf3fbc65961faec9445fc0673962c98607dcc105cf41827f25fff2eac4f3ec18",
+  "csv_sha256": "239cd5dd027709a418f0fe07348e5cdee90cf222de19e92a53d10f9c20ead881",
+  "rows_by_sheet": {
+    "2009-2010": 1,
+    "2010-2011": 1
+  },
+  "rows": 2
+}
+{
+  "source_url": "https://archive.ics.uci.edu/static/public/502/online+retail+ii.zip",
+  "dataset_doi": "10.24432/C5CG6D",
+  "license": "CC BY 4.0",
+  "prepared_at_utc": "2026-10-26T08:03:31.939240+00:00",
+  "archive_sha256": "bf3fbc65961faec9445fc0673962c98607dcc105cf41827f25fff2eac4f3ec18",
+  "csv_sha256": "239cd5dd027709a418f0fe07348e5cdee90cf222de19e92a53d10f9c20ead881",
+  "rows_by_sheet": {
+    "2009-2010": 1,
+    "2010-2011": 1
+  },
+  "rows": 2
+}

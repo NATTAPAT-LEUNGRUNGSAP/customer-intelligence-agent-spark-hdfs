@@ -43,3 +43,9 @@ Current verification includes actual HTTP+Qwen+Spark execution and browser rende
 plus unit checks for origin rejection, configuration rejection, busy handling and
 trace persistence. Current evidence: reports/DELIVERY_REPORT.md and
 reports/web-v2.4-demo-summary.json. Older iteration records are historical.
+
+Current Context v2 extension was also exercised through the real HTTP API:
+reports/context-web-verification.json records2040 October2011 invoices and the
+selected-evidence context plan. Expanded diagnostics include context_plan,
+context_blocked and actual token usage. See reports/CONTEXT_REPORT.md for the
+separate controlled context experiment and its limits.

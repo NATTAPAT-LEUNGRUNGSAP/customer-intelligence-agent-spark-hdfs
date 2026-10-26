@@ -1,0 +1,322 @@
+[
+  {
+    "id": "sl/ne4njm",
+    "index": 0,
+    "elements": [
+      {
+        "text": "Customer Intelligence Agent\nwith Spark & HDFS"
+      },
+      {
+        "text": "ถามข้อมูลลูกค้าด้วยภาษาธรรมชาติ\nRAG · SQL generation · Guarded Spark execution\n26 ตุลาคม 2026 | v2.4"
+      }
+    ],
+    "notes": {
+      "text": "Sources: README.md; reports/DELIVERY_REPORT.md. Final current results are from the frozen v2.4 candidate."
+    }
+  },
+  {
+    "id": "sl/swo7jf",
+    "index": 1,
+    "elements": [
+      {
+        "text": "โปรเจกต์ทำอะไร และช่วยเรื่องอะไร"
+      },
+      {
+        "text": "ผู้ใช้ถามยอดขาย คำสั่งซื้อ และกลุ่มลูกค้าเป็นภาษาธรรมชาติ"
+      },
+      {
+        "text": "Agent ค้นนิยามธุรกิจ แล้วสร้าง Spark SQL เพื่ออ่านข้อมูลจริง"
+      },
+      {
+        "text": "แสดงผลพร้อม SQL และหลักฐาน ให้ผู้ใช้ตรวจสอบต่อได้"
+      },
+      {
+        "text": "ยังไม่ได้วัดผลว่าประหยัดเวลาหรือเพิ่มรายได้เท่าไร"
+      }
+    ],
+    "notes": {
+      "text": "Sources: README.md; reports/STATUS.md. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/610pmy",
+    "index": 2,
+    "elements": [
+      {
+        "text": "ข้อมูลจริงและตารางวิเคราะห์"
+      },
+      {
+        "text": "ข้อมูล 2009–2011 · Snapshot 2011-12-01 · หน้าต่างลูกค้า 180 วัน"
+      },
+      {
+        "text": "ตาราง\tระดับข้อมูล\tจำนวนแถว\nsales_lines\tรายการสินค้าเดิม\t1,067,371\norders\tหนึ่ง completed-sale invoice\t40,077\ncustomer_summary\tidentified customer / snapshot\t3,450"
+      }
+    ],
+    "notes": {
+      "text": "Sources: reports/build-c81fa72c3c174a96bf8c03195b9e6f5e.json; https://archive.ics.uci.edu/dataset/502/online+retail+ii. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/0d95zj",
+    "index": 3,
+    "elements": [
+      {},
+      {},
+      {
+        "text": "Architecture และเทคโนโลยี"
+      },
+      {
+        "text": "Web UI\nคำถามและตารางผลลัพธ์"
+      },
+      {
+        "text": "Python Agent Harness\nRAG · guards · repair"
+      },
+      {
+        "text": "Ollama · Qwen3.5 9B\nสร้าง SQL / review"
+      },
+      {
+        "text": "Spark 4.1.3  →  Master + Workers 2 ตัว"
+      },
+      {
+        "text": "HDFS / Hadoop 3.4.1  →  NameNode + DataNodes 2 ตัว"
+      },
+      {
+        "text": "Docker บนเครื่องเดียว · HDFS replication = 2\nCustom Python harness; ไม่ได้ใช้ LangGraph หรือ OPA"
+      }
+    ],
+    "notes": {
+      "text": "Sources: compose.yaml; compose.web.yaml; jobs/web_app.py; reports/ARCHITECTURE.md. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/tk9ros",
+    "index": 4,
+    "elements": [
+      {
+        "text": "Workflow และ Agent loop"
+      },
+      {
+        "text": "1  คำถาม → RAG → ตรวจข้อมูลและ policy"
+      },
+      {
+        "text": "2  สร้าง SQL → citations → AST / population contract → review"
+      },
+      {
+        "text": "3  Spark รัน SQL → ตรวจผลบางเงื่อนไข → คืนตารางและ trace"
+      },
+      {
+        "text": "4  ถ้าถูกปฏิเสธหรือผิดพลาด → ให้แก้ รวมไม่เกิน 3 รอบ"
+      },
+      {
+        "text": "ข้อมูลไม่พอ: ถามกลับ   |   ครบงบแก้: failed   |   RAG ค้นครั้งเดียว"
+      }
+    ],
+    "notes": {
+      "text": "Sources: jobs/agent.py; jobs/result_contracts.py; jobs/query_runtime.py. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/ewvl8h",
+    "index": 5,
+    "elements": [
+      {
+        "text": "Web application ที่เรียกใช้งานจริง"
+      },
+      {
+        "text": "เปิด localhost:8090 → ระบุคำถามและช่วงเวลา"
+      },
+      {
+        "text": "มีสถานะกำลังประมวลผล / ถามกลับ / ผิดพลาด / ตารางผลลัพธ์"
+      },
+      {
+        "text": "เปิดดู SQL หลักฐาน การแก้ไข และ trace ได้"
+      },
+      {
+        "text": "ทดสอบจริง: จำนวน invoice ต.ค. 2011 = 2,040"
+      },
+      {
+        "text": "แต่ละคำถามแยก context · รับทีละคำถาม · เป็น local application"
+      }
+    ],
+    "notes": {
+      "text": "Sources: jobs/web_app.py; web/; reports/web-first-integration.json. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/5wmn5d",
+    "index": 6,
+    "elements": [
+      {
+        "text": "Harness: Knowledge และความหมายข้อมูล"
+      },
+      {
+        "text": "หัวข้อ\tสิ่งที่มี\tข้อจำกัด\nData Dictionary / KM\tschema, grain, metric, policy\tCorpus ขนาดเล็ก\nRAG\tBM25 + ไทย/อังกฤษ + dependencies\tต้องวัดกับคำถามเพิ่ม\nOntology / mapping\tคำธุรกิจเชื่อม metric/schema\tยังไม่มี formal ontology"
+      }
+    ],
+    "notes": {
+      "text": "Sources: knowledge/; jobs/retrieval.py. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/kodohw",
+    "index": 7,
+    "elements": [
+      {
+        "text": "Harness: Contracts, Policy และการแก้ไข"
+      },
+      {
+        "text": "หัวข้อ\tสิ่งที่มี\tข้อจำกัด\nPre-tool\tcitations, AST, population\tไม่ครอบคลุมทุกความหมาย\nPost-tool\tNULL ID / fraction / row cap\tไม่ใช่ semantic grading เต็มรูปแบบ\nPolicy\tPython rules + SQL guard\tยังไม่มี OPA / role-based access\nSelf-correction\tแก้ตาม error สูงสุด 3 รอบ\treview ใช้โมเดลเดิม"
+      }
+    ],
+    "notes": {
+      "text": "Sources: jobs/agent.py; jobs/result_contracts.py; jobs/sql_guard.py. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/bvjiqv",
+    "index": 8,
+    "elements": [
+      {
+        "text": "Context engineering และ context rot"
+      },
+      {
+        "text": "เก็บหลักฐานและคำถามเดิมครบ พร้อม hash ตรวจสอบ"
+      },
+      {
+        "text": "เก็บเฉพาะ SQL / citations / error ล่าสุด ไม่สะสมคำอธิบายเก่า"
+      },
+      {
+        "text": "เพิ่มงบ input แบบประมาณ + บันทึก prompt_eval_count จาก Ollama"
+      },
+      {
+        "text": "ทดสอบข้อความรบกวน 0 / 3,000 / 12,000 ตัวอักษร + สลับตำแหน่ง"
+      },
+      {
+        "text": "ตัด background ที่ระบุว่าไม่จำเป็น · ไม่ตัดข้อความหลักฐานที่เลือกไว้"
+      }
+    ],
+    "notes": {
+      "text": "Sources: docs/CONTEXT_ENGINEERING.md; reports/CONTEXT_REPORT.md; context-v2-fc31fe03f55a442ba0c39f9969c72d7b.json. Both strategies use RAG. Selected evidence ID/text is retained verbatim; initial representation compaction regressed18/20, so legacy representation was preserved. Optional background is caller-labeled, not automatically detected irrelevant content."
+    }
+  },
+  {
+    "id": "sl/6wn90f",
+    "index": 9,
+    "elements": [
+      {
+        "text": "การวัดผล: วัดอะไรและทำไม"
+      },
+      {
+        "text": "มิติ\tตัววัด\tจุดประสงค์\nRetrieval\tRecall@6, MRR@6, nDCG@6\tหลักฐานครบ / ลำดับดี\nคำตอบ\tSpark rows เทียบ gold SQL\tผลลัพธ์ถูกต้อง\nGrounding / policy\tcitations / clarification\tID จริง / ถามกลับถูก\nประสิทธิภาพ\tp95 / calls / tokens\tต้นทุนและเวลารอ"
+      }
+    ],
+    "notes": {
+      "text": "Sources: jobs/evaluate.py; jobs/rag_metrics.py; evaluation/quality_gates_v2.json; Citation validity is structural across traces; failed answers remain wrong in accuracy. Final v6 has zero failed/error traces.. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/8o1dae",
+    "index": 10,
+    "elements": [
+      {
+        "text": "ผล frozen v2.4: ผ่านเกณฑ์บนชุดใหม่ 20 ข้อ"
+      },
+      {
+        "text": "Frozen v2.4 ก่อนเพิ่ม Context v2 · ไม่ใช่ holdout ของรุ่นปัจจุบัน"
+      },
+      {
+        "text": "ตัววัด\tผลจริง\tเกณฑ์\nRecall / MRR / nDCG @6\t100% / 0.892 / 0.893\t95% / 0.85 / 0.80\nผล SQL และ clarification\t20 / 20 ถูก\t≥90%\nClarification / citation validity\t100% / 100%\t100% / 100%\np95 retrieval / warm query\t16.69 ms / 5.43 s\t≤50 ms / ≤20 s"
+      }
+    ],
+    "notes": {
+      "text": "Sources: reports/DELIVERY_REPORT.md; reports/delivery-quality-summary.json; reports/freeze-rag-v2.4.json. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/qyrr1s",
+    "index": 11,
+    "elements": [
+      {
+        "text": "ผลทดสอบ และรอบที่ไม่ผ่าน"
+      },
+      {
+        "text": "ไม่ลดเกณฑ์ · รอบก่อนเผย retrieval และ reviewer failures ที่นำมาแก้"
+      },
+      {
+        "text": "ชุดทดสอบที่รันจริง\tผล\tการตีความ\nUnit tests\t31 ผ่าน\tเพิ่ม context invariants\nExposed regression v5\t20 / 20 ถูก\tใช้พัฒนา ไม่ใช่ชุดใหม่\nFresh combinations v6\t20 / 20 ถูก\tfreeze ก่อนรัน\nก่อนแก้: v4 และ v5\t18 / 20 แต่ละชุด\tไม่ผ่านทุก gate; เก็บผลไว้"
+      }
+    ],
+    "notes": {
+      "text": "Sources: reports/DELIVERY_REPORT.md; reports/iteration-regression-0fce36716fa14affb29463bc3284a808.json; reports/rag-v2.4-regression-v5-968f0bf891c445ae8ee598c68d1a93e0.json; reports/rag-v2.4-holdout-d2b7e5379bbf4781941a21125feb7039.json. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/ce0glv",
+    "index": 12,
+    "elements": [
+      {
+        "text": "Context v2: ผล stress test ที่รันจริง"
+      },
+      {
+        "text": "42 รอบทดลอง / 3 โจทย์ใช้ซ้ำ\tManaged\tUnfiltered\nคำตอบถูก\t21 / 21\t8 / 21\nBudget stop ก่อนเรียกโมเดล\t0\t9\nBudget stop ระหว่างแก้ SQL\t0\t3\nPipeline ไม่สำเร็จด้วยเหตุอื่น\t0\t1\nเก็บ ID / text ของหลักฐานครบ\t100%\t100%"
+      },
+      {
+        "text": "Regression 20/20 · 3 managed packets ใช้ซ้ำ · ไม่พิสูจน์ context rot ทั่วไป"
+      }
+    ],
+    "notes": {
+      "text": "Sources: reports/CONTEXT_REPORT.md; context-quality-summary.json; context-v2-fc31fe03f55a442ba0c39f9969c72d7b.json; evaluation/context_protocol_v2.json.31 unit tests passed. Most control losses are application-budget stops, not model reasoning errors:9 before any model call,3 during repair,1 other pipeline failure. The control had12 trials that called the model,8 correct; no incorrect executed result was delivered. Managed had3 unique input packet hashes repeated21 times. First metadata-stripping candidate regressed18/20 despite fact retention and was not adopted. Preflight remains heuristic; actual observed inputs were2188–2895 tokens, below the8192 window. Selected-section noise and independent tasks were not tested."
+    }
+  },
+  {
+    "id": "sl/ro3jrq",
+    "index": 13,
+    "elements": [
+      {
+        "text": "ข้อจำกัดและงานที่ยังต้องวัด"
+      },
+      {
+        "text": "รันสำเร็จและ citation ถูก ไม่รับประกันความหมายถูกทุกครั้ง"
+      },
+      {
+        "text": "งบ token ยังประมาณ · prompt 2,188–2,895 tokens (window 8,192)"
+      },
+      {
+        "text": "Corpus / benchmark เล็กและผู้พัฒนาสร้างเอง ต้องมี fresh cases เพิ่ม"
+      },
+      {
+        "text": "เครื่องเดียว ไม่มี authentication; cancellation เป็น best effort"
+      }
+    ],
+    "notes": {
+      "text": "Sources: README.md; reports/STATUS.md. Scores apply only to the stated version. Author-generated supported task combinations do not establish domain generalization."
+    }
+  },
+  {
+    "id": "sl/wco0ca",
+    "index": 14,
+    "elements": [
+      {
+        "text": "การส่งมอบและการรันซ้ำ"
+      },
+      {
+        "text": "Source + Docker setup + data acquisition + evaluation evidence"
+      },
+      {
+        "text": "เริ่ม cluster → build data → เปิด web UI → ถามและตรวจ trace"
+      },
+      {
+        "text": "GitHub Public: NATTAPAT-LEUNGRUNGSAP/\ncustomer-intelligence-agent-spark-hdfs"
+      },
+      {
+        "text": "ก่อนส่ง: ทดสอบ data build จากเครื่องใหม่ และซ้อม live demo"
+      },
+      {
+        "text": "Public GitHub · Local web application · CI unit tests"
+      }
+    ],
+    "notes": {
+      "text": "Sources: https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs ; successful GitHub Actions run https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs/actions/runs/40284829764 . Public repository verified; local Git main pushed; CI unit job completed successfully. This is not a hosted web application: the application runs locally at localhost:8090."
+    }
+  }
+]

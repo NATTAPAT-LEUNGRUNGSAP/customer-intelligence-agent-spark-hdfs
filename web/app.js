@@ -36,7 +36,7 @@ $('question-form').addEventListener('submit', async event => {
     $('sql').textContent=data.executed_sql || data.sql || 'ไม่มี SQL ที่รันสำเร็จ';
     $('evidence').replaceChildren();
     (data.references || []).forEach(item => { const p=document.createElement('p'); p.textContent=`${(data.citations || []).includes(item.id) ? '✓ ' : ''}${item.id}: ${item.text}`; $('evidence').append(p); });
-    $('diagnostics').textContent=JSON.stringify({attempts:data.attempts,review:data.review,result_contract:data.result_contract,context_usage:data.context_usage},null,2);
+    $('diagnostics').textContent=JSON.stringify({attempts:data.attempts,review:data.review,result_contract:data.result_contract,context_plan:data.context_plan,context_blocked:data.context_blocked,context_usage:data.context_usage},null,2);
     $('progress').textContent=data.status==='executed' ? 'ประมวลผลแล้ว' : 'ดูรายละเอียดด้านล่าง';
   } catch (error) { $('progress').textContent=`เกิดข้อผิดพลาด: ${error.message}`; }
   finally { running=false; $('submit').disabled=false; }

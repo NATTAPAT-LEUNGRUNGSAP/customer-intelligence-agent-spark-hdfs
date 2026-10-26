@@ -1,0 +1,59 @@
+{
+  "status": "completed",
+  "component": "Context v2",
+  "quality_passed": true,
+  "source_report": "context-v2-fc31fe03f55a442ba0c39f9969c72d7b.json",
+  "source_core_hashes_match": true,
+  "regression_correct": 20,
+  "regression_total": 20,
+  "matrix": {
+    "managed": {
+      "trials": 21,
+      "correct": 21,
+      "blocked_before_model": 0,
+      "blocked_after_model_call": 0,
+      "ever_called_model": 21,
+      "correct_given_model_called": 21,
+      "no_budget_block_trials": 21,
+      "correct_without_budget_block": 21,
+      "non_budget_failures": 0,
+      "wrong_executed_results": 0,
+      "no_budget_block_p95_seconds": 4.863908608998827,
+      "prompt_tokens_min": 2188,
+      "prompt_tokens_max": 2484,
+      "unique_packet_hashes": 3,
+      "retention": 1.0
+    },
+    "unfiltered": {
+      "trials": 21,
+      "correct": 8,
+      "blocked_before_model": 9,
+      "blocked_after_model_call": 3,
+      "ever_called_model": 12,
+      "correct_given_model_called": 8,
+      "no_budget_block_trials": 9,
+      "correct_without_budget_block": 8,
+      "non_budget_failures": 1,
+      "wrong_executed_results": 0,
+      "no_budget_block_p95_seconds": 9.376760631001162,
+      "prompt_tokens_min": 2188,
+      "prompt_tokens_max": 2895,
+      "unique_packet_hashes": 21,
+      "retention": 1.0
+    }
+  },
+  "population_note": "Raw admitted_count excludes any trial budget-blocked at any stage. This summary separately reports initial model calls and repair-stage blocks.",
+  "prior_candidate": {
+    "report": "context-v1-9d66b9e8b1ab45c7bef19fabaf693ae4.json",
+    "regression_correct": 18,
+    "regression_total": 20,
+    "default_adopted": false
+  },
+  "limitations": [
+    "exposed questions, not fresh holdout",
+    "three unique managed packets repeated21 times",
+    "caller-marked optional noise, not arbitrary noise inside required evidence",
+    "heuristic token preflight; actual observed prompts below 3000 tokens",
+    "not proof of a general solution to model context rot"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "version": "context-v1",
+  "purpose": "Controlled post-retrieval context assembly stress, not proof of a general solution to context rot",
+  "rag_required": true,
+  "strategies": ["managed", "unfiltered"],
+  "control_scope": "Both use current agent/guards and identical selected RAG facts; only optional untrusted background inclusion differs. Not the frozen v2.4 runtime.",
+  "case_ids": ["verify01", "verify05", "verify06"],
+  "case_source": "rag_holdout_v6.json",
+  "case_status": "Previously exposed regression cases; not a fresh holdout",
+  "background_characters": [0, 3000, 12000],
+  "evidence_positions": ["front", "middle", "end"],
+  "zero_background_position": "front",
+  "shuffle_seed": 20261026,
+  "model": "qwen3.5:9b",
+  "context_window": 8192,
+  "output_limit": 768,
+  "stress_acceptance": {
+    "managed_accuracy_min": 0.90,
+    "selected_evidence_retention": 1.0,
+    "managed_budget_blocks_max": 0
+  },
+  "report": ["correctness", "budget_rejections", "incorrect_admitted_answers", "actual_prompt_tokens", "estimate_error", "latency", "unique_prompt_packet_hashes", "required_evidence_retention"],
+  "interpretation": "Managed discards caller-marked nonessential background before inference. Identical managed inputs across positions are repeated trials, not independent evidence-position tests. Separate policy admission effects from admitted-model correctness. Token preflight remains heuristic."
+}

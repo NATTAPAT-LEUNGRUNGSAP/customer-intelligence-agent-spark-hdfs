@@ -1,5 +1,9 @@
 # Customer Intelligence Agent with Spark & HDFS — v2.4
 
+Version-scoped historical report for frozen v2.4. Current source includes Context v2;
+see CONTEXT_REPORT.md for its separate exposed regression/stress results. Statements
+about matching this freeze below apply to the evaluated v2.4 snapshot, not current code.
+
 Date: 26 October 2026 (Asia/Bangkok). Deadline: 9 November 2026.
 
 Current measured project-gate decision: **PASS**.

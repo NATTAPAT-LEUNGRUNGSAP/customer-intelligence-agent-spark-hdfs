@@ -1,5 +1,15 @@
 # Current verification status - v2.4
 
+Current extension: Context v2, measured in context-v2-fc31fe03f55a442ba0c39f9969c72d7b.json.
+31 unit tests passed; exposed v6 regression20/20; managed stress21/21 trials on3
+repeated tasks, with all selected ID/text retained and zero budget rejections.
+Unfiltered control:9 stopped before model,3 during repair,1 other failure,8 correct.
+Current source includes this extension and differs from frozen v2.4. The older
+v2.4 results below remain version-specific historical evidence, not a current-source
+freeze claim. See CONTEXT_REPORT.md and context-quality-summary.json.
+The first metadata-compacting candidate regressed to18/20 and was not adopted.
+Token preflight remains heuristic; model-internal context rot is not generally solved.
+
 Date: 26 October 2026 (Asia/Bangkok). Deadline: 9 November 2026.
 
 ## Current decision

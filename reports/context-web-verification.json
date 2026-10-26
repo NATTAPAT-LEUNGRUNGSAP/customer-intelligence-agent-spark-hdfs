@@ -1,0 +1,39 @@
+{
+  "status": "executed",
+  "result": {
+    "columns": [
+      "invoice_count"
+    ],
+    "rows": [
+      [
+        2040
+      ]
+    ],
+    "truncated": false
+  },
+  "context_plan": {
+    "strategy": "managed",
+    "selected_ids": [
+      "metric.orders",
+      "schema.orders",
+      "policy.period",
+      "syntax.time",
+      "metric.customers",
+      "metric.repeat_rate",
+      "policy.availability",
+      "policy.snapshot"
+    ],
+    "all_selected_evidence_retained": true,
+    "selected_evidence_sha256": "bc6d8433e5c33617c1056aa4305d24e631ca4f6655d4d54674c20c49dcba03b4",
+    "packet_sha256": "db931e115d8fee42b0c861a577cb1878a64ff342e27d172fee49177feb58dc86",
+    "packet_utf8_bytes": 5547,
+    "background_input_characters": 0,
+    "background_supplied_characters": 0,
+    "background_omitted_characters": 0,
+    "requested_evidence_position": "middle",
+    "effective_evidence_position": "selected_evidence_only",
+    "duplicates_removed": 0,
+    "wire_format": "legacy-evidence-json-preserved"
+  },
+  "trace_id": "0eb3ed46f86d4ec6a0e3b98b9c52e27d"
+}
