@@ -1,5 +1,6 @@
 # Preserve the exact evaluated source bytes across Windows/Linux checkouts.
 # Frozen provenance hashes intentionally include line endings.
 * -text
+* whitespace=cr-at-eol
 *.png binary
 *.pptx binary
