@@ -12,6 +12,9 @@ from sql_guard import validate_sql
 from context_budget import check_budget, ContextBudgetExceeded
 from context_engine import assemble_evidence, repair_messages, compact_json
 from result_contracts import validate_result, validate_semantics
+from result_contracts import result_violations
+from semantic_contracts import validate_business_sql
+from policy_engine import authorize, policy_facts, PolicyUnavailable
 
 
 def generate(messages, model, endpoint, timeout=90, max_tokens=768):
@@ -113,6 +116,8 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
         evidence)
     messages = [{'role':'system','content':instructions},{'role':'user','content':question}]
     attempts, calls, usage, last_valid_citations = [], 0, [], []
+    policy_trace=[]
+    base['policy_trace']=policy_trace
     for attempt in range(3):
         proposed={}
         try:
@@ -126,6 +131,8 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
                             citations=citations,attempts=attempts,model_calls=calls,context_usage=usage)
             guarded = validate_sql(proposed.get('sql'))
             validate_semantics(question,proposed['sql'])
+            semantic_contract = validate_business_sql(question,proposed['sql'])
+            policy_trace.append(authorize(policy_facts(proposed['sql'],attempt+1)))
             review = generate([
                 {'role':'system','content':
                  'Check the proposed Spark SQL against the USER QUESTION and RAG evidence. '
@@ -153,10 +160,13 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
             if review.get('approved') is not True:
                 raise ValueError('Evidence consistency review rejected SQL: '+str(review.get('reason')))
             result = execute(guarded)
-            contract = validate_result(question,result)
+            policy_trace.append(authorize(policy_facts(proposed['sql'],attempt+1,'post',
+                                        result_violations(question,result,proposed['sql']))))
+            contract = validate_result(question,result,proposed['sql'])
             return dict(base,status='executed',sql=proposed['sql'],executed_sql=guarded,
                         explanation=proposed.get('explanation'),grain=proposed.get('grain'),
                         citations=citations,review=review,result=result,result_contract=contract,
+                        semantic_contract=semantic_contract,
                         attempts=attempts,model_calls=calls,context_usage=usage)
         except Exception as error:
             attempts.append({'sql':locals().get('proposed',{}).get('sql'),'error':str(error)[:1500],
@@ -166,6 +176,9 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
                 if error.usage:
                     usage.append(error.usage)
                 base['context_blocked']=True
+                break
+            if isinstance(error,PolicyUnavailable):
+                base['policy_blocked']=True
                 break
             # Keep the original facts/question and only the latest repair state.
             messages = repair_messages(messages,proposed,error)

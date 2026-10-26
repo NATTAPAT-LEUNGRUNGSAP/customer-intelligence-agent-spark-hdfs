@@ -148,6 +148,7 @@ def retrieve(question, directory, k=6):
 
 
 def retrieve_context(question, directory, k=6):
+    from ontology import resolve
     started = time.perf_counter()
     chunks = index(directory)[0]
     by_id = {c['id']:c for c in chunks}
@@ -158,8 +159,15 @@ def retrieve_context(question, directory, k=6):
     for ident in POLICIES:
         if ident not in {c['id'] for c in selected}:
             selected.append(dict(by_id[ident],score=None,selection='mandatory_policy'))
+    ontology = resolve(question)
+    for mapping in ontology['matches']:
+        for ident in mapping['evidence_ids']:
+            if ident not in by_id:
+                raise ValueError('Ontology references missing knowledge section: ' + ident)
+            if ident not in {c['id'] for c in selected}:
+                selected.append(dict(by_id[ident],score=None,selection='ontology_dependency'))
     corpus_hash = hashlib.sha256(''.join(c['id']+c['sha256'] for c in chunks).encode()).hexdigest()
     return selected, {'method':'BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4','ranked_ids':[c['id'] for c in ranked],
         'context_ids':[c['id'] for c in selected], 'corpus_sha256':corpus_hash,
         'corpus_chunks':len(chunks),'context_characters':sum(len(c['text']) for c in selected),
-        'elapsed_ms':(time.perf_counter()-started)*1000}
+        'ontology':ontology, 'elapsed_ms':(time.perf_counter()-started)*1000}

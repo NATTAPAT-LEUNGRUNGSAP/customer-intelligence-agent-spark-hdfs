@@ -1,0 +1,35 @@
+[
+  {
+    "id": "accept01",
+    "question": "Count completed invoices for Belgium in January 2010.",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Belgium' AND order_ts>=TIMESTAMP '2010-01-01' AND order_ts<TIMESTAMP '2010-02-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 0
+  },
+  {
+    "id": "accept02",
+    "question": "Count completed invoices for Spain in March 2010.",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Spain' AND order_ts>=TIMESTAMP '2010-03-01' AND order_ts<TIMESTAMP '2010-04-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 0
+  },
+  {
+    "id": "accept03",
+    "question": "Count completed invoices for Switzerland in May 2011.",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Switzerland' AND order_ts>=TIMESTAMP '2011-05-01' AND order_ts<TIMESTAMP '2011-06-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 0
+  }
+]

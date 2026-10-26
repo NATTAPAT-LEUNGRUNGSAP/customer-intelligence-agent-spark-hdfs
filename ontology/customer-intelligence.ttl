@@ -1,0 +1,46 @@
+@prefix ci: <urn:ci:> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ci:Ontology a owl:Ontology .
+ci:Metric a owl:Class .
+ci:Table a owl:Class .
+ci:Grain a owl:Class .
+ci:Evidence a owl:Class .
+ci:sourceTable a owl:ObjectProperty ; rdfs:domain ci:Metric ; rdfs:range ci:Table .
+ci:hasGrain a owl:ObjectProperty ; rdfs:range ci:Grain .
+ci:definedBy a owl:ObjectProperty ; rdfs:range ci:Evidence .
+ci:evidenceId a owl:DatatypeProperty ; rdfs:range xsd:string .
+ci:sqlName a owl:DatatypeProperty ; rdfs:domain ci:Table ; rdfs:range xsd:string .
+ci:formula a owl:DatatypeProperty ; rdfs:domain ci:Metric ; rdfs:range xsd:string .
+ci:invoice a ci:Grain ; rdfs:label "หนึ่งใบสั่งซื้อ"@th .
+ci:product_line a ci:Grain ; rdfs:label "หนึ่งรายการสินค้า"@th .
+ci:customer a ci:Grain ; rdfs:label "หนึ่งลูกค้า ณ วันสรุป"@th .
+
+ci:orders a ci:Table ; ci:sqlName "orders" ; ci:hasGrain ci:invoice ; ci:definedBy ci:ordersSchema .
+ci:sales_lines a ci:Table ; ci:sqlName "sales_lines" ; ci:hasGrain ci:product_line ; ci:definedBy ci:linesSchema .
+ci:customer_summary a ci:Table ; ci:sqlName "customer_summary" ; ci:hasGrain ci:customer ; ci:definedBy ci:customerSchema .
+ci:ordersSchema a ci:Evidence ; ci:evidenceId "schema.orders" .
+ci:linesSchema a ci:Evidence ; ci:evidenceId "schema.sales_lines" .
+ci:customerSchema a ci:Evidence ; ci:evidenceId "schema.customer_summary" .
+ci:salesEvidence a ci:Evidence ; ci:evidenceId "metric.sales" .
+ci:invoicesEvidence a ci:Evidence ; ci:evidenceId "metric.orders" .
+ci:aovEvidence a ci:Evidence ; ci:evidenceId "metric.aov" .
+ci:customersEvidence a ci:Evidence ; ci:evidenceId "metric.customers" .
+ci:repeatEvidence a ci:Evidence ; ci:evidenceId "metric.repeat_rate" .
+ci:highValueEvidence a ci:Evidence ; ci:evidenceId "metric.high_value" .
+ci:championsEvidence a ci:Evidence ; ci:evidenceId "segment.champions" .
+ci:inactiveEvidence a ci:Evidence ; ci:evidenceId "segment.inactive" .
+ci:segmentsEvidence a ci:Evidence ; ci:evidenceId "segment.distribution" .
+
+ci:sales a ci:Metric ; skos:prefLabel "completed sales" ; skos:altLabel "total sales", "revenue", "ยอดขาย" ; ci:sourceTable ci:orders ; ci:hasGrain ci:invoice ; ci:definedBy ci:salesEvidence ; ci:formula "SUM(order_amount)" .
+ci:invoices a ci:Metric ; skos:prefLabel "invoice count" ; skos:altLabel "completed invoices", "จำนวนคำสั่งซื้อ", "กี่ใบ" ; ci:sourceTable ci:orders ; ci:hasGrain ci:invoice ; ci:definedBy ci:invoicesEvidence ; ci:formula "COUNT(*)" .
+ci:aov a ci:Metric ; skos:prefLabel "average order value" ; skos:altLabel "aov", "เฉลี่ยต่อคำสั่งซื้อ" ; ci:sourceTable ci:orders ; ci:hasGrain ci:invoice ; ci:definedBy ci:aovEvidence ; ci:formula "SUM(order_amount)/NULLIF(COUNT(*),0)" .
+ci:customers a ci:Metric ; skos:prefLabel "identified purchasing customers" ; skos:altLabel "distinct customers", "ลูกค้าที่ซื้อ" ; ci:sourceTable ci:orders ; ci:hasGrain ci:invoice ; ci:definedBy ci:customersEvidence ; ci:formula "COUNT(DISTINCT customer_id)" .
+ci:repeat a ci:Metric ; skos:prefLabel "repeat customer fraction" ; skos:altLabel "repeat customer rate", "ซื้อซ้ำ", "two or more completed invoices" ; ci:sourceTable ci:orders ; ci:hasGrain ci:invoice ; ci:definedBy ci:repeatEvidence ; ci:formula "repeat identified customers / all identified purchasing customers" .
+ci:highValue a ci:Metric ; skos:prefLabel "high-value" ; skos:altLabel "high value", "มูลค่าสูง" ; ci:sourceTable ci:customer_summary ; ci:hasGrain ci:customer ; ci:definedBy ci:highValueEvidence ; ci:formula "is_high_value = true" .
+ci:champions a ci:Metric ; skos:prefLabel "champions" ; skos:altLabel "แชมเปี้ยน" ; ci:sourceTable ci:customer_summary ; ci:hasGrain ci:customer ; ci:definedBy ci:championsEvidence ; ci:formula "rfm_segment = 'Champions'" .
+ci:inactive a ci:Metric ; skos:prefLabel "inactive" ; skos:altLabel "ไม่เคลื่อนไหว" ; ci:sourceTable ci:customer_summary ; ci:hasGrain ci:customer ; ci:definedBy ci:inactiveEvidence ; ci:formula "rfm_segment = 'Inactive'" .
+ci:segments a ci:Metric ; skos:prefLabel "rfm segment" ; skos:altLabel "กลุ่มลูกค้า" ; ci:sourceTable ci:customer_summary ; ci:hasGrain ci:customer ; ci:definedBy ci:segmentsEvidence ; ci:formula "GROUP BY rfm_segment" .

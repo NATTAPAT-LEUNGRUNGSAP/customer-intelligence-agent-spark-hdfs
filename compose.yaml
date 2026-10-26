@@ -7,6 +7,12 @@ x-hadoop: &hadoop
     - ./infra/hadoop/config:/config:ro
   restart: unless-stopped
 services:
+  opa:
+    image: openpolicyagent/opa:1.0.1-static
+    command: ["run", "--server", "--addr=0.0.0.0:8181", "/policies"]
+    volumes:
+      - ./policies:/policies:ro
+    restart: unless-stopped
   namenode:
     <<: *hadoop
     hostname: namenode
@@ -63,6 +69,8 @@ services:
       - ./reports:/app/reports
       - ./sql:/app/sql:ro
       - ./knowledge:/app/knowledge:ro
+      - ./ontology:/app/ontology:ro
+      - ./policies:/app/policies:ro
       - ./evaluation:/app/evaluation:ro
       - ./tests:/app/tests:ro
       - ./infra/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
@@ -73,6 +81,7 @@ services:
     depends_on:
       namenode: {condition: service_healthy}
       spark-worker: {condition: service_started}
+      opa: {condition: service_started}
   prepare-data:
     build: ./infra/spark
     profiles: ["jobs"]

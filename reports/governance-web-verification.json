@@ -1,0 +1,55 @@
+{
+  "status": "passed",
+  "transport": "actual HTTP API + Qwen + OPA + Spark/HDFS",
+  "checks": [
+    {
+      "question": "How many completed invoices in October 2011?",
+      "status": "executed",
+      "result": {
+        "columns": [
+          "invoice_count"
+        ],
+        "rows": [
+          [
+            2040
+          ]
+        ],
+        "truncated": false
+      },
+      "policy_trace": [
+        {
+          "allow": true,
+          "reasons": [],
+          "stage": "pre",
+          "engine": "OPA/Rego"
+        },
+        {
+          "allow": true,
+          "reasons": [],
+          "stage": "post",
+          "engine": "OPA/Rego"
+        }
+      ],
+      "ontology_status": "validated",
+      "trace_id": "7dd991108414401786ba22c952044b0a",
+      "model_calls": 2,
+      "citations": [
+        "metric.orders",
+        "schema.orders",
+        "syntax.time"
+      ]
+    },
+    {
+      "question": "Show total completed sales",
+      "status": "clarification",
+      "result": null,
+      "policy_trace": null,
+      "ontology_status": "validated",
+      "trace_id": "2d0ac6fd7f9a46a5960c2442b4f7ff31",
+      "model_calls": 0,
+      "citations": [
+        "policy.period"
+      ]
+    }
+  ]
+}

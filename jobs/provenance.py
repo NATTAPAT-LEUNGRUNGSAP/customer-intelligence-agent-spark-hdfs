@@ -9,7 +9,7 @@ def fingerprint(root='/app', endpoint=None, model=None):
     root = Path(root)
     files = {}
     for directory, pattern in [('jobs','*.py'), ('knowledge','*.md'), ('sql','*.sql'),
-                               ('evaluation','*.json'), ('infra/spark','*'),
+                               ('evaluation','*.json'), ('ontology','*.ttl'), ('policies','*.rego'), ('infra/spark','*'),
                                ('infra/hadoop/config','*'),('web','*'),('scripts','*.ps1')]:
         for path in sorted((root/directory).glob(pattern)):
             if path.is_file():

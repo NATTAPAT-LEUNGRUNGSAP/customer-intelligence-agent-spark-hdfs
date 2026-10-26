@@ -82,3 +82,30 @@ Metrics also report executed and failed/error counts for visibility.
 
 The older protocol description below is historical where version/file names differ.
 
+# Current expanded acceptance procedure
+
+`acceptance.json` contains 60 new supported-family combinations for the latest
+source-frozen run. `acceptance_exposed.json` contains the earlier 60-case set,
+which scored 59/60 and then informed the transparent-CTE fix. It is regression,
+alongside the older 20 cases, giving 80 regression questions. Three cases in
+`acceptance_pilot_exposed.json` were exposed before the first aborted run stopped
+and were excluded from subsequent fresh sets. These are authored project cases,
+not an external benchmark or unseen task families.
+
+`jobs/evaluate_acceptance.py` writes source/model/knowledge/ontology/policy hashes
+before output. It stops before new questions if any regression case fails. Gold
+SQL runs through the SQL guard on Spark. Agent outputs are evaluated by actual
+result tables, not SQL string equality or an LLM judge. All failures/stops count
+wrong. Existing gate thresholds remain unchanged. The final report verifies that
+covered files and the model did not change during measurement.
+
+The context experiment reuses 12 questions after exposure: no optional background,
+3,000 characters omitted, and those characters retained. Every condition uses
+RAG and the same selected evidence, with front/middle/end placement across cases.
+There are 36 trials, not 36 independent tasks. Budget stops before the model and
+during repair are separate from other failures. This measures input management
+under that setup, not general prevention of model-internal context rot.
+
+Current evidence and plain-language definitions: `reports/GOVERNANCE_REPORT.md`.
+Prior raw reports remain historical and are not relabeled as current results.
+

@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "fixture": "synthetic",
+  "run_id": "c26e5eebbef34b579f83488c6a5913e4",
+  "timestamp_utc": "2026-10-26T09:18:03.472895+00:00",
+  "spark_version": "4.1.3",
+  "spark_master": "spark://spark-master:7077",
+  "live_spark_workers": [
+    "worker-20261026042542-172.23.0.4-40447",
+    "worker-20261026043049-172.23.0.5-45475"
+  ],
+  "client_replication": "2",
+  "hdfs_path": "hdfs://namenode:9000/customer_intelligence/smoke/c26e5eebbef34b579f83488c6a5913e4",
+  "rows": 3,
+  "customer_totals_minor": {
+    "C001": 1500,
+    "C002": 2500
+  }
+}

@@ -1,0 +1,642 @@
+[
+  {
+    "id": "final01",
+    "question": "Count completed invoices for Norway in May 2011.",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Norway' AND order_ts>=TIMESTAMP '2011-05-01' AND order_ts<TIMESTAMP '2011-06-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 0
+  },
+  {
+    "id": "final02",
+    "question": "Count completed invoices for Finland in July 2011.",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Finland' AND order_ts>=TIMESTAMP '2011-07-01' AND order_ts<TIMESTAMP '2011-08-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 0
+  },
+  {
+    "id": "final03",
+    "question": "Count completed invoices for Greece in September 2010.",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Greece' AND order_ts>=TIMESTAMP '2010-09-01' AND order_ts<TIMESTAMP '2010-10-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 0
+  },
+  {
+    "id": "final04",
+    "question": "Count completed invoices for Poland in November 2010.",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Poland' AND order_ts>=TIMESTAMP '2010-11-01' AND order_ts<TIMESTAMP '2010-12-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 0
+  },
+  {
+    "id": "final05",
+    "question": "Return total completed sales in Norway during August 2011.",
+    "gold_sql": "SELECT sum(order_amount) FROM orders WHERE country='Norway' AND order_ts>=TIMESTAMP '2011-08-01' AND order_ts<TIMESTAMP '2011-09-01'",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 1
+  },
+  {
+    "id": "final06",
+    "question": "Return total completed sales in Finland during October 2011.",
+    "gold_sql": "SELECT sum(order_amount) FROM orders WHERE country='Finland' AND order_ts>=TIMESTAMP '2011-10-01' AND order_ts<TIMESTAMP '2011-11-01'",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 1
+  },
+  {
+    "id": "final07",
+    "question": "Return total completed sales in Greece during January 2010.",
+    "gold_sql": "SELECT sum(order_amount) FROM orders WHERE country='Greece' AND order_ts>=TIMESTAMP '2010-01-01' AND order_ts<TIMESTAMP '2010-02-01'",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 1
+  },
+  {
+    "id": "final08",
+    "question": "Return total completed sales in Poland during March 2010.",
+    "gold_sql": "SELECT sum(order_amount) FROM orders WHERE country='Poland' AND order_ts>=TIMESTAMP '2010-03-01' AND order_ts<TIMESTAMP '2010-04-01'",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 1
+  },
+  {
+    "id": "final09",
+    "question": "Calculate average order value including anonymous invoices for Norway in November 2011.",
+    "gold_sql": "SELECT avg(order_amount) FROM orders WHERE country='Norway' AND order_ts>=TIMESTAMP '2011-11-01' AND order_ts<TIMESTAMP '2011-12-01'",
+    "relevant_ids": [
+      "metric.aov",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 2
+  },
+  {
+    "id": "final10",
+    "question": "Calculate average order value including anonymous invoices for Finland in February 2011.",
+    "gold_sql": "SELECT avg(order_amount) FROM orders WHERE country='Finland' AND order_ts>=TIMESTAMP '2011-02-01' AND order_ts<TIMESTAMP '2011-03-01'",
+    "relevant_ids": [
+      "metric.aov",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 2
+  },
+  {
+    "id": "final11",
+    "question": "Calculate average order value including anonymous invoices for Greece in April 2010.",
+    "gold_sql": "SELECT avg(order_amount) FROM orders WHERE country='Greece' AND order_ts>=TIMESTAMP '2010-04-01' AND order_ts<TIMESTAMP '2010-05-01'",
+    "relevant_ids": [
+      "metric.aov",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 2
+  },
+  {
+    "id": "final12",
+    "question": "Calculate average order value including anonymous invoices for Poland in June 2010.",
+    "gold_sql": "SELECT avg(order_amount) FROM orders WHERE country='Poland' AND order_ts>=TIMESTAMP '2010-06-01' AND order_ts<TIMESTAMP '2010-07-01'",
+    "relevant_ids": [
+      "metric.aov",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 2
+  },
+  {
+    "id": "final13",
+    "question": "Count distinct identified purchasing customers in Norway during March 2011.",
+    "gold_sql": "SELECT count(distinct customer_id) FROM orders WHERE customer_id IS NOT NULL AND country='Norway' AND order_ts>=TIMESTAMP '2011-03-01' AND order_ts<TIMESTAMP '2011-04-01'",
+    "relevant_ids": [
+      "metric.customers",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 3
+  },
+  {
+    "id": "final14",
+    "question": "Count distinct identified purchasing customers in Finland during May 2011.",
+    "gold_sql": "SELECT count(distinct customer_id) FROM orders WHERE customer_id IS NOT NULL AND country='Finland' AND order_ts>=TIMESTAMP '2011-05-01' AND order_ts<TIMESTAMP '2011-06-01'",
+    "relevant_ids": [
+      "metric.customers",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 3
+  },
+  {
+    "id": "final15",
+    "question": "Count distinct identified purchasing customers in Greece during July 2010.",
+    "gold_sql": "SELECT count(distinct customer_id) FROM orders WHERE customer_id IS NOT NULL AND country='Greece' AND order_ts>=TIMESTAMP '2010-07-01' AND order_ts<TIMESTAMP '2010-08-01'",
+    "relevant_ids": [
+      "metric.customers",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 3
+  },
+  {
+    "id": "final16",
+    "question": "Count distinct identified purchasing customers in Poland during September 2010.",
+    "gold_sql": "SELECT count(distinct customer_id) FROM orders WHERE customer_id IS NOT NULL AND country='Poland' AND order_ts>=TIMESTAMP '2010-09-01' AND order_ts<TIMESTAMP '2010-10-01'",
+    "relevant_ids": [
+      "metric.customers",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 3
+  },
+  {
+    "id": "final17",
+    "question": "For Norway in June 2011, return the repeat customer fraction among all identified purchasing customers.",
+    "gold_sql": "WITH f AS (SELECT customer_id,count(*) n FROM orders WHERE customer_id IS NOT NULL AND country='Norway' AND order_ts>=TIMESTAMP '2011-06-01' AND order_ts<TIMESTAMP '2011-07-01' GROUP BY customer_id) SELECT sum(CASE WHEN n>=2 THEN 1 ELSE 0 END)/nullif(count(*),0) FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 4
+  },
+  {
+    "id": "final18",
+    "question": "For Finland in August 2011, return the repeat customer fraction among all identified purchasing customers.",
+    "gold_sql": "WITH f AS (SELECT customer_id,count(*) n FROM orders WHERE customer_id IS NOT NULL AND country='Finland' AND order_ts>=TIMESTAMP '2011-08-01' AND order_ts<TIMESTAMP '2011-09-01' GROUP BY customer_id) SELECT sum(CASE WHEN n>=2 THEN 1 ELSE 0 END)/nullif(count(*),0) FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 4
+  },
+  {
+    "id": "final19",
+    "question": "For Greece in October 2010, return the repeat customer fraction among all identified purchasing customers.",
+    "gold_sql": "WITH f AS (SELECT customer_id,count(*) n FROM orders WHERE customer_id IS NOT NULL AND country='Greece' AND order_ts>=TIMESTAMP '2010-10-01' AND order_ts<TIMESTAMP '2010-11-01' GROUP BY customer_id) SELECT sum(CASE WHEN n>=2 THEN 1 ELSE 0 END)/nullif(count(*),0) FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 4
+  },
+  {
+    "id": "final20",
+    "question": "For Poland in January 2010, return the repeat customer fraction among all identified purchasing customers.",
+    "gold_sql": "WITH f AS (SELECT customer_id,count(*) n FROM orders WHERE customer_id IS NOT NULL AND country='Poland' AND order_ts>=TIMESTAMP '2010-01-01' AND order_ts<TIMESTAMP '2010-02-01' GROUP BY customer_id) SELECT sum(CASE WHEN n>=2 THEN 1 ELSE 0 END)/nullif(count(*),0) FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "schema.orders"
+    ],
+    "ordered": false,
+    "family": 4
+  },
+  {
+    "id": "final21",
+    "question": "Rank the top 7 identified customers by completed sales in Norway in September 2011. Output customer ID and sales, descending sales then ascending customer ID.",
+    "gold_sql": "SELECT customer_id,sum(order_amount) sales FROM orders WHERE customer_id IS NOT NULL AND country='Norway' AND order_ts>=TIMESTAMP '2011-09-01' AND order_ts<TIMESTAMP '2011-10-01' GROUP BY customer_id ORDER BY sales DESC,customer_id ASC LIMIT 7",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 5
+  },
+  {
+    "id": "final22",
+    "question": "Rank the top 8 identified customers by completed sales in Finland in November 2011. Output customer ID and sales, descending sales then ascending customer ID.",
+    "gold_sql": "SELECT customer_id,sum(order_amount) sales FROM orders WHERE customer_id IS NOT NULL AND country='Finland' AND order_ts>=TIMESTAMP '2011-11-01' AND order_ts<TIMESTAMP '2011-12-01' GROUP BY customer_id ORDER BY sales DESC,customer_id ASC LIMIT 8",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 5
+  },
+  {
+    "id": "final23",
+    "question": "Rank the top 9 identified customers by completed sales in Greece in February 2010. Output customer ID and sales, descending sales then ascending customer ID.",
+    "gold_sql": "SELECT customer_id,sum(order_amount) sales FROM orders WHERE customer_id IS NOT NULL AND country='Greece' AND order_ts>=TIMESTAMP '2010-02-01' AND order_ts<TIMESTAMP '2010-03-01' GROUP BY customer_id ORDER BY sales DESC,customer_id ASC LIMIT 9",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 5
+  },
+  {
+    "id": "final24",
+    "question": "Rank the top 10 identified customers by completed sales in Poland in April 2010. Output customer ID and sales, descending sales then ascending customer ID.",
+    "gold_sql": "SELECT customer_id,sum(order_amount) sales FROM orders WHERE customer_id IS NOT NULL AND country='Poland' AND order_ts>=TIMESTAMP '2010-04-01' AND order_ts<TIMESTAMP '2010-05-01' GROUP BY customer_id ORDER BY sales DESC,customer_id ASC LIMIT 10",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 5
+  },
+  {
+    "id": "final25",
+    "question": "In January 2011 return the top 7 countries by completed invoice count. Output country and count, descending count then ascending country.",
+    "gold_sql": "SELECT country,count(*) n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY n DESC,country ASC LIMIT 7",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 6
+  },
+  {
+    "id": "final26",
+    "question": "In March 2011 return the top 8 countries by completed invoice count. Output country and count, descending count then ascending country.",
+    "gold_sql": "SELECT country,count(*) n FROM orders WHERE order_ts>=TIMESTAMP '2011-03-01' AND order_ts<TIMESTAMP '2011-04-01' GROUP BY country ORDER BY n DESC,country ASC LIMIT 8",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 6
+  },
+  {
+    "id": "final27",
+    "question": "In May 2010 return the top 9 countries by completed invoice count. Output country and count, descending count then ascending country.",
+    "gold_sql": "SELECT country,count(*) n FROM orders WHERE order_ts>=TIMESTAMP '2010-05-01' AND order_ts<TIMESTAMP '2010-06-01' GROUP BY country ORDER BY n DESC,country ASC LIMIT 9",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 6
+  },
+  {
+    "id": "final28",
+    "question": "In July 2010 return the top 10 countries by completed invoice count. Output country and count, descending count then ascending country.",
+    "gold_sql": "SELECT country,count(*) n FROM orders WHERE order_ts>=TIMESTAMP '2010-07-01' AND order_ts<TIMESTAMP '2010-08-01' GROUP BY country ORDER BY n DESC,country ASC LIMIT 10",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 6
+  },
+  {
+    "id": "final29",
+    "question": "Count cancellation product lines in Norway in April 2011.",
+    "gold_sql": "SELECT count(*) FROM sales_lines WHERE transaction_type='cancellation' AND country='Norway' AND invoice_ts>=TIMESTAMP '2011-04-01' AND invoice_ts<TIMESTAMP '2011-05-01'",
+    "relevant_ids": [
+      "schema.sales_lines"
+    ],
+    "ordered": false,
+    "family": 7
+  },
+  {
+    "id": "final30",
+    "question": "Count cancellation product lines in Finland in June 2011.",
+    "gold_sql": "SELECT count(*) FROM sales_lines WHERE transaction_type='cancellation' AND country='Finland' AND invoice_ts>=TIMESTAMP '2011-06-01' AND invoice_ts<TIMESTAMP '2011-07-01'",
+    "relevant_ids": [
+      "schema.sales_lines"
+    ],
+    "ordered": false,
+    "family": 7
+  },
+  {
+    "id": "final31",
+    "question": "Count cancellation product lines in Greece in August 2010.",
+    "gold_sql": "SELECT count(*) FROM sales_lines WHERE transaction_type='cancellation' AND country='Greece' AND invoice_ts>=TIMESTAMP '2010-08-01' AND invoice_ts<TIMESTAMP '2010-09-01'",
+    "relevant_ids": [
+      "schema.sales_lines"
+    ],
+    "ordered": false,
+    "family": 7
+  },
+  {
+    "id": "final32",
+    "question": "Count cancellation product lines in Poland in October 2010.",
+    "gold_sql": "SELECT count(*) FROM sales_lines WHERE transaction_type='cancellation' AND country='Poland' AND invoice_ts>=TIMESTAMP '2010-10-01' AND invoice_ts<TIMESTAMP '2010-11-01'",
+    "relevant_ids": [
+      "schema.sales_lines"
+    ],
+    "ordered": false,
+    "family": 7
+  },
+  {
+    "id": "final33",
+    "question": "Count original return product lines in Norway in July 2011.",
+    "gold_sql": "SELECT count(*) FROM sales_lines WHERE transaction_type='return' AND country='Norway' AND invoice_ts>=TIMESTAMP '2011-07-01' AND invoice_ts<TIMESTAMP '2011-08-01'",
+    "relevant_ids": [
+      "schema.sales_lines"
+    ],
+    "ordered": false,
+    "family": 8
+  },
+  {
+    "id": "final34",
+    "question": "Count original return product lines in Finland in September 2011.",
+    "gold_sql": "SELECT count(*) FROM sales_lines WHERE transaction_type='return' AND country='Finland' AND invoice_ts>=TIMESTAMP '2011-09-01' AND invoice_ts<TIMESTAMP '2011-10-01'",
+    "relevant_ids": [
+      "schema.sales_lines"
+    ],
+    "ordered": false,
+    "family": 8
+  },
+  {
+    "id": "final35",
+    "question": "Count original return product lines in Greece in November 2010.",
+    "gold_sql": "SELECT count(*) FROM sales_lines WHERE transaction_type='return' AND country='Greece' AND invoice_ts>=TIMESTAMP '2010-11-01' AND invoice_ts<TIMESTAMP '2010-12-01'",
+    "relevant_ids": [
+      "schema.sales_lines"
+    ],
+    "ordered": false,
+    "family": 8
+  },
+  {
+    "id": "final36",
+    "question": "Count original return product lines in Poland in February 2010.",
+    "gold_sql": "SELECT count(*) FROM sales_lines WHERE transaction_type='return' AND country='Poland' AND invoice_ts>=TIMESTAMP '2010-02-01' AND invoice_ts<TIMESTAMP '2010-03-01'",
+    "relevant_ids": [
+      "schema.sales_lines"
+    ],
+    "ordered": false,
+    "family": 8
+  },
+  {
+    "id": "final37",
+    "question": "In Norway in October 2011, rank the top 7 product IDs by total sale quantity. Use only sale lines. Output product ID and units, descending units then ascending product ID.",
+    "gold_sql": "SELECT product_id,sum(quantity) units FROM sales_lines WHERE transaction_type='sale' AND country='Norway' AND invoice_ts>=TIMESTAMP '2011-10-01' AND invoice_ts<TIMESTAMP '2011-11-01' GROUP BY product_id ORDER BY units DESC,product_id ASC LIMIT 7",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 9
+  },
+  {
+    "id": "final38",
+    "question": "In Finland in January 2011, rank the top 8 product IDs by total sale quantity. Use only sale lines. Output product ID and units, descending units then ascending product ID.",
+    "gold_sql": "SELECT product_id,sum(quantity) units FROM sales_lines WHERE transaction_type='sale' AND country='Finland' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY units DESC,product_id ASC LIMIT 8",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 9
+  },
+  {
+    "id": "final39",
+    "question": "In Greece in March 2010, rank the top 9 product IDs by total sale quantity. Use only sale lines. Output product ID and units, descending units then ascending product ID.",
+    "gold_sql": "SELECT product_id,sum(quantity) units FROM sales_lines WHERE transaction_type='sale' AND country='Greece' AND invoice_ts>=TIMESTAMP '2010-03-01' AND invoice_ts<TIMESTAMP '2010-04-01' GROUP BY product_id ORDER BY units DESC,product_id ASC LIMIT 9",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 9
+  },
+  {
+    "id": "final40",
+    "question": "In Poland in May 2010, rank the top 10 product IDs by total sale quantity. Use only sale lines. Output product ID and units, descending units then ascending product ID.",
+    "gold_sql": "SELECT product_id,sum(quantity) units FROM sales_lines WHERE transaction_type='sale' AND country='Poland' AND invoice_ts>=TIMESTAMP '2010-05-01' AND invoice_ts<TIMESTAMP '2010-06-01' GROUP BY product_id ORDER BY units DESC,product_id ASC LIMIT 10",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "ordered": true,
+    "family": 9
+  },
+  {
+    "id": "final41",
+    "question": "At snapshot 2011-12-01 count Inactive customers with at least 18 orders in the 180-day window.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Inactive' AND orders_180d>=18",
+    "relevant_ids": [
+      "segment.inactive",
+      "schema.customer_summary"
+    ],
+    "ordered": false,
+    "family": 10
+  },
+  {
+    "id": "final42",
+    "question": "At snapshot 2011-12-01 count Inactive customers with at least 19 orders in the 180-day window.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Inactive' AND orders_180d>=19",
+    "relevant_ids": [
+      "segment.inactive",
+      "schema.customer_summary"
+    ],
+    "ordered": false,
+    "family": 10
+  },
+  {
+    "id": "final43",
+    "question": "At snapshot 2011-12-01 count Inactive customers with at least 20 orders in the 180-day window.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Inactive' AND orders_180d>=20",
+    "relevant_ids": [
+      "segment.inactive",
+      "schema.customer_summary"
+    ],
+    "ordered": false,
+    "family": 10
+  },
+  {
+    "id": "final44",
+    "question": "At snapshot 2011-12-01 count Inactive customers with at least 21 orders in the 180-day window.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Inactive' AND orders_180d>=21",
+    "relevant_ids": [
+      "segment.inactive",
+      "schema.customer_summary"
+    ],
+    "ordered": false,
+    "family": 10
+  },
+  {
+    "id": "final45",
+    "question": "At snapshot 2011-12-01 count high-value customers with at least 19 orders in the 180-day window.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND is_high_value=true AND orders_180d>=19",
+    "relevant_ids": [
+      "metric.high_value",
+      "schema.customer_summary"
+    ],
+    "ordered": false,
+    "family": 11
+  },
+  {
+    "id": "final46",
+    "question": "At snapshot 2011-12-01 count high-value customers with at least 20 orders in the 180-day window.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND is_high_value=true AND orders_180d>=20",
+    "relevant_ids": [
+      "metric.high_value",
+      "schema.customer_summary"
+    ],
+    "ordered": false,
+    "family": 11
+  },
+  {
+    "id": "final47",
+    "question": "At snapshot 2011-12-01 count high-value customers with at least 21 orders in the 180-day window.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND is_high_value=true AND orders_180d>=21",
+    "relevant_ids": [
+      "metric.high_value",
+      "schema.customer_summary"
+    ],
+    "ordered": false,
+    "family": 11
+  },
+  {
+    "id": "final48",
+    "question": "At snapshot 2011-12-01 count high-value customers with at least 22 orders in the 180-day window.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND is_high_value=true AND orders_180d>=22",
+    "relevant_ids": [
+      "metric.high_value",
+      "schema.customer_summary"
+    ],
+    "ordered": false,
+    "family": 11
+  },
+  {
+    "id": "final49",
+    "question": "Please answer this request or explain what is missing: Show total revenue",
+    "clarification_policy": "policy.period",
+    "relevant_ids": [
+      "policy.period"
+    ],
+    "family": "clarification"
+  },
+  {
+    "id": "final50",
+    "question": "Please answer this request or explain what is missing: Who are our best customers?",
+    "clarification_policy": "policy.period",
+    "relevant_ids": [
+      "policy.period"
+    ],
+    "family": "clarification"
+  },
+  {
+    "id": "final51",
+    "question": "Please answer this request or explain what is missing: Show RFM segments",
+    "clarification_policy": "policy.snapshot",
+    "relevant_ids": [
+      "policy.snapshot"
+    ],
+    "family": "clarification"
+  },
+  {
+    "id": "final52",
+    "question": "Please answer this request or explain what is missing: Count high-value customers",
+    "clarification_policy": "policy.snapshot",
+    "relevant_ids": [
+      "policy.snapshot"
+    ],
+    "family": "clarification"
+  },
+  {
+    "id": "final53",
+    "question": "Please answer this request or explain what is missing: Show RFM distribution at snapshot 2011-11-29",
+    "clarification_policy": "policy.snapshot",
+    "relevant_ids": [
+      "policy.snapshot"
+    ],
+    "family": "clarification"
+  },
+  {
+    "id": "final54",
+    "question": "Please answer this request or explain what is missing: Calculate profit for Belgium in June 2010",
+    "clarification_policy": "policy.availability",
+    "relevant_ids": [
+      "policy.availability"
+    ],
+    "family": "clarification"
+  },
+  {
+    "id": "final55",
+    "question": "Please answer this request or explain what is missing: What were sales during February 2024?",
+    "clarification_policy": "policy.availability",
+    "relevant_ids": [
+      "policy.availability"
+    ],
+    "family": "clarification"
+  },
+  {
+    "id": "final56",
+    "question": "Please answer this request or explain what is missing: Measure campaign uplift in 2011",
+    "clarification_policy": "policy.availability",
+    "relevant_ids": [
+      "policy.availability"
+    ],
+    "family": "clarification"
+  },
+  {
+    "id": "final57",
+    "question": "ในเดือน July 2011 ประเทศ Norway มี completed invoice กี่ใบ",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Norway' AND order_ts>=TIMESTAMP '2011-07-01' AND order_ts<TIMESTAMP '2011-08-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "family": "Thai"
+  },
+  {
+    "id": "final58",
+    "question": "ในเดือน August 2011 ประเทศ Finland มี completed invoice กี่ใบ",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Finland' AND order_ts>=TIMESTAMP '2011-08-01' AND order_ts<TIMESTAMP '2011-09-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "family": "Thai"
+  },
+  {
+    "id": "final59",
+    "question": "ในเดือน September 2011 ประเทศ Greece มี completed invoice กี่ใบ",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Greece' AND order_ts>=TIMESTAMP '2011-09-01' AND order_ts<TIMESTAMP '2011-10-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "family": "Thai"
+  },
+  {
+    "id": "final60",
+    "question": "ในเดือน October 2011 ประเทศ Poland มี completed invoice กี่ใบ",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Poland' AND order_ts>=TIMESTAMP '2011-10-01' AND order_ts<TIMESTAMP '2011-11-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "family": "Thai"
+  }
+]

@@ -1,3 +1,26 @@
+# Current verification status
+
+Current source: RDF/OWL domain ontology + SHACL, mandatory OPA/Rego pre/post
+Spark decisions, bounded SQL semantics and stronger post-tool contracts.
+
+- Completed current-source run: acceptance-376b19a376714e218c6197ab5c9b27c4.json
+- Source/model fingerprints before and after run match.
+- Newly authored supported-family combinations: 60/60 (52 SQL + 8 clarification).
+- Exposed regression: 80/80. Unit tests: 53 passed. Actual OPA integration: 3 passed.
+- Context: 12 distinct questions, 36 trials; clean12/12, managed12/12,
+  unfiltered10/12 with 1 pre-model and 1 repair-stage budget stop.
+- All context arms use RAG. This is not proof of general model-internal context rot prevention.
+- Earlier 59/60 run retained; its cases became regression after CTE/NaN fixes.
+- Spark/HDFS smoke passed: smoke-c26e5eebbef34b579f83488c6a5913e4.json.
+
+Current HTTP verification passed: governance-web-verification.json (2,040 October 2011 invoices; actual ontology/OPA/Qwen/Spark). Local web app is running at localhost:8090.
+
+See GOVERNANCE_REPORT.md and governance-quality-summary.json for current results.
+The following records are historical and their freeze claims do not describe
+current source. Do not relabel old holdouts as unseen current-source measurements.
+
+---
+
 # Current verification status - v2.4
 
 Current extension: Context v2, measured in context-v2-fc31fe03f55a442ba0c39f9969c72d7b.json.

@@ -1,0 +1,118 @@
+{
+  "raw_report": "acceptance-c02ae90f876f42d78ef0f630a64f96c0.json",
+  "source_unchanged": true,
+  "quality_passed": true,
+  "acceptance": {
+    "accuracy": 0.9833333333333333,
+    "correct": 59,
+    "total": 60,
+    "executed": 51,
+    "failed_or_error": 1,
+    "clarification_accuracy": 1.0,
+    "citation_validity": 1.0,
+    "latency_p95_seconds": 5.695102851001138,
+    "latency_mean_seconds": 3.2632935545664927,
+    "model_calls": 108,
+    "citation_scope": "All response traces, including failed attempts with validated evidence IDs; not proof of a correct answer",
+    "cited_relevant_evidence_rate": 1.0,
+    "retrieval": {
+      "recall_at_6": 1.0,
+      "precision_at_6": 0.31111111111111117,
+      "mrr_at_6": 0.9305555555555557,
+      "ndcg_at_6": 0.9278216378248277,
+      "context_coverage": 1.0
+    }
+  },
+  "regression": {
+    "accuracy": 1.0,
+    "correct": 20,
+    "total": 20,
+    "executed": 17,
+    "failed_or_error": 0,
+    "clarification_accuracy": 1.0,
+    "citation_validity": 1.0,
+    "latency_p95_seconds": 4.828482125001756,
+    "latency_mean_seconds": 3.364696074800304,
+    "model_calls": 35,
+    "citation_scope": "All response traces, including failed attempts with validated evidence IDs; not proof of a correct answer",
+    "cited_relevant_evidence_rate": 1.0,
+    "retrieval": {
+      "recall_at_6": 1.0,
+      "precision_at_6": 0.35,
+      "mrr_at_6": 0.8916666666666666,
+      "ndcg_at_6": 0.8933827614885261,
+      "context_coverage": 1.0
+    }
+  },
+  "context": {
+    "clean": {
+      "correct": 11,
+      "total": 12,
+      "blocked_before_model": 0,
+      "blocked_during_repair": 0,
+      "other_failed": 1,
+      "retained_evidence": 12,
+      "prompt_tokens_min": 2017,
+      "prompt_tokens_max": 2533
+    },
+    "managed": {
+      "correct": 11,
+      "total": 12,
+      "blocked_before_model": 0,
+      "blocked_during_repair": 0,
+      "other_failed": 1,
+      "retained_evidence": 12,
+      "prompt_tokens_min": 2017,
+      "prompt_tokens_max": 2533
+    },
+    "unfiltered": {
+      "correct": 10,
+      "total": 12,
+      "blocked_before_model": 1,
+      "blocked_during_repair": 1,
+      "other_failed": 0,
+      "retained_evidence": 12,
+      "prompt_tokens_min": 2503,
+      "prompt_tokens_max": 2863
+    }
+  },
+  "policy_integration_correct": 8,
+  "policy_integration_total": 8,
+  "incorrect_answers_delivered": 0,
+  "failures": [
+    {
+      "id": "accept17",
+      "question": "For Belgium in February 2010, return the repeat customer fraction among all identified purchasing customers.",
+      "status": "failed",
+      "last_error": "Identified customer population requires customer_id IS NOT NULL in each orders source WHERE, before grouping or computing repeat frequencies."
+    }
+  ],
+  "context_protocol": {
+    "cases": 12,
+    "strategies": [
+      "clean",
+      "managed",
+      "unfiltered"
+    ],
+    "background_characters": 3000,
+    "rag_in_all_conditions": true,
+    "success_metric": "actual result vs independently executed gold, errors/stops count wrong",
+    "noise_location": "optional nonauthoritative background outside selected evidence",
+    "positions": "front/middle/end cyclic across 12 questions",
+    "limits": "12 distinct questions, 36 trials; not proof of general model-internal context rot prevention"
+  },
+  "ontology": {
+    "metrics": 9,
+    "tables": 3,
+    "format": "OWL/RDF",
+    "validation": "SHACL + source grain consistency"
+  },
+  "caveats": [
+    "Developer-authored supported-family parameter combinations, not an external benchmark.",
+    "One aborted pilot exposed 3 new cases; all 3 replaced before this source-frozen run.",
+    "Timing excludes Spark startup; gold queries run before corresponding candidate queries.",
+    "Context trials reuse 12 acceptance questions after exposure; no new holdout claim.",
+    "Optional background outside selected evidence only; actual tokens remain well below full context window.",
+    "Passing thresholds does not mean every case passed. See explicit failed cases."
+  ]
+}

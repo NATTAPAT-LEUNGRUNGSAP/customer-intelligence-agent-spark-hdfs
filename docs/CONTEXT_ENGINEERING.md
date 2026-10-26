@@ -1,3 +1,5 @@
+Current source measurement: [GOVERNANCE_REPORT.md](../reports/GOVERNANCE_REPORT.md), with 12 distinct questions and 36 paired trials. Earlier experiment numbers below are historical.
+
 # Context engineering
 
 The agent treats context as a bounded input that must retain the selected business

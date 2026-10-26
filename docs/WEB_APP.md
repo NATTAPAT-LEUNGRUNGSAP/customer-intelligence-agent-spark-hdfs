@@ -13,6 +13,11 @@ powershell -ExecutionPolicy Bypass -File ./scripts/start-web.ps1
 Open http://localhost:8090 after Spark initialization. The app binds the published
 port to localhost only. Check readiness at /api/status or Docker logs:
 
+The startup script builds the image with ontology/SHACL dependencies and starts
+the internal OPA service. OPA must be reachable at http://opa:8181 from the web
+container. If its decision cannot be obtained, the agent blocks execution or
+delivery rather than bypassing policy. No OPA port is published to the host.
+
 ```powershell
 docker compose -f compose.yaml -f compose.web.yaml logs --tail 30 web
 docker compose -f compose.yaml -f compose.web.yaml stop web
@@ -49,3 +54,7 @@ reports/context-web-verification.json records2040 October2011 invoices and the
 selected-evidence context plan. Expanded diagnostics include context_plan,
 context_blocked and actual token usage. See reports/CONTEXT_REPORT.md for the
 separate controlled context experiment and its limits.
+
+Current ontology/policy integration and expanded question results are documented in reports/GOVERNANCE_REPORT.md. The domain ontology is described in docs/GOVERNANCE.md.
+
+The updated ontology/OPA path was verified through the actual HTTP API: reports/governance-web-verification.json records 2,040 October 2011 invoices with pre/post OPA allow decisions and a missing-period clarification with zero model calls.

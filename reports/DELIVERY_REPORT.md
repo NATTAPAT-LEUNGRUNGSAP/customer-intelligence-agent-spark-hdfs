@@ -1,3 +1,5 @@
+Current source and expanded measurements are in [GOVERNANCE_REPORT.md](GOVERNANCE_REPORT.md). This document retains the earlier delivery evidence.
+
 # Customer Intelligence Agent with Spark & HDFS — v2.4
 
 Version-scoped historical report for frozen v2.4. Current source includes Context v2;

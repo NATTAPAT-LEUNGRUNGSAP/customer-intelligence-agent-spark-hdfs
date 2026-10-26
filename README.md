@@ -4,7 +4,7 @@
 
 ผลลัพธ์แสดงเป็นตาราง พร้อม SQL และหลักฐานที่ใช้ เพื่อให้ผู้ใช้ตรวจสอบวิธีคำนวณและที่มาของคำตอบได้
 
-[Presentation](presentation/customer-intelligence-visual-guide.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/DELIVERY_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
+[Presentation](presentation/customer-intelligence-explained.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/GOVERNANCE_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
 
 ## ใช้ทำอะไรได้บ้าง
 
@@ -47,7 +47,7 @@ flowchart LR
 1. ค้นหลักฐานและตรวจว่าคำถามมีเงื่อนไขเพียงพอ
 2. สร้าง SQL พร้อมคำอธิบายและ citations
 3. ตรวจ SQL แบบ AST, เงื่อนไขประชากรลูกค้า และ evidence consistency
-4. รันบน Spark แล้วตรวจผลบางเงื่อนไข เช่น customer ID ว่างหรือค่าของ fraction
+4. ให้ OPA อนุญาตก่อนรัน Spark แล้วตรวจโครงสร้างผล ตัวเลข ID และสัดส่วน พร้อมให้ OPA ตัดสินก่อนคืนคำตอบ
 5. คืนผลให้ผู้ใช้ หรือส่งข้อผิดพลาดกลับให้โมเดลแก้ภายในจำนวนรอบที่กำหนด
 
 Context engineering เก็บหลักฐานที่เลือกไว้ครบ ตรวจ ID ซ้ำที่เนื้อหาขัดกัน และเก็บเฉพาะ SQL กับข้อผิดพลาดล่าสุดเมื่อแก้คำตอบ พร้อมจำกัด input แบบประมาณและบันทึก token ที่ Ollama ใช้จริง ดู [การออกแบบและข้อจำกัด](docs/CONTEXT_ENGINEERING.md)
@@ -68,25 +68,21 @@ Pipeline เก็บ source hashes, จำนวนแถว และผล re
 
 ## ผลประเมิน
 
-ผลของ **v2.4** จากชุดคำถามใหม่ 20 ข้อที่จัดทำก่อน freeze โค้ด โมเดล และ knowledge ที่ใช้ประเมิน:
+ระบบปัจจุบันผ่านคำถามใหม่ **60/60** (52 คำตอบ SQL และ 8 การถามกลับ) และโจทย์เดิม **80/80** โดยบันทึกโค้ด โมเดล knowledge, ontology และ Rego ก่อนรัน และตรวจว่าตรงกันหลังรัน
 
-| มิติ | ผล |
+| สิ่งที่วัด | ผลจริง |
 |---|---:|
-| คำตอบตรงผล Spark / การถามกลับถูกต้อง | 20/20 |
-| Retrieval Recall@6 | 100% |
-| MRR@6 | 0.892 |
-| nDCG@6 | 0.893 |
-| Citation ID validity | 100% |
-| Retrieval latency p95 | 16.69 ms |
-| Warm-query latency p95 | 5.43 s |
+| คำถามใหม่ เทียบผล Spark กับ SQL อ้างอิง | 60/60 |
+| โจทย์เดิมหลังแก้ระบบ | 80/80 |
+| Retrieval Recall@6 / MRR@6 / nDCG@6 | 100% / 0.931 / 0.928 |
+| เวลาตอบ p95 ของชุดใหม่ | 4.87 วินาที |
+| Unit tests / OPA integration tests | 53 ผ่าน / 3 ผ่าน |
 
-ชุดประเมินประกอบด้วย SQL 17 ข้อและ clarification 3 ข้อ เป็นชุดขนาดเล็กที่ผู้พัฒนาสร้างจากกลุ่มงานที่รองรับ จึงยังไม่สะท้อนความถูกต้องกับคำถามทุกประเภท เวลา warm-query ไม่รวมการเริ่ม Spark application และ citation ID ที่ถูกต้องไม่ได้รับประกันความหมายของคำตอบ
+คำถามใหม่เป็นกรณีที่ผู้พัฒนาสร้างในกลุ่มงานที่รองรับ จึงยังไม่แทนคำถามทุกประเภท เวลาไม่รวมเปิด Spark และ SQL อ้างอิงรันก่อน query ของ Agent ดู [ผลดิบ เกณฑ์ และรอบที่ล้มเหลว](reports/GOVERNANCE_REPORT.md)
 
-ส่วน Context v2 ที่พัฒนาต่อผ่าน exposed regression 20/20 และ managed-context stress 21/21 รอบทดลอง จาก 3 โจทย์ที่ใช้ซ้ำ โดยเพิ่มข้อความรบกวนและสลับตำแหน่งหลักฐาน ทั้งสองแขนทดลองใช้ RAG ผลนี้แสดงการจัดการ input ในเงื่อนไขที่ทดสอบ ยังไม่พิสูจน์ว่าแก้ context rot ภายในโมเดลได้ทั่วไป ดู [รายงาน Context engineering](reports/CONTEXT_REPORT.md)
+Context experiment ใช้ 12 คำถาม × 3 เงื่อนไข รวม 36 รอบ ทุกเงื่อนไขใช้ RAG: ไม่มีข้อความรบกวนได้ 12/12, ตัดเฉพาะข้อความประกอบได้ 12/12, เก็บข้อความทั้งหมดได้ 10/12 อีกสองข้อหยุดเพราะงบ input ไม่ได้ส่งคำตอบผิด ผลนี้ยังไม่พิสูจน์ว่าแก้ context rot ภายในโมเดลได้ทั่วไป
 
-Unit tests ปัจจุบันผ่าน 31 ข้อบนเครื่องพัฒนา; [GitHub Actions](https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs/actions) ตรวจ unit tests อัตโนมัติ การทดสอบ Spark, HDFS และ Ollama ทำแยกบนเครื่องพัฒนา
-
-ดูวิธีวัด ผลรายข้อ และข้อผิดพลาดจากรอบก่อนใน [รายงานผล](reports/DELIVERY_REPORT.md) และ [Evaluation protocol](evaluation/README.md)
+มี domain ontology แบบ RDF/OWL พร้อม SHACL และ OPA/Rego ก่อนและหลัง Spark แล้ว อ่าน [การออกแบบและคำอธิบายศัพท์](docs/GOVERNANCE.md)
 
 ## เริ่มใช้งาน
 

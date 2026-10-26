@@ -108,6 +108,13 @@ class RetrievalTests(unittest.TestCase):
 
 
 class AgentTests(unittest.TestCase):
+    def setUp(self):
+        # These tests isolate the older correction/reviewer loop. New deterministic
+        # contracts and actual OPA are exercised separately, without a live model.
+        for target in ('agent.validate_business_sql','agent.authorize'):
+            mock = patch(target,return_value={'status':'passed','allow':True})
+            mock.start()
+            self.addCleanup(mock.stop)
     def test_scalar_pair_contract_rejects_extra_month_column(self):
         with self.assertRaisesRegex(ValueError,'exactly two scalar'):
             validate_semantics('For Sweden in 2011 give total sales followed by invoice count',
@@ -129,7 +136,7 @@ class AgentTests(unittest.TestCase):
         outputs=[{'sql':'SELECT customer_id FROM orders','citations':['schema.orders']},
                  {'sql':'SELECT customer_id FROM orders WHERE customer_id IS NOT NULL','citations':['schema.orders']},
                  {'approved':True,'citations':['schema.orders']}]
-        results=iter([{'columns':['customer_id'],'rows':[['12346']]}])
+        results=iter([{'columns':['customer_id'],'rows':[['12346']],'truncated':False}])
         with patch('agent.generate',side_effect=outputs):
             result=answer('Top identified customers in January 2011',{},lambda sql:next(results),
                           'fixture','unused',Path(__file__).resolve().parents[1]/'knowledge')
@@ -164,7 +171,7 @@ class AgentTests(unittest.TestCase):
         result = self.run_agent([{'sql': 'DROP TABLE orders','citations':['metric.orders']},
                                {'sql': 'SELECT count(*) FROM orders','citations':['metric.orders']},
                                {'approved':True,'citations':['metric.orders']}],
-                               lambda sql: calls.append(sql) or {'rows': [[3]]})
+                               lambda sql: calls.append(sql) or {'columns':['n'],'rows': [[3]],'truncated':False})
         self.assertEqual(len(calls), 1)
         self.assertEqual(result['status'], 'executed')
         self.assertEqual(len(result['attempts']), 1)
@@ -201,7 +208,7 @@ class AgentTests(unittest.TestCase):
             {'sql':'SELECT count(*) FROM sales_lines','citations':['metric.orders']},
             {'approved':False,'reason':'Counting lines instead of invoices','citations':['metric.orders']},
             {'sql':'SELECT count(*) FROM orders','citations':['metric.orders']},
-            {'approved':True,'citations':['metric.orders']}],lambda sql:calls.append(sql) or {'rows':[[3]]})
+            {'approved':True,'citations':['metric.orders']}],lambda sql:calls.append(sql) or {'columns':['n'],'rows':[[3]],'truncated':False})
         self.assertEqual(result['status'],'executed')
         self.assertEqual(len(calls),1)
         self.assertNotIn('sales_lines',calls[0])
