@@ -1,127 +1,139 @@
 # Customer Intelligence Agent with Spark & HDFS
 
-รุ่น v2.4: มี local web application ที่ http://localhost:8090
-เริ่มด้วย scripts/start-web.ps1 หลัง cluster/Ollama/data พร้อม ดู docs/WEB_APP.md
+ระบบวิเคราะห์ข้อมูลลูกค้าและยอดขายด้วยภาษาธรรมชาติ ผู้ใช้ถามผ่านเว็บ แล้ว Agent ค้นนิยามธุรกิจด้วย RAG สร้าง SQL และประมวลผลบน Apache Spark โดยอ่านข้อมูลจาก HDFS
 
-รันทดสอบจริงล่าสุด: unit 25 ข้อผ่าน; exposed regression 20/20; ชุดใหม่ v6 หลัง freeze 20/20 ถูก
-RAG Recall@6 100%, MRR@6 0.892, nDCG@6 0.893; warm-query p95 5.43 วินาที
-ผ่านเกณฑ์โครงการบนชุดเล็กที่ผู้พัฒนาสร้าง ไม่ใช่การรับรองว่าถูกทุกคำถามทั่วไป
+ผลลัพธ์แสดงเป็นตาราง พร้อม SQL และหลักฐานที่ใช้ เพื่อให้ผู้ใช้ตรวจสอบวิธีคำนวณและที่มาของคำตอบได้
 
-รายละเอียด ผลรอบที่ไม่ผ่าน และข้อจำกัด: reports/DELIVERY_REPORT.md
-Presentation: [PowerPoint 14 slides](presentation/customer-intelligence-v2.4-release.pptx)
+[Presentation](presentation/customer-intelligence-v2.4-release.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/DELIVERY_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
 
-GitHub Public: [customer-intelligence-agent-spark-hdfs](https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs)
-GitHub Actions unit tests รันผ่านจริงแล้ว; Spark/HDFS/Ollama ทดสอบบนเครื่องพัฒนาแยกจาก CI
+## ใช้ทำอะไรได้บ้าง
 
-ระบบ Spark + HDFS + RAG + Agent สร้าง SQL เอง กำหนดส่งภายใน 9 พฤศจิกายน 2026
-RAG เป็นส่วนบังคับ ไม่มีโหมดปิด RAG และไม่ใช้การเปรียบเทียบมี/ไม่มี RAG เป็นเกณฑ์ส่งงาน
-อ่าน reports/STATUS.md, reports/DELIVERY_REPORT.md และ evaluation/README.md สำหรับผลปัจจุบันและวิธีวัด
-ผล v2.1 เป็นประวัติใน reports/FINAL_REPORT.md; ไม่ใช้แทนผลโค้ดปัจจุบัน
+| งานวิเคราะห์ | ตัวอย่าง |
+|---|---|
+| ยอดขายและคำสั่งซื้อ | ยอดขาย จำนวน invoice และมูลค่าเฉลี่ยต่อคำสั่งซื้อในช่วงเวลาที่กำหนด |
+| พฤติกรรมการซื้อ | จำนวนลูกค้าที่ซื้อและสัดส่วนลูกค้าที่ซื้อซ้ำ |
+| การจัดอันดับ | ลูกค้า ประเทศ หรือสินค้าตามยอดขาย จำนวนคำสั่งซื้อ หรือจำนวนสินค้าที่ขาย |
+| กลุ่มลูกค้า | วิเคราะห์ RFM segments และ high-value customers ณ snapshot ที่มีข้อมูล |
 
-## เริ่มคลัสเตอร์
+ระบบช่วยให้ผู้ใช้สำรวจข้อมูลโดยไม่ต้องเริ่มจากการเขียน SQL เอง หากคำถามขาดช่วงเวลาหรือขอข้อมูลที่ไม่มี ระบบจะถามกลับหรือแจ้งข้อจำกัด
 
-เปิด Docker Desktop Linux engine และ Ollama แล้วรันใน PowerShell:
+## Architecture
+
+```mermaid
+flowchart LR
+    Data[Online Retail II] --> ETL[Spark ETL]
+    ETL --> HDFS[Versioned Parquet on HDFS]
+    User[Web UI] --> RAG[RAG: definitions and schema]
+    KB[Knowledge corpus] --> RAG
+    RAG --> Agent[LLM generates SQL]
+    Agent --> Guard[SQL and evidence validation]
+    Guard --> Spark[Spark execution]
+    HDFS --> Spark
+    Spark --> Result[Result checks and trace]
+    Result --> User
+    Guard -->|correction feedback| Agent
+    Result -->|execution or contract error| Agent
+```
+
+- **Data platform:** Hadoop 3.4.1 พร้อม NameNode 1 ตัวและ DataNodes 2 ตัว ตั้ง replication เป็น 2; Spark 4.1.3 พร้อม master 1 ตัวและ workers 2 ตัว
+- **RAG:** BM25 ร่วมกับคำศัพท์ไทย/อังกฤษ ดึงนิยาม metric, schema, syntax และ policy ที่เกี่ยวข้อง พร้อม IDs อ้างอิง
+- **Agent:** Qwen3.5 9B ผ่าน Ollama สร้าง SQL เอง ตรวจคำสั่งและความสอดคล้องกับหลักฐานก่อนรัน แก้ตาม feedback ได้รวมไม่เกิน 3 รอบ
+- **Application:** เว็บสำหรับป้อนคำถาม ดูตารางผลลัพธ์ และเปิดรายละเอียด SQL หลักฐานและ trace
+
+ระบบทำงานผ่าน Docker บนเครื่องเดียว โดย Ollama ใช้ GPU ของเครื่อง host
+
+## Workflow ของ Agent
+
+1. ค้นหลักฐานและตรวจว่าคำถามมีเงื่อนไขเพียงพอ
+2. สร้าง SQL พร้อมคำอธิบายและ citations
+3. ตรวจ SQL แบบ AST, เงื่อนไขประชากรลูกค้า และ evidence consistency
+4. รันบน Spark แล้วตรวจผลบางเงื่อนไข เช่น customer ID ว่างหรือค่าของ fraction
+5. คืนผลให้ผู้ใช้ หรือส่งข้อผิดพลาดกลับให้โมเดลแก้ภายในจำนวนรอบที่กำหนด
+
+Context engineering ครอบคลุมการเลือกหลักฐาน การจำกัดขนาด input แบบประมาณ และการเก็บเฉพาะสถานะแก้ไขล่าสุด พร้อมบันทึกจำนวน token ที่ Ollama ใช้จริง
+
+## ข้อมูลที่ใช้
+
+ใช้ [Online Retail II จาก UCI](https://archive.ics.uci.edu/dataset/502/online+retail+ii) จำนวน **1,067,371 แถว** ในช่วงปี 2009–2011 ข้อมูลต้นฉบับมีทั้งรายการขาย การยกเลิก การคืนสินค้า และรายการที่ไม่มี customer ID
+
+| ตาราง | ระดับข้อมูล |
+|---|---|
+| `sales_lines` | หนึ่งรายการสินค้าในข้อมูลต้นฉบับ |
+| `orders` | หนึ่ง invoice ของรายการขายที่ผ่านกฎการเตรียมข้อมูล |
+| `customer_summary` | หนึ่งลูกค้าที่ระบุตัวตนได้ ในหน้าต่าง 180 วัน ณ snapshot |
+
+Pipeline เก็บ source hashes, จำนวนแถว และผล reconciliation พร้อมเขียนตารางเป็น version ใหม่บน HDFS เพื่อย้อนตรวจที่มาของข้อมูลได้ นิยาม metric และกฎการจัดกลุ่มอยู่ใน [knowledge/](knowledge/)
+
+ข้อมูล: Chen, D. (2012), Online Retail II, UCI Machine Learning Repository, [DOI: 10.24432/C5CG6D](https://doi.org/10.24432/C5CG6D), CC BY 4.0
+
+## ผลประเมิน
+
+ผลของ **v2.4** จากชุดคำถามใหม่ 20 ข้อที่จัดทำก่อน freeze โค้ด โมเดล และ knowledge ที่ใช้ประเมิน:
+
+| มิติ | ผล |
+|---|---:|
+| คำตอบตรงผล Spark / การถามกลับถูกต้อง | 20/20 |
+| Retrieval Recall@6 | 100% |
+| MRR@6 | 0.892 |
+| nDCG@6 | 0.893 |
+| Citation ID validity | 100% |
+| Retrieval latency p95 | 16.69 ms |
+| Warm-query latency p95 | 5.43 s |
+
+ชุดประเมินประกอบด้วย SQL 17 ข้อและ clarification 3 ข้อ เป็นชุดขนาดเล็กที่ผู้พัฒนาสร้างจากกลุ่มงานที่รองรับ จึงยังไม่สะท้อนความถูกต้องกับคำถามทุกประเภท เวลา warm-query ไม่รวมการเริ่ม Spark application และ citation ID ที่ถูกต้องไม่ได้รับประกันความหมายของคำตอบ
+
+Unit tests ผ่าน 25 ข้อบนเครื่องพัฒนาและจาก local Git checkout; [GitHub Actions](https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs/actions) รัน unit-test workflow ผ่านแล้ว การทดสอบ Spark, HDFS และ Ollama ทำแยกบนเครื่องพัฒนา
+
+ดูวิธีวัด ผลรายข้อ และข้อผิดพลาดจากรอบก่อนใน [รายงานผล](reports/DELIVERY_REPORT.md) และ [Evaluation protocol](evaluation/README.md)
+
+## เริ่มใช้งาน
+
+ต้องมี Docker Desktop ที่ใช้ Linux containers และ Ollama เครื่องที่ใช้ประเมินมี RAM ประมาณ 32 GB และ RTX 5070 12 GB; ความต้องการทรัพยากรขึ้นกับโมเดลและการจัดสรรให้ Docker
+
+### 1. เตรียมโมเดลและเริ่มคลัสเตอร์
 
 ```powershell
+ollama pull qwen3.5:9b
 powershell -ExecutionPolicy Bypass -File ./scripts/start.ps1
 ```
 
-ใช้ Hadoop 3.4.1: NameNode 1 + DataNodes 2, replication=2 และ Spark 4.1.3: master 1 + workers 2
-เป็นหลาย container บนเครื่องเดียว ครั้งแรกดาวน์โหลด images/Hadoop และตรวจ SHA-512
-หาก Apache archive ช้า: ใช้ Python ที่ติดตั้งจริงรัน scripts/cache_hadoop.py ก่อน
-Docker ควรมี RAM 6–8 GB ขึ้นไป เครื่องพัฒนาจัดสรรประมาณ 16 GB ให้ Docker
-NameNode UI http://localhost:9870 / Spark UI http://localhost:8080 bind เฉพาะ localhost
-HDFS demo ไม่มี authentication และปิด permissions ห้ามใช้การตั้งค่านี้เป็น public service
+Container ต้องเข้าถึง Ollama ผ่าน `host.docker.internal:11434` ได้ สคริปต์เริ่มคลัสเตอร์จะตรวจ readiness และรัน Spark/HDFS smoke test
 
-start.ps1 ตรวจ DataNodes 2, safe mode OFF และ smoke test ตรวจ Spark workers 2
-เขียน/อ่าน Parquet ผ่าน HDFS จริง 3 แถว ยอด C001=1500, C002=2500
-รายงาน smoke-*.json เกิดเฉพาะเมื่อผ่านจริง
-
-```powershell
-docker compose exec namenode hdfs dfsadmin -report
-docker compose exec namenode hdfs fsck /customer_intelligence -files -blocks -locations
-docker compose stop
-```
-
-stop คง volumes และข้อมูลไว้ ไม่ลบ volumes เพื่อแก้ปัญหา
-รัน Spark jobs ทีละงานเพราะใช้ driver DNS spark-job ร่วมกัน; job ใช้ --no-deps เพื่อคง workers 2
-
-## ข้อมูลจริงและตาราง
+### 2. เตรียมข้อมูล
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File ./scripts/build-data.ps1
 ```
 
-UCI Online Retail II สอง sheet รวม 1,067,371 แถว เก็บ ZIP ต้นฉบับ, CSV และ SHA-256 manifest
-CSV บน host เป็น staging; raw rows และตารางจริงเป็น Parquet บน HDFS ภายใต้ run ID ใหม่
-build ตรวจ CSV hash/row count กับ provenance และ reconciliation ก่อนเขียน passed manifest
-ไม่ overwrite รอบเก่า ไม่ append ซ้ำ เก็บแถวซ้ำตามนโยบายและรายงานจำนวน
-ตัดทั้ง invoice เมื่อ customer/country ในรายการขายขัดกัน; ไม่ถือ missing ID เป็นข้อมูลผิดเสมอ
-ตาราง: sales_lines (หนึ่ง product line), orders (หนึ่ง completed-sale invoice),
-customer_summary (หนึ่ง identified customer ใน window 180 วัน ณ snapshot 2011-12-01)
-ข้อมูลเป็นประวัติศาสตร์ 2009–2011 ไม่ใช่ข้อมูลลูกค้าปัจจุบัน
+สำหรับการติดตั้งใหม่ ให้ใช้ไฟล์ `reports/build-*.json` ที่ได้จากรอบของเครื่องนั้นและมี `status=passed` แล้วแก้ค่า `--manifest` ใน [compose.web.yaml](compose.web.yaml) ให้ตรงกับ path ภายใน container เช่น `/app/reports/build-<run-id>.json`
 
-## ถาม Agent
-
-ใช้ local Qwen3.5 9B ผ่าน Ollama บน RTX 5070 12 GB / RAM 32 GB
-ถ้ายังไม่มีโมเดล: ollama pull qwen3.5:9b (ประมาณ 6.6 GB)
-container ต้องเข้าถึง host.docker.internal:11434 ได้ โดยไม่ต้องเปิดบริการสู่ public network
+### 3. เปิดเว็บ
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File ./scripts/ask.ps1 -Manifest /app/reports/build-c81fa72c3c174a96bf8c03195b9e6f5e.json -Question "How many completed invoices were recorded in October 2011?"
+powershell -ExecutionPolicy Bypass -File ./scripts/start-web.ps1
 ```
 
-เลือก manifest status=passed อย่างชัดเจน ไม่เลือกไฟล์ล่าสุดโดยไม่ตรวจ
-ถามไทยได้ เช่น เดือนตุลาคม 2011 มีคำสั่งซื้อสำเร็จกี่ใบ
+เปิด **http://localhost:8090** หลัง Spark เริ่มพร้อม ตัวอย่างคำถาม:
 
-RAG ใช้ BM25 + bilingual concepts/Thai n-grams บน knowledge ที่แยกตามนิยามและมี stable IDs
-ดึง schema/syntax ที่เป็น dependency ของ metric มาด้วย เพื่อให้หลักฐานครบโดยไม่ต้องรอให้ติดอันดับเอง
-cache ดัชนีและ rebuild เมื่อไฟล์เปลี่ยน ไม่ต้องใช้ embedding server สำหรับ corpus ขนาดเล็กนี้
-ค้น ranked top 6 พร้อม policy context ที่จำเป็น บันทึก corpus/chunk hashes และ latency
-Agent อ้างอิงหลักฐาน สร้าง SQL เอง ตรวจ citations และตรวจความสอดคล้องกับหลักฐานก่อนรัน Spark
-กฎช่วงเวลา/ข้อมูลที่ไม่มี/snapshot บังคับถามกลับหรือแจ้งข้อมูลไม่พร้อมก่อนรัน
-ไม่ใช้ gold SQL เป็น query templates และไม่ให้เครื่องมือ shell แก่โมเดล
-SQL guard จำกัด SELECT/WITH บน 3 views และ whitelist functions
-ผลไม่เกิน 200 แถว พร้อม truncated flag; ส่ง cancel Spark job group หลัง 45 วินาที
-cancel เป็น best effort ไม่ใช่ process isolation; รวม attempts ไม่เกิน 3 รอบ
-โมเดลใช้ temperature=0, context 8192, generation <=768 / evidence review <=256 tokens
-SQL รันได้และมี citations ยังไม่รับประกันความหมายถูก ต้องอ้างผลประเมินด้วย
-trace อยู่ใน reports/agent-rag-v2-*.json
+- เดือนตุลาคม 2011 มีคำสั่งซื้อสำเร็จกี่ใบ
+- Top three identified customers by total completed sales in January 2011; ties by customer ID ascending.
+- RFM distribution at snapshot 2011-12-01.
 
-## วัดคุณภาพ RAG โดยตรง
+คำถามแต่ละข้อประมวลผลแยกกัน รายละเอียดการตั้งค่า การเรียกผ่าน CLI และการหยุดระบบอยู่ใน [Web application guide](docs/WEB_APP.md) และ [scripts/](scripts/)
+
+## การทดสอบ
 
 ```powershell
 docker compose run --rm --no-deps --entrypoint python3 spark-job -m unittest discover -s /app/tests -v
-docker compose run --rm --no-deps --entrypoint python3 spark-job /app/jobs/evaluate_retrieval.py --split dev
-powershell -ExecutionPolicy Bypass -File ./scripts/evaluate.ps1 -Manifest /app/reports/build-c81fa72c3c174a96bf8c03195b9e6f5e.json -Split dev
-powershell -ExecutionPolicy Bypass -File ./scripts/evaluate.ps1 -Manifest /app/reports/build-c81fa72c3c174a96bf8c03195b9e6f5e.json -Split regression
 ```
 
-วัด Recall@6, MRR@6, nDCG@6, context coverage, citation validity/relevance,
-ความถูกต้องของผล Spark เทียบ gold SQL, clarification และ latency/cost เป็นจำนวน model calls
-เกณฑ์ประกาศไว้ใน evaluation/quality_gates_v2.json ก่อนรัน holdout ใหม่ 20 ข้อ
-หลัง freeze ใช้ --split holdout / -Split holdout และตรวจ quality_passed แยกจาก status=completed
-freeze ปัจจุบันคือ reports/freeze-rag-v2.4.json ผลรวมอยู่ใน reports/delivery-quality-summary.json
-ชุด test เดิมถูกเปิดดูแล้ว จึงใช้เป็น regression ไม่อ้างเป็น holdout ใหม่
-ชุดใหม่รอบแรก (rag_holdout_v2.json) ไม่ผ่าน Recall จึงใช้เป็น regression-v2 แล้ว
-ชุดปัจจุบันคือ rag_holdout_v6.json; v3/v4/v5 เปิดดูแล้ว เป็น regression-v3/v4/v5
-รอบ v2.2/v2.3 ไม่ผ่านทุก gate เก็บ raw reports ไว้ รายละเอียดใน reports/DELIVERY_REPORT.md
-ประวัติรอบแรกเดิมอยู่ใน reports/rag-v2-first-holdout-report.md
-ผลเปรียบเทียบเก่าเก็บเป็นประวัติใน reports/archive/v1 และ JSON เดิม ไม่ใช้เป็นเกณฑ์รับรองปัจจุบัน
-รายละเอียดข้อจำกัดและคะแนนจริงอยู่ในรายงาน ไม่อ้างว่าผ่านหากยังไม่รันจริง
+หยุด web service ก่อนรัน batch Spark evaluation เพื่อคืนทรัพยากรให้ workers แล้วทำตาม [Evaluation protocol](evaluation/README.md) โดยใช้ build manifest ของเครื่องที่ทดสอบ
 
-## ขอบเขตสองสัปดาห์
+## ข้อจำกัด
 
-1. Spark/HDFS smoke และ replication evidence
-2. UCI provenance, versioned tables และ quality reconciliation
-3. RAG ที่ค้นหลักฐานได้ตรงประเด็นและวัด retrieval/grounding/efficiency โดยตรง
-4. Single Agent สร้าง SQL พร้อม validation และ deadline
-5. Dev/regression และ holdout ใหม่ของระบบ RAG เทียบเกณฑ์ที่ประกาศไว้
-
-ต้องส่ง local web application สำหรับเรียก Agent, presentation และโค้ดบน GitHub ด้วย
-ข้อกำหนดและโครงนำเสนออยู่ใน reports/PRESENTATION_BRIEF.md; UI ใช้งานได้และ source เผยแพร่ GitHub แล้ว
-มี heuristic context budget และ context stress เบื้องต้น ยังไม่อ้างว่าแก้ context rot ได้ทั่วไป
-ตัด MongoDB Policy Storage และ Churn Prediction/Campaign Recommendation ออกจากขอบเขต
-ไม่รวม CLV, multiple agents หรือ production deployment
-แผนส่งและ buffer อยู่ใน reports/DELIVERY_PLAN.md
-แหล่งข้อมูล: https://archive.ics.uci.edu/dataset/502/online+retail+ii
+- เป็น local application บนเครื่องเดียว ยังไม่มี authentication สำหรับให้บริการสาธารณะ
+- ข้อมูลเป็นประวัติศาสตร์และมี snapshot ที่เตรียมไว้เท่านั้น
+- การตรวจ SQL และผลลัพธ์ครอบคลุมบางเงื่อนไข ผู้ใช้ยังควรตรวจวิธีคำนวณก่อนนำผลไปใช้
+- จำกัดผลลัพธ์ 200 แถว และส่งคำสั่งยกเลิก Spark job เมื่อเกิน 45 วินาที การยกเลิกเป็น best effort
+- Context budget เป็น heuristic; การทดสอบเบื้องต้นยังไม่พิสูจน์ว่าป้องกัน context rot ได้ทั่วไป
+- ยังไม่ได้ยืนยันการดาวน์โหลดและ build ข้อมูลใหม่ครบกระบวนการบนเครื่องอื่น
