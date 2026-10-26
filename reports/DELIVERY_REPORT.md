@@ -62,3 +62,14 @@ guarantee detection of server-side truncation. No general context-rot solution i
 OPA, formal ontology/cross-organization schema matching remain unimplemented.
 MongoDB Policy Storage and Churn/Campaign are excluded from this delivery.
 Fresh-checkout end-to-end build and actual GitHub CI execution remain to verify.
+
+Fresh local Git checkout was verified separately: all host source files match its
+checkout, all covered frozen core hashes match, and25 checkout unit tests passed.
+See git-checkout-verification.json and checkout-unit-tests.txt. The pre-run Spark-job
+freeze covers paths mounted into that container; web static assets and PowerShell
+launchers are captured in a supplemental post-verification host inventory, not falsely
+described as pre-run frozen UI files.
+
+Actual browser demo after final freeze also passed: trace600f1d5f170a49b1a04e4673f1342375,
+correct top identified-customer ranking,12.05 seconds for that UI request. This single
+sample is not p95. Its core source/model match the freeze; see web-v2.4-demo-summary.json.

@@ -1,0 +1,63 @@
+{
+  "trace_id": "600f1d5f170a49b1a04e4673f1342375",
+  "status": "executed",
+  "question": "Top three identified customers by total completed sales in January 2011; ties by customer ID ascending.",
+  "result": {
+    "columns": [
+      "customer_id",
+      "total_sales"
+    ],
+    "rows": [
+      [
+        "12346",
+        "77183.6000"
+      ],
+      [
+        "14646",
+        "26476.6800"
+      ],
+      [
+        "15749",
+        "22998.4000"
+      ]
+    ],
+    "truncated": false
+  },
+  "elapsed_seconds": 12.045061630999044,
+  "model_calls": 3,
+  "build_run_id": "c81fa72c3c174a96bf8c03195b9e6f5e",
+  "context_usage": [
+    {
+      "method": "utf8-bytes-divided-by-two-plus-framing-heuristic",
+      "estimated_input_tokens": 4026,
+      "input_budget": 6000,
+      "context_window": 8192,
+      "output_reserve": 768,
+      "exact_token_count": false,
+      "prompt_eval_count": 2178,
+      "eval_count": 241
+    },
+    {
+      "method": "utf8-bytes-divided-by-two-plus-framing-heuristic",
+      "estimated_input_tokens": 4683,
+      "input_budget": 6000,
+      "context_window": 8192,
+      "output_reserve": 768,
+      "exact_token_count": false,
+      "prompt_eval_count": 2472,
+      "eval_count": 263
+    },
+    {
+      "method": "utf8-bytes-divided-by-two-plus-framing-heuristic",
+      "estimated_input_tokens": 4246,
+      "input_budget": 6000,
+      "context_window": 8192,
+      "output_reserve": 256,
+      "exact_token_count": false,
+      "prompt_eval_count": 2332,
+      "eval_count": 62
+    }
+  ],
+  "frozen_core_and_model_match": true,
+  "screenshot": "web-v2.4-result.png"
+}

@@ -61,3 +61,9 @@ See DELIVERY_REPORT.md and delivery-quality-summary.json.
 - OPA, formal ontology and cross-organization schema matching are not implemented.
 - MongoDB Policy Storage and Churn/Campaign are excluded from delivery.
 - GitHub CI execution and fresh-checkout full data build are not yet verified.
+- Fresh local Git checkout source inventory matches the host and covered frozen core;
+  its own unit suite passed25 tests. Evidence: git-checkout-verification.json and
+  checkout-unit-tests.txt. Static web files/PowerShell launchers are recorded in a
+  supplemental post-verification host inventory because spark-job does not mount them.
+- Actual browser v2.4 demo: trace600f1d5f170a49b1a04e4673f1342375, correct identified
+  customer ranking, source/model match frozen core. web-v2.4-demo-summary.json.

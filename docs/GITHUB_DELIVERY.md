@@ -8,6 +8,11 @@ Local Git initialized on main. Remote creation/publication still requires the
 user's GitHub browser sign-in; the connector can read the account but cannot create
 a repository. Do not treat this document as proof that a remote exists.
 
+Actual fresh local clone verification: all host source files and covered frozen
+core hashes match;25 unit tests passed from that clone. Evidence is in
+reports/git-checkout-verification.json. A full new data acquisition/build and
+actual remote GitHub CI run have not been repeated on this checkout.
+
 Publish source, knowledge, SQL, tests, Docker configuration, documentation and
 selected reproducibility reports. Exclude downloaded datasets, model weights,
 caches, .env/secrets, HDFS volumes, generated user query traces and temporary builds.

@@ -41,4 +41,5 @@ The demo has no user authentication; it is not a public hosted service.
 
 Current verification includes actual HTTP+Qwen+Spark execution and browser rendering,
 plus unit checks for origin rejection, configuration rejection, busy handling and
-trace persistence. See reports/ITERATION_V2_2.md for exact scope and limitations.
+trace persistence. Current evidence: reports/DELIVERY_REPORT.md and
+reports/web-v2.4-demo-summary.json. Older iteration records are historical.
