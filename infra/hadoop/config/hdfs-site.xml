@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<configuration>
+  <property><name>dfs.namenode.name.dir</name><value>file:///data/name</value></property>
+  <property><name>dfs.datanode.data.dir</name><value>file:///data/data</value></property>
+  <property><name>dfs.replication</name><value>2</value></property>
+  <property><name>dfs.datanode.hostname</name><value>${env.HOSTNAME}</value></property>
+  <property><name>dfs.client.use.datanode.hostname</name><value>true</value></property>
+  <property><name>dfs.permissions.enabled</name><value>false</value></property>
+</configuration>

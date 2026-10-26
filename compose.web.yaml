@@ -1,0 +1,11 @@
+services:
+  web:
+    extends:
+      file: compose.yaml
+      service: spark-job
+    hostname: intelligence-web
+    profiles: [web]
+    ports: ["127.0.0.1:8090:8090"]
+    volumes:
+      - ./web:/app/web:ro
+    command: ["--master", "spark://spark-master:7077", "--conf", "spark.driver.host=intelligence-web", "--conf", "spark.driver.bindAddress=0.0.0.0", "--conf", "spark.executor.memory=512m", "/app/jobs/web_app.py", "--manifest", "/app/reports/build-c81fa72c3c174a96bf8c03195b9e6f5e.json"]

@@ -1,0 +1,68 @@
+{
+  "status": "passed",
+  "fixture": "synthetic",
+  "real_model": true,
+  "real_spark": true,
+  "model": "qwen3.5:9b",
+  "expected_rows": [
+    [
+      30
+    ]
+  ],
+  "result": {
+    "status": "executed",
+    "sql": "SELECT SUM(order_amount) AS total_sales_gbp FROM orders WHERE order_ts >= TIMESTAMP '2011-10-01 00:00:00' AND order_ts < TIMESTAMP '2011-11-01 00:00:00'",
+    "executed_sql": "SELECT * FROM (SELECT SUM(order_amount) AS total_sales_gbp FROM orders WHERE order_ts >= CAST('2011-10-01 00:00:00' AS TIMESTAMP) AND order_ts < CAST('2011-11-01 00:00:00' AS TIMESTAMP)) AS guarded_result LIMIT 201",
+    "explanation": "The query sums the order_amount from the orders table for the period of October 2011. According to the schema and metrics definitions, Sales is defined as sum(order_amount) from orders before returns, and the time range includes the start date but excludes the end date.",
+    "result": {
+      "columns": [
+        "total_sales_gbp"
+      ],
+      "rows": [
+        [
+          "30.0"
+        ]
+      ],
+      "truncated": false
+    },
+    "references": [
+      {
+        "id": "metrics.md:3",
+        "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+        "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+        "score": 1.2473278037284465
+      },
+      {
+        "id": "schema.md:3",
+        "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+        "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+        "score": 0.7861741422934954
+      },
+      {
+        "id": "schema.md:2",
+        "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+        "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+        "score": 0.7559252648311799
+      },
+      {
+        "id": "metrics.md:4",
+        "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+        "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+        "score": 0.6031450380162291
+      },
+      {
+        "id": "metrics.md:5",
+        "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+        "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+        "score": 0.5621303882069454
+      },
+      {
+        "id": "spark_sql.md:2",
+        "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+        "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+        "score": 0.47878279903081283
+      }
+    ],
+    "attempts": []
+  }
+}

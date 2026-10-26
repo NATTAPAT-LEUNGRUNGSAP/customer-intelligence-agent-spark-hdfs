@@ -1,0 +1,35 @@
+{
+  "raw_rows": 1067371,
+  "as_of_date": "2011-12-01",
+  "run_id": "c81fa72c3c174a96bf8c03195b9e6f5e",
+  "root": "hdfs://namenode:9000/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e",
+  "duplicate_policy": "retain_all",
+  "source_provenance": {
+    "source_url": "https://archive.ics.uci.edu/static/public/502/online+retail+ii.zip",
+    "dataset_doi": "10.24432/C5CG6D",
+    "license": "CC BY 4.0",
+    "prepared_at_utc": "2026-10-26T04:03:48.221942+00:00",
+    "archive_sha256": "572e36277c2390fbfde10664750731e0a86f55e33470d91919085f0408e67bfb",
+    "csv_sha256": "f7593adeaf0d876fa8afcf84d28ca68aa2df288f36ccbbbfb5a83ba0c090926e",
+    "rows_by_sheet": {
+      "Year 2009-2010": 525461,
+      "Year 2010-2011": 541910
+    },
+    "rows": 1067371
+  },
+  "sales_lines_rows": 1067371,
+  "orders_rows": 40077,
+  "customer_summary_rows": 3450,
+  "transaction_types": {
+    "cancellation": 19494,
+    "adjustment": 6207,
+    "sale": 1041670
+  },
+  "exact_duplicate_extra_rows": 34335,
+  "missing_customer_rows": 243007,
+  "included_sales_amount": "20972594.5680",
+  "excluded_inconsistent_invoice_sale_rows": 0,
+  "observed_min_timestamp": "2009-12-01 07:45:00",
+  "observed_max_timestamp": "2011-12-09 12:50:00",
+  "status": "passed"
+}

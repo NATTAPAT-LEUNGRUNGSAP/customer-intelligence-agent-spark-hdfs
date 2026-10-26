@@ -1,0 +1,61 @@
+Connecting to namenode via http://namenode:9870/fsck?ugi=root&files=1&blocks=1&locations=1&path=%2Fcustomer_intelligence%2Fsmoke
+FSCK started by root (auth:SIMPLE) from /172.23.0.3 for path /customer_intelligence/smoke at Mon Oct 26 04:31:54 UTC 2026
+
+/customer_intelligence/smoke <dir>
+/customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5 <dir>
+/customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/_SUCCESS 0 bytes, replicated: replication=3, 0 block(s):  OK
+
+/customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/part-00000-ab6008c1-b3f4-423b-9a6c-db5adf2ffdd3-c000.snappy.parquet 776 bytes, replicated: replication=3, 1 block(s):  Under replicated BP-1534539356-172.23.0.3-1792988743623:blk_1073741828_1004. Target Replicas is 3 but found 2 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741828_1004 len=776 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/part-00001-ab6008c1-b3f4-423b-9a6c-db5adf2ffdd3-c000.snappy.parquet 772 bytes, replicated: replication=3, 1 block(s):  Under replicated BP-1534539356-172.23.0.3-1792988743623:blk_1073741827_1003. Target Replicas is 3 but found 2 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741827_1003 len=772 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK], DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK]]
+
+/customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139 <dir>
+/customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/_SUCCESS 0 bytes, replicated: replication=3, 0 block(s):  OK
+
+/customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/part-00000-3d2c9963-db0f-476f-9e9c-8667e49d4da3-c000.snappy.parquet 771 bytes, replicated: replication=3, 1 block(s):  Under replicated BP-1534539356-172.23.0.3-1792988743623:blk_1073741825_1001. Target Replicas is 3 but found 2 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741825_1001 len=771 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK], DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK]]
+
+/customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/part-00001-3d2c9963-db0f-476f-9e9c-8667e49d4da3-c000.snappy.parquet 814 bytes, replicated: replication=3, 1 block(s):  Under replicated BP-1534539356-172.23.0.3-1792988743623:blk_1073741826_1002. Target Replicas is 3 but found 2 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741826_1002 len=814 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+
+Status: HEALTHY
+ Number of data-nodes:	2
+ Number of racks:		1
+ Total dirs:			3
+ Total symlinks:		0
+
+Replicated Blocks:
+ Total size:	3133 B
+ Total files:	6
+ Total blocks (validated):	4 (avg. block size 783 B)
+ Minimally replicated blocks:	4 (100.0 %)
+ Over-replicated blocks:	0 (0.0 %)
+ Under-replicated blocks:	4 (100.0 %)
+ Mis-replicated blocks:		0 (0.0 %)
+ Default replication factor:	2
+ Average block replication:	2.0
+ Missing blocks:		0
+ Corrupt blocks:		0
+ Missing replicas:		4 (33.333332 %)
+ Blocks queued for replication:	0
+
+Erasure Coded Block Groups:
+ Total size:	0 B
+ Total files:	0
+ Total block groups (validated):	0
+ Minimally erasure-coded block groups:	0
+ Over-erasure-coded block groups:	0
+ Under-erasure-coded block groups:	0
+ Unsatisfactory placement block groups:	0
+ Average block group size:	0.0
+ Missing block groups:		0
+ Corrupt block groups:		0
+ Missing internal blocks:	0
+ Blocks queued for replication:	0
+FSCK ended at Mon Oct 26 04:31:54 UTC 2026 in 19 milliseconds
+
+
+The filesystem under path '/customer_intelligence/smoke' is HEALTHY

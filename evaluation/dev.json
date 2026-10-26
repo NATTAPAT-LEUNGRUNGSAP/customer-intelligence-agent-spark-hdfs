@@ -1,0 +1,12 @@
+[
+  {"id":"dev01","question":"What were total completed sales in GBP in October 2011?","gold_sql":"SELECT sum(order_amount) FROM orders WHERE order_ts >= TIMESTAMP '2011-10-01' AND order_ts < TIMESTAMP '2011-11-01'"},
+  {"id":"dev02","question":"How many completed invoices were recorded in October 2011?","gold_sql":"SELECT count(*) FROM orders WHERE order_ts >= TIMESTAMP '2011-10-01' AND order_ts < TIMESTAMP '2011-11-01'"},
+  {"id":"dev03","question":"What was overall average order value in GBP in October 2011, including anonymous orders?","gold_sql":"SELECT sum(order_amount)/nullif(count(*),0) FROM orders WHERE order_ts >= TIMESTAMP '2011-10-01' AND order_ts < TIMESTAMP '2011-11-01'"},
+  {"id":"dev04","question":"Show the five countries with highest completed sales in October 2011, returning country and sales; break ties by country ascending.","gold_sql":"SELECT country,sum(order_amount) AS sales FROM orders WHERE order_ts >= TIMESTAMP '2011-10-01' AND order_ts < TIMESTAMP '2011-11-01' GROUP BY country ORDER BY sales DESC,country ASC LIMIT 5","ordered":true},
+  {"id":"dev05","question":"How many distinct identified purchasing customers were there in October 2011?","gold_sql":"SELECT count(distinct customer_id) FROM orders WHERE order_ts >= TIMESTAMP '2011-10-01' AND order_ts < TIMESTAMP '2011-11-01'"},
+  {"id":"dev06","question":"At the 2011-12-01 snapshot, return segment name and customer count for every RFM segment, sorted by segment name.","gold_sql":"SELECT rfm_segment,count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment","ordered":true},
+  {"id":"dev07","question":"At the 2011-12-01 snapshot, how many eligible customers are high value?","gold_sql":"SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND is_high_value=true"},
+  {"id":"dev08","question":"Return product ID and units sold for the top five products by completed sale-line quantity in October 2011. Break quantity ties by product ID ascending.","gold_sql":"SELECT product_id,sum(quantity) AS units FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-10-01' AND invoice_ts<TIMESTAMP '2011-11-01' GROUP BY product_id ORDER BY units DESC,product_id ASC LIMIT 5","ordered":true},
+  {"id":"dev09","question":"Who are our best customers?","expected":"clarification"},
+  {"id":"dev10","question":"What was our measured profit in October 2011?","expected":"clarification"}
+]

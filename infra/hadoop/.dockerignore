@@ -1,0 +1,3 @@
+cache/part-*
+cache/*.partial
+range-probe.bin

@@ -1,0 +1,53 @@
+{
+  "status": "completed",
+  "version": "rag-required-v2",
+  "rag_required": true,
+  "quality_passed": false,
+  "source_reports": {
+    "evaluation": "reports/rag-v2-holdout-ba55f032adbe47bdb1bc32ee34787f17.json",
+    "retrieval": "reports/retrieval-v2-holdout-f9944a7d80eb482d85932d06ddccf4bf.json",
+    "freeze": "reports/freeze-rag-v2.json"
+  },
+  "end_to_end": {
+    "accuracy": 0.95,
+    "correct": 19,
+    "total": 20,
+    "clarification_accuracy": 1.0,
+    "citation_validity": 1.0,
+    "latency_p95_seconds": 9.140383367999675,
+    "latency_mean_seconds": 3.7371536995500265,
+    "model_calls": 37,
+    "cited_relevant_evidence_rate": 1.0,
+    "retrieval": {
+      "recall_at_6": 0.9083333333333334,
+      "precision_at_6": 0.29166666666666663,
+      "mrr_at_6": 0.95,
+      "ndcg_at_6": 0.8542855748402836,
+      "context_coverage": 0.9083333333333334
+    }
+  },
+  "retrieval": {
+    "recall_at_6": 0.9083333333333334,
+    "precision_at_6": 0.29166666666666663,
+    "mrr_at_6": 0.95,
+    "ndcg_at_6": 0.8542855748402836,
+    "context_coverage": 0.9083333333333334,
+    "latency_p95_ms": 18.38328600024397
+  },
+  "checks": {
+    "end_to_end": {
+      "accuracy": true,
+      "citations_valid": true,
+      "latency": true,
+      "clarification": true,
+      "cited_relevant": true
+    },
+    "retrieval": {
+      "recall": false,
+      "mrr": true,
+      "ndcg": true,
+      "latency": true
+    }
+  },
+  "written_at_utc": "2026-10-26T05:17:11.882139+00:00"
+}

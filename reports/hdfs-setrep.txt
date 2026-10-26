@@ -1,0 +1,38 @@
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/customer_summary/_SUCCESS
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/customer_summary/part-00000-3356ae3c-9732-4bf9-b6a9-0e08584f7d55-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/_SUCCESS
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00000-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00001-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00002-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00003-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00004-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00005-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/raw_retail/_SUCCESS
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/raw_retail/part-00000-d9e24e4a-a712-404c-9d62-83aff1fca2aa-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/sales_lines/_SUCCESS
+Replication 2 set: /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/sales_lines/part-00000-f6806593-1674-4a03-8663-91e3380c1a27-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/_SUCCESS
+Replication 2 set: /customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/part-00000-ab6008c1-b3f4-423b-9a6c-db5adf2ffdd3-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/part-00001-ab6008c1-b3f4-423b-9a6c-db5adf2ffdd3-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/_SUCCESS
+Replication 2 set: /customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/part-00000-3d2c9963-db0f-476f-9e9c-8667e49d4da3-c000.snappy.parquet
+Replication 2 set: /customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/part-00001-3d2c9963-db0f-476f-9e9c-8667e49d4da3-c000.snappy.parquet
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/customer_summary/_SUCCESS ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/customer_summary/part-00000-3356ae3c-9732-4bf9-b6a9-0e08584f7d55-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/_SUCCESS ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00000-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00001-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00002-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00003-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00004-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00005-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/raw_retail/_SUCCESS ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/raw_retail/part-00000-d9e24e4a-a712-404c-9d62-83aff1fca2aa-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/sales_lines/_SUCCESS ... done
+Waiting for /customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/sales_lines/part-00000-f6806593-1674-4a03-8663-91e3380c1a27-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/_SUCCESS ... done
+Waiting for /customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/part-00000-ab6008c1-b3f4-423b-9a6c-db5adf2ffdd3-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/part-00001-ab6008c1-b3f4-423b-9a6c-db5adf2ffdd3-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/_SUCCESS ... done
+Waiting for /customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/part-00000-3d2c9963-db0f-476f-9e9c-8667e49d4da3-c000.snappy.parquet ... done
+Waiting for /customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/part-00001-3d2c9963-db0f-476f-9e9c-8667e49d4da3-c000.snappy.parquet ... done

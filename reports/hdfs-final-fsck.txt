@@ -1,0 +1,112 @@
+Connecting to namenode via http://namenode:9870/fsck?ugi=root&files=1&blocks=1&locations=1&path=%2Fcustomer_intelligence
+FSCK started by root (auth:SIMPLE) from /172.23.0.3 for path /customer_intelligence at Mon Oct 26 04:37:33 UTC 2026
+
+/customer_intelligence <dir>
+/customer_intelligence/runs <dir>
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e <dir>
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/customer_summary <dir>
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/customer_summary/_SUCCESS 0 bytes, replicated: replication=2, 0 block(s):  OK
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/customer_summary/part-00000-3356ae3c-9732-4bf9-b6a9-0e08584f7d55-c000.snappy.parquet 96367 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741837_1013 len=96367 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK], DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK]]
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders <dir>
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/_SUCCESS 0 bytes, replicated: replication=2, 0 block(s):  OK
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00000-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet 127125 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741831_1007 len=127125 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00001-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet 128387 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741832_1008 len=128387 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00002-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet 128448 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741833_1009 len=128448 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00003-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet 241900 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741834_1010 len=241900 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00004-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet 239470 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741836_1012 len=239470 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/orders/part-00005-e9a828f7-6505-408d-b24d-d93f30ce327f-c000.snappy.parquet 127224 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741835_1011 len=127224 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/raw_retail <dir>
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/raw_retail/_SUCCESS 0 bytes, replicated: replication=2, 0 block(s):  OK
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/raw_retail/part-00000-d9e24e4a-a712-404c-9d62-83aff1fca2aa-c000.snappy.parquet 11833623 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741829_1005 len=11833623 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/sales_lines <dir>
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/sales_lines/_SUCCESS 0 bytes, replicated: replication=2, 0 block(s):  OK
+
+/customer_intelligence/runs/c81fa72c3c174a96bf8c03195b9e6f5e/sales_lines/part-00000-f6806593-1674-4a03-8663-91e3380c1a27-c000.snappy.parquet 14700373 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741830_1006 len=14700373 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/smoke <dir>
+/customer_intelligence/smoke/3d92a02ae39c4a43b5f5198e2b7c5010 <dir>
+/customer_intelligence/smoke/3d92a02ae39c4a43b5f5198e2b7c5010/_SUCCESS 0 bytes, replicated: replication=2, 0 block(s):  OK
+
+/customer_intelligence/smoke/3d92a02ae39c4a43b5f5198e2b7c5010/part-00000-fe22ac72-eb63-4eb0-b0a3-1f42ea6324b0-c000.snappy.parquet 776 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741839_1015 len=776 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/smoke/3d92a02ae39c4a43b5f5198e2b7c5010/part-00001-fe22ac72-eb63-4eb0-b0a3-1f42ea6324b0-c000.snappy.parquet 772 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741838_1014 len=772 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5 <dir>
+/customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/_SUCCESS 0 bytes, replicated: replication=2, 0 block(s):  OK
+
+/customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/part-00000-ab6008c1-b3f4-423b-9a6c-db5adf2ffdd3-c000.snappy.parquet 776 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741828_1004 len=776 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+/customer_intelligence/smoke/527a60dba2cf4f47aa251c03751fc3e5/part-00001-ab6008c1-b3f4-423b-9a6c-db5adf2ffdd3-c000.snappy.parquet 772 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741827_1003 len=772 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK], DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK]]
+
+/customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139 <dir>
+/customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/_SUCCESS 0 bytes, replicated: replication=2, 0 block(s):  OK
+
+/customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/part-00000-3d2c9963-db0f-476f-9e9c-8667e49d4da3-c000.snappy.parquet 771 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741825_1001 len=771 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK], DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK]]
+
+/customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139/part-00001-3d2c9963-db0f-476f-9e9c-8667e49d4da3-c000.snappy.parquet 814 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-1534539356-172.23.0.3-1792988743623:blk_1073741826_1002 len=814 Live_repl=2  [DatanodeInfoWithStorage[172.23.0.7:9866,DS-eb594440-a684-4e49-a35b-01fab505d6a8,DISK], DatanodeInfoWithStorage[172.23.0.6:9866,DS-1fb78003-9d0a-4819-b4c6-bb76d0e84a63,DISK]]
+
+
+Status: HEALTHY
+ Number of data-nodes:	2
+ Number of racks:		1
+ Total dirs:			11
+ Total symlinks:		0
+
+Replicated Blocks:
+ Total size:	27627598 B
+ Total files:	22
+ Total blocks (validated):	15 (avg. block size 1841839 B)
+ Minimally replicated blocks:	15 (100.0 %)
+ Over-replicated blocks:	0 (0.0 %)
+ Under-replicated blocks:	0 (0.0 %)
+ Mis-replicated blocks:		0 (0.0 %)
+ Default replication factor:	2
+ Average block replication:	2.0
+ Missing blocks:		0
+ Corrupt blocks:		0
+ Missing replicas:		0 (0.0 %)
+ Blocks queued for replication:	0
+
+Erasure Coded Block Groups:
+ Total size:	0 B
+ Total files:	0
+ Total block groups (validated):	0
+ Minimally erasure-coded block groups:	0
+ Over-erasure-coded block groups:	0
+ Under-erasure-coded block groups:	0
+ Unsatisfactory placement block groups:	0
+ Average block group size:	0.0
+ Missing block groups:		0
+ Corrupt block groups:		0
+ Missing internal blocks:	0
+ Blocks queued for replication:	0
+FSCK ended at Mon Oct 26 04:37:33 UTC 2026 in 3 milliseconds
+
+
+The filesystem under path '/customer_intelligence' is HEALTHY

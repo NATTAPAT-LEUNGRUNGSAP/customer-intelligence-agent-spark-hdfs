@@ -1,0 +1,61 @@
+{
+  "files_sha256": {
+    "jobs/agent.py": "04559d6026bcec27209ee691b412fd094c642a8426aa0050bc206213f22dae18",
+    "jobs/build_tables.py": "4ad0a4d6946602f57a6fd3dd69a29e24f4aa04c0670bcc366356076c21ab206d",
+    "jobs/check_model.py": "0e51bf11f30dcbd529e107f65231e2f5c44b81e9fcf3e5ce0832551b3e606e40",
+    "jobs/evaluate.py": "303079b9450e952d9a6cb56be1bf2c66f375cdd0cdfb910149da395188ae87aa",
+    "jobs/prepare_data.py": "c744c6dd460628eb978dc6a4a651da27006a90b5d52846fe99edadd6695126ff",
+    "jobs/provenance.py": "77510abcbf79e6e06494ec5a5068c0399364c143915e3289d6d2fdaac4b9f009",
+    "jobs/query_runtime.py": "6140b7286dde4164d3eed119e3bf1fd029934114d3b8affc6675a84d5e5f7291",
+    "jobs/retrieval.py": "b90da4964eb8605b4c578bb037e7819a57fb34cb083b0b5902f47f571403e93e",
+    "jobs/smoke_hdfs.py": "bd9989548d198b947e39c2a0ea40ee2c846491308a09a330db59b01befc5ee29",
+    "jobs/sql_guard.py": "0628b69f52c18a34a8eeb829adf070ea3f25eed2d197608acf88dd0c2e904846",
+    "jobs/test_agent_spark.py": "9894cf71bb5a7ca7c5fafe974cf2edaa1714be777a604b78ab4f3eaeba092ed9",
+    "jobs/test_model_spark.py": "0f8524346a414d17697ac47d7d414e79fd0a428b12f8061a24b37545ee10f0ec",
+    "jobs/test_pipeline.py": "c4a1828b8d5a1046448d6d61837d6378ccae2d88cea553a03fcceafa2db267b0",
+    "knowledge/metrics.md": "2b51ac1d506559ce2b2f0a68e8513777c630ad8dbf11397e50802b7231f82c65",
+    "knowledge/schema.md": "e182a6969e4bc3b80c2dd7ed485ac10d080e799b78127e3cfdc43e3752359dc9",
+    "knowledge/spark_sql.md": "44d248a18fd5bd5bcbf59c823fe4a3d5307637058159f87d2e4c1d117644b894",
+    "knowledge/thai_glossary.md": "e1ee8275da67259c51c48b276ee293d662ecae31d368a3c6da784dfb78a9f1c4",
+    "sql/customer_summary.sql": "3b71dfcea27ec4dae8e92316ec2ab8033a14b880dec3722dd25acdc7c1c41d4b",
+    "sql/orders.sql": "76583aeaf72c09d3c03918f226fe8bd905392ee889641287db680b56b0564f9e",
+    "sql/sales_lines.sql": "b82aa6abca8594c7d45f5a45e111daadda0021e7b598a2aaaa57f59d1877d593",
+    "evaluation/dev.json": "434f0731e0d92811e090d2a6b890c4e8bca4a2bd52d03663ee2507f4f1824069",
+    "evaluation/test.json": "02b63f980ea8719dd46ffc8b17e5510197296e8a607dd4f0d4a52756666ab87c",
+    "infra/spark/Dockerfile": "85ab051b46c9153b3aeb403270f81b5eca31da594a92a2036c17ac0663146079",
+    "infra/spark/spark-defaults.conf": "c611e9ea51932f085d6cf6c7a13fdd8b9a12e96ff3ff81831d0d3c02686c808b",
+    "infra/hadoop/config/core-site.xml": "c00026c28bf1ce49d53e8ef4ca86174b5ef740734a43af4ddd29816f98462d9e",
+    "infra/hadoop/config/hdfs-site.xml": "a9e52c53f38ddfa76985772c60ad12412ea07e30280e1c91a4a6e1671b3c18fc",
+    "infra/hadoop/config/log4j.properties": "e98cd7090e3eab0f2c6baafd1ddceac2563ff55c43ba733c71c74c8654f618c8",
+    "compose.yaml": "2e8474c722add91ade335b851a4bf612029f74a909fabcfe7df2139a52e86263",
+    "requirements-agent.txt": "81845b8768d704d4a9c6bfa7307d4e9fdf273f80a1ec141081fbc9b97f92b1ef"
+  },
+  "model": {
+    "name": "qwen3.5:9b",
+    "model": "qwen3.5:9b",
+    "modified_at": "2026-10-26T11:03:02.5902654+07:00",
+    "size": 6550825550,
+    "digest": "56671c2ab9385f9cfcb404638e32cd62d88e3501d44822208363c010179a3c90",
+    "details": {
+      "parent_model": "model.gguf",
+      "format": "gguf",
+      "family": "qwen35",
+      "families": [
+        "qwen35"
+      ],
+      "parameter_size": "9.0B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 262144,
+      "embedding_length": 4096,
+      "runner": "llamacpp"
+    },
+    "capabilities": [
+      "completion",
+      "vision",
+      "tools",
+      "thinking"
+    ]
+  },
+  "frozen_at_utc": "2026-10-26T04:38:08.228353+00:00",
+  "build_run_id": "c81fa72c3c174a96bf8c03195b9e6f5e"
+}

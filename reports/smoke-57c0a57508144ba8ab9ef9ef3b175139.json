@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "fixture": "synthetic",
+  "run_id": "57c0a57508144ba8ab9ef9ef3b175139",
+  "timestamp_utc": "2026-10-26T04:28:24.040509+00:00",
+  "spark_version": "4.1.3",
+  "spark_master": "spark://spark-master:7077",
+  "hdfs_path": "hdfs://namenode:9000/customer_intelligence/smoke/57c0a57508144ba8ab9ef9ef3b175139",
+  "rows": 3,
+  "customer_totals_minor": {
+    "C001": 1500,
+    "C002": 2500
+  }
+}

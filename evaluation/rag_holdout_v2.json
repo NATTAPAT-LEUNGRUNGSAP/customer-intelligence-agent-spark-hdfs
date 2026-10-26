@@ -1,0 +1,201 @@
+[
+  {
+    "id": "hold01",
+    "question": "For December 2010, count completed invoices from the United Kingdom. Return only the invoice count.",
+    "gold_sql": "SELECT count(*) FROM orders WHERE order_ts>=TIMESTAMP '2010-12-01' AND order_ts<TIMESTAMP '2011-01-01' AND country='United Kingdom'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold02",
+    "question": "What was average order value including anonymous orders for France in April 2011? Return only AOV in GBP.",
+    "gold_sql": "SELECT sum(order_amount)/nullif(count(*),0) FROM orders WHERE order_ts>=TIMESTAMP '2011-04-01' AND order_ts<TIMESTAMP '2011-05-01' AND country='France'",
+    "relevant_ids": [
+      "metric.aov",
+      "schema.orders"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold03",
+    "question": "Count distinct identified purchasing customers in France in May 2011.",
+    "gold_sql": "SELECT count(distinct customer_id) FROM orders WHERE order_ts>=TIMESTAMP '2011-05-01' AND order_ts<TIMESTAMP '2011-06-01' AND country='France'",
+    "relevant_ids": [
+      "metric.customers",
+      "schema.orders"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold04",
+    "question": "For United Kingdom orders in June 2011, what fraction of identified purchasing customers placed at least two orders? Return a fraction only.",
+    "gold_sql": "WITH c AS (SELECT customer_id,count(*) AS n FROM orders WHERE customer_id IS NOT NULL AND country='United Kingdom' AND order_ts>=TIMESTAMP '2011-06-01' AND order_ts<TIMESTAMP '2011-07-01' GROUP BY customer_id) SELECT sum(CASE WHEN n>=2 THEN 1 ELSE 0 END)/nullif(count(*),0) FROM c",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "schema.orders"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold05",
+    "question": "How many anonymous completed invoices were there in November 2010 across all countries?",
+    "gold_sql": "SELECT count(*) FROM orders WHERE customer_id IS NULL AND order_ts>=TIMESTAMP '2010-11-01' AND order_ts<TIMESTAMP '2010-12-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold06",
+    "question": "Return country and completed sales for the top four countries in July 2011, descending sales then ascending country for ties.",
+    "gold_sql": "SELECT country,sum(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-07-01' AND order_ts<TIMESTAMP '2011-08-01' GROUP BY country ORDER BY sales DESC,country ASC LIMIT 4",
+    "relevant_ids": [
+      "metric.sales",
+      "syntax.ranking"
+    ],
+    "ordered": true
+  },
+  {
+    "id": "hold07",
+    "question": "Return month and completed invoice count for April through June 2011, using date_trunc MONTH and ascending month order.",
+    "gold_sql": "SELECT date_trunc('MONTH',order_ts) AS month,count(*) FROM orders WHERE order_ts>=TIMESTAMP '2011-04-01' AND order_ts<TIMESTAMP '2011-07-01' GROUP BY 1 ORDER BY 1",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "ordered": true
+  },
+  {
+    "id": "hold08",
+    "question": "Return customer ID and completed invoice count for the top four identified customers in August 2011; most invoices first, ties by customer ID ascending.",
+    "gold_sql": "SELECT customer_id,count(*) AS n FROM orders WHERE customer_id IS NOT NULL AND order_ts>=TIMESTAMP '2011-08-01' AND order_ts<TIMESTAMP '2011-09-01' GROUP BY customer_id ORDER BY n DESC,customer_id ASC LIMIT 4",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true
+  },
+  {
+    "id": "hold09",
+    "question": "At snapshot 2011-12-01, how many customers are in the Needs attention RFM segment?",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Needs attention'",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold10",
+    "question": "At snapshot 2011-12-01, how many customers are in the Recent repeat segment?",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Recent repeat'",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold11",
+    "question": "Count customers in the Recent single-order RFM segment at snapshot 2011-12-01.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Recent single-order'",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold12",
+    "question": "At snapshot 2011-12-01, count customers who are BOTH Champions and high-value.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Champions' AND is_high_value=true",
+    "relevant_ids": [
+      "segment.champions",
+      "metric.high_value"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold13",
+    "question": "At snapshot 2011-12-01, what is the sum of sales_180d among high-value customers? Return GBP only.",
+    "gold_sql": "SELECT sum(sales_180d) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND is_high_value=true",
+    "relevant_ids": [
+      "metric.high_value",
+      "schema.customer_summary"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold14",
+    "question": "Return product ID and sale-line units for the top four products in France in May 2011, descending units then ascending product ID.",
+    "gold_sql": "SELECT product_id,sum(quantity) AS units FROM sales_lines WHERE transaction_type='sale' AND country='France' AND invoice_ts>=TIMESTAMP '2011-05-01' AND invoice_ts<TIMESTAMP '2011-06-01' GROUP BY product_id ORDER BY units DESC,product_id ASC LIMIT 4",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "ordered": true
+  },
+  {
+    "id": "hold15",
+    "question": "Count cancellation lines in October 2010, across all countries.",
+    "gold_sql": "SELECT count(*) FROM sales_lines WHERE transaction_type='cancellation' AND invoice_ts>=TIMESTAMP '2010-10-01' AND invoice_ts<TIMESTAMP '2010-11-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.time"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "hold16",
+    "question": "ค่าเฉลี่ยต่อคำสั่งซื้อของเรากี่ปอนด์?",
+    "expected": "clarification",
+    "clarification_policy": "policy.period",
+    "relevant_ids": [
+      "policy.period",
+      "metric.aov"
+    ]
+  },
+  {
+    "id": "hold17",
+    "question": "What was the measured cost of goods sold in France in May 2011?",
+    "expected": "clarification",
+    "clarification_policy": "policy.availability",
+    "relevant_ids": [
+      "policy.availability"
+    ]
+  },
+  {
+    "id": "hold18",
+    "question": "Show actual RFM segment counts at snapshot 2011-10-01.",
+    "expected": "clarification",
+    "clarification_policy": "policy.snapshot",
+    "relevant_ids": [
+      "policy.snapshot",
+      "segment.distribution"
+    ]
+  },
+  {
+    "id": "hold19",
+    "question": "What measured marketing campaign uplift did France have in May 2011?",
+    "expected": "clarification",
+    "clarification_policy": "policy.availability",
+    "relevant_ids": [
+      "policy.availability"
+    ]
+  },
+  {
+    "id": "hold20",
+    "question": "What were actual completed sales in January 2026?",
+    "expected": "clarification",
+    "clarification_policy": "policy.availability",
+    "relevant_ids": [
+      "policy.availability",
+      "metric.sales"
+    ]
+  }
+]

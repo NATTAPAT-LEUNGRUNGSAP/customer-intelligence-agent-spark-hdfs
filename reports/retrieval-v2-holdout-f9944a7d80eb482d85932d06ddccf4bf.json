@@ -1,0 +1,832 @@
+{
+  "status": "completed",
+  "split": "holdout",
+  "cases": [
+    {
+      "id": "hold01",
+      "relevant_ids": [
+        "metric.orders",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.orders",
+          "policy.period",
+          "schema.sales_lines",
+          "metric.sales",
+          "syntax.time",
+          "metric.customers"
+        ],
+        "context_ids": [
+          "metric.orders",
+          "policy.period",
+          "schema.sales_lines",
+          "metric.sales",
+          "syntax.time",
+          "metric.customers",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3328,
+        "elapsed_ms": 27.08570799950394
+      },
+      "metrics": {
+        "recall_at_6": 0.5,
+        "precision_at_6": 0.16666666666666666,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.6131471927654584,
+        "context_coverage": 0.5
+      }
+    },
+    {
+      "id": "hold02",
+      "relevant_ids": [
+        "metric.aov",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.aov",
+          "schema.orders",
+          "metric.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.sales"
+        ],
+        "context_ids": [
+          "metric.aov",
+          "schema.orders",
+          "metric.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.sales",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3437,
+        "elapsed_ms": 13.7242349992448
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold03",
+      "relevant_ids": [
+        "metric.customers",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.customers",
+          "policy.period",
+          "policy.snapshot",
+          "metric.repeat_rate",
+          "syntax.time",
+          "metric.aov"
+        ],
+        "context_ids": [
+          "metric.customers",
+          "policy.period",
+          "policy.snapshot",
+          "metric.repeat_rate",
+          "syntax.time",
+          "metric.aov",
+          "policy.availability"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3272,
+        "elapsed_ms": 12.746563999826321
+      },
+      "metrics": {
+        "recall_at_6": 0.5,
+        "precision_at_6": 0.16666666666666666,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.6131471927654584,
+        "context_coverage": 0.5
+      }
+    },
+    {
+      "id": "hold04",
+      "relevant_ids": [
+        "metric.repeat_rate",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.repeat_rate",
+          "policy.period",
+          "metric.customers",
+          "schema.orders",
+          "metric.orders",
+          "schema.sales_lines"
+        ],
+        "context_ids": [
+          "metric.repeat_rate",
+          "policy.period",
+          "metric.customers",
+          "schema.orders",
+          "metric.orders",
+          "schema.sales_lines",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3941,
+        "elapsed_ms": 18.38328600024397
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.8772153153380493,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold05",
+      "relevant_ids": [
+        "metric.orders",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.orders",
+          "schema.orders",
+          "metric.aov",
+          "syntax.time",
+          "policy.period",
+          "syntax.aggregation"
+        ],
+        "context_ids": [
+          "metric.orders",
+          "schema.orders",
+          "metric.aov",
+          "syntax.time",
+          "policy.period",
+          "syntax.aggregation",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3454,
+        "elapsed_ms": 12.8199479995601
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold06",
+      "relevant_ids": [
+        "metric.sales",
+        "syntax.ranking"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.sales",
+          "policy.period",
+          "schema.sales_lines",
+          "schema.orders",
+          "syntax.time",
+          "policy.availability"
+        ],
+        "context_ids": [
+          "metric.sales",
+          "policy.period",
+          "schema.sales_lines",
+          "schema.orders",
+          "syntax.time",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3121,
+        "elapsed_ms": 13.097428000037326
+      },
+      "metrics": {
+        "recall_at_6": 0.5,
+        "precision_at_6": 0.16666666666666666,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.6131471927654584,
+        "context_coverage": 0.5
+      }
+    },
+    {
+      "id": "hold07",
+      "relevant_ids": [
+        "metric.orders",
+        "syntax.time"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "syntax.time",
+          "metric.sales",
+          "policy.period",
+          "schema.sales_lines",
+          "metric.orders",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "syntax.time",
+          "metric.sales",
+          "policy.period",
+          "schema.sales_lines",
+          "metric.orders",
+          "policy.snapshot",
+          "policy.availability"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3142,
+        "elapsed_ms": 12.996550999559986
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.8503449055347546,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold08",
+      "relevant_ids": [
+        "metric.orders",
+        "schema.orders",
+        "syntax.ranking"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.customers",
+          "metric.orders",
+          "schema.orders",
+          "policy.period",
+          "schema.sales_lines",
+          "metric.repeat_rate"
+        ],
+        "context_ids": [
+          "metric.customers",
+          "metric.orders",
+          "schema.orders",
+          "policy.period",
+          "schema.sales_lines",
+          "metric.repeat_rate",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3941,
+        "elapsed_ms": 11.382672999388888
+      },
+      "metrics": {
+        "recall_at_6": 0.6666666666666666,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 0.5,
+        "ndcg_at_6": 0.5307212739772434,
+        "context_coverage": 0.6666666666666666
+      }
+    },
+    {
+      "id": "hold09",
+      "relevant_ids": [
+        "segment.distribution",
+        "schema.customer_summary"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "segment.distribution",
+          "schema.customer_summary",
+          "metric.customers",
+          "policy.snapshot",
+          "segment.inactive",
+          "metric.high_value"
+        ],
+        "context_ids": [
+          "segment.distribution",
+          "schema.customer_summary",
+          "metric.customers",
+          "policy.snapshot",
+          "segment.inactive",
+          "metric.high_value",
+          "policy.period",
+          "policy.availability"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3151,
+        "elapsed_ms": 11.459338000349817
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold10",
+      "relevant_ids": [
+        "segment.distribution",
+        "schema.customer_summary"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "segment.distribution",
+          "metric.repeat_rate",
+          "schema.customer_summary",
+          "policy.period",
+          "metric.customers",
+          "schema.orders"
+        ],
+        "context_ids": [
+          "segment.distribution",
+          "metric.repeat_rate",
+          "schema.customer_summary",
+          "policy.period",
+          "metric.customers",
+          "schema.orders",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3825,
+        "elapsed_ms": 11.803622000115865
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.9197207891481876,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold11",
+      "relevant_ids": [
+        "segment.distribution",
+        "schema.customer_summary"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "segment.distribution",
+          "schema.customer_summary",
+          "metric.customers",
+          "policy.snapshot",
+          "segment.champions",
+          "metric.high_value"
+        ],
+        "context_ids": [
+          "segment.distribution",
+          "schema.customer_summary",
+          "metric.customers",
+          "policy.snapshot",
+          "segment.champions",
+          "metric.high_value",
+          "policy.period",
+          "policy.availability"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3158,
+        "elapsed_ms": 12.462283999411738
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold12",
+      "relevant_ids": [
+        "segment.champions",
+        "metric.high_value"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.high_value",
+          "segment.champions",
+          "segment.inactive",
+          "metric.customers",
+          "schema.customer_summary",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "metric.high_value",
+          "segment.champions",
+          "segment.inactive",
+          "metric.customers",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "policy.period",
+          "policy.availability"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 2972,
+        "elapsed_ms": 12.776763000147184
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold13",
+      "relevant_ids": [
+        "metric.high_value",
+        "schema.customer_summary"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.high_value",
+          "metric.sales",
+          "policy.period",
+          "segment.inactive",
+          "schema.customer_summary",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "metric.high_value",
+          "metric.sales",
+          "policy.period",
+          "segment.inactive",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "policy.availability"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 2848,
+        "elapsed_ms": 12.145606000558473
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.8503449055347546,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold14",
+      "relevant_ids": [
+        "schema.sales_lines",
+        "syntax.ranking"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "schema.sales_lines",
+          "policy.period",
+          "metric.aov",
+          "syntax.ranking",
+          "schema.joins",
+          "syntax.time"
+        ],
+        "context_ids": [
+          "schema.sales_lines",
+          "policy.period",
+          "metric.aov",
+          "syntax.ranking",
+          "schema.joins",
+          "syntax.time",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3291,
+        "elapsed_ms": 12.455818000489671
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.8772153153380493,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold15",
+      "relevant_ids": [
+        "schema.sales_lines",
+        "syntax.time"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "policy.period",
+          "schema.sales_lines",
+          "syntax.time",
+          "metric.customers",
+          "metric.aov",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "policy.period",
+          "schema.sales_lines",
+          "syntax.time",
+          "metric.customers",
+          "metric.aov",
+          "policy.snapshot",
+          "policy.availability"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 2962,
+        "elapsed_ms": 10.699896000005538
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 0.5,
+        "ndcg_at_6": 0.6934264036172708,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold16",
+      "relevant_ids": [
+        "policy.period",
+        "metric.aov"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.aov",
+          "metric.orders",
+          "schema.orders",
+          "policy.period",
+          "metric.customers",
+          "metric.repeat_rate"
+        ],
+        "context_ids": [
+          "metric.aov",
+          "metric.orders",
+          "schema.orders",
+          "policy.period",
+          "metric.customers",
+          "metric.repeat_rate",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 3799,
+        "elapsed_ms": 11.881583000104001
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.8772153153380493,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold17",
+      "relevant_ids": [
+        "policy.availability"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "policy.availability",
+          "policy.period",
+          "metric.sales",
+          "syntax.time",
+          "metric.customers",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "policy.availability",
+          "policy.period",
+          "metric.sales",
+          "syntax.time",
+          "metric.customers",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 2305,
+        "elapsed_ms": 12.58705199961696
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.16666666666666666,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold18",
+      "relevant_ids": [
+        "policy.snapshot",
+        "segment.distribution"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "segment.distribution",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "policy.period",
+          "segment.champions",
+          "segment.inactive"
+        ],
+        "context_ids": [
+          "segment.distribution",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "policy.period",
+          "segment.champions",
+          "segment.inactive",
+          "policy.availability"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 2858,
+        "elapsed_ms": 11.635411000497697
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.9197207891481876,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold19",
+      "relevant_ids": [
+        "policy.availability"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "policy.availability",
+          "policy.period",
+          "metric.sales",
+          "syntax.time",
+          "metric.customers",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "policy.availability",
+          "policy.period",
+          "metric.sales",
+          "syntax.time",
+          "metric.customers",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 2305,
+        "elapsed_ms": 10.757145999377826
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.16666666666666666,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "hold20",
+      "relevant_ids": [
+        "policy.availability",
+        "metric.sales"
+      ],
+      "trace": {
+        "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+        "ranked_ids": [
+          "metric.sales",
+          "syntax.time",
+          "policy.period",
+          "schema.orders",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "metric.sales",
+          "syntax.time",
+          "policy.period",
+          "schema.orders",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "72c24bff40096917a9cccd4ac63ed42e69947d073a15e83e15deeb4e6df0243d",
+        "corpus_chunks": 20,
+        "context_characters": 2556,
+        "elapsed_ms": 12.42694900065544
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.8503449055347546,
+        "context_coverage": 1.0
+      }
+    }
+  ],
+  "summary": {
+    "recall_at_6": 0.9083333333333334,
+    "precision_at_6": 0.29166666666666663,
+    "mrr_at_6": 0.95,
+    "ndcg_at_6": 0.8542855748402836,
+    "context_coverage": 0.9083333333333334,
+    "latency_p95_ms": 18.38328600024397
+  },
+  "gates": {
+    "recall_at_6_min": 0.95,
+    "mrr_at_6_min": 0.85,
+    "ndcg_at_6_min": 0.8,
+    "latency_p95_ms_max": 50
+  },
+  "quality_checks": {
+    "recall": false,
+    "mrr": true,
+    "ndcg": true,
+    "latency": true
+  },
+  "quality_passed": false,
+  "provenance": {
+    "files_sha256": {
+      "jobs/agent.py": "a4ebcb93317ae59d8e006b475468d0bb4960ddc72126272fe807391a0bfc5408",
+      "jobs/build_tables.py": "4ad0a4d6946602f57a6fd3dd69a29e24f4aa04c0670bcc366356076c21ab206d",
+      "jobs/check_model.py": "0e51bf11f30dcbd529e107f65231e2f5c44b81e9fcf3e5ce0832551b3e606e40",
+      "jobs/evaluate.py": "5ba9b17f9ba4bb320461146ba764ebc399b30d0ed8dae982afd6a7bc233c00b7",
+      "jobs/evaluate_retrieval.py": "d47fe0bac1ea14e3efee239b1b6dbf7223d5535f0bf0f1ee322248455d4d364e",
+      "jobs/prepare_data.py": "c744c6dd460628eb978dc6a4a651da27006a90b5d52846fe99edadd6695126ff",
+      "jobs/provenance.py": "77510abcbf79e6e06494ec5a5068c0399364c143915e3289d6d2fdaac4b9f009",
+      "jobs/query_runtime.py": "6140b7286dde4164d3eed119e3bf1fd029934114d3b8affc6675a84d5e5f7291",
+      "jobs/rag_metrics.py": "672f3dc2e436b747577c1daf6edf9c1c073a7f31f9425067de1f6ef61a4aee0a",
+      "jobs/retrieval.py": "533f7d17defbf783d329edcbd7d4fb916c34c359ac22f8fc84ff1d66dd6583ee",
+      "jobs/smoke_hdfs.py": "bd9989548d198b947e39c2a0ea40ee2c846491308a09a330db59b01befc5ee29",
+      "jobs/sql_guard.py": "0628b69f52c18a34a8eeb829adf070ea3f25eed2d197608acf88dd0c2e904846",
+      "jobs/test_agent_spark.py": "9894cf71bb5a7ca7c5fafe974cf2edaa1714be777a604b78ab4f3eaeba092ed9",
+      "jobs/test_model_spark.py": "0f8524346a414d17697ac47d7d414e79fd0a428b12f8061a24b37545ee10f0ec",
+      "jobs/test_pipeline.py": "c4a1828b8d5a1046448d6d61837d6378ccae2d88cea553a03fcceafa2db267b0",
+      "knowledge/metrics.md": "ae6fdcbd85653de249473b52ac750ca71c38d0f72fb8602fab9c96de7fe3b763",
+      "knowledge/schema.md": "0bd54abd4b184c786aa51837aa11164958b6f3c45775d051cff0bd53470e175f",
+      "knowledge/spark_sql.md": "802fbc310f3c6031bf1aa5d0161bd996bfe99ccf0a9c7647441f4d6d68d9a161",
+      "knowledge/thai_glossary.md": "bb472e7e786728fa2f7168b340e891fc8f689c2eb40e2be2902e2b7e770d6598",
+      "sql/customer_summary.sql": "3b71dfcea27ec4dae8e92316ec2ab8033a14b880dec3722dd25acdc7c1c41d4b",
+      "sql/orders.sql": "76583aeaf72c09d3c03918f226fe8bd905392ee889641287db680b56b0564f9e",
+      "sql/sales_lines.sql": "b82aa6abca8594c7d45f5a45e111daadda0021e7b598a2aaaa57f59d1877d593",
+      "evaluation/dev.json": "434f0731e0d92811e090d2a6b890c4e8bca4a2bd52d03663ee2507f4f1824069",
+      "evaluation/quality_gates_v2.json": "3f5a35420eeb913981390aa7edb846a16b4a5423c1dd53fafdb34369e6a4db0c",
+      "evaluation/rag_holdout_v2.json": "b0ab85123b8910c7497c8ba05ecc599c40b68d14d27a12f74a98655737a427b2",
+      "evaluation/retrieval_dev_v2.json": "094e5418718288687dbc023d14dbb107a3401954487e1a3695fa623df44e73d3",
+      "evaluation/test.json": "02b63f980ea8719dd46ffc8b17e5510197296e8a607dd4f0d4a52756666ab87c",
+      "infra/spark/Dockerfile": "85ab051b46c9153b3aeb403270f81b5eca31da594a92a2036c17ac0663146079",
+      "infra/spark/spark-defaults.conf": "c611e9ea51932f085d6cf6c7a13fdd8b9a12e96ff3ff81831d0d3c02686c808b",
+      "infra/hadoop/config/core-site.xml": "c00026c28bf1ce49d53e8ef4ca86174b5ef740734a43af4ddd29816f98462d9e",
+      "infra/hadoop/config/hdfs-site.xml": "a9e52c53f38ddfa76985772c60ad12412ea07e30280e1c91a4a6e1671b3c18fc",
+      "infra/hadoop/config/log4j.properties": "e98cd7090e3eab0f2c6baafd1ddceac2563ff55c43ba733c71c74c8654f618c8",
+      "compose.yaml": "2e8474c722add91ade335b851a4bf612029f74a909fabcfe7df2139a52e86263",
+      "requirements-agent.txt": "81845b8768d704d4a9c6bfa7307d4e9fdf273f80a1ec141081fbc9b97f92b1ef"
+    }
+  }
+}

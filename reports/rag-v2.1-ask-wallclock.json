@@ -1,0 +1,7 @@
+{
+  "question": "How many completed invoices were recorded in October 2011?",
+  "exit_code": 0,
+  "full_cli_wall_seconds": 15.2545657,
+  "includes_spark_startup": true,
+  "model_was_warm": true
+}

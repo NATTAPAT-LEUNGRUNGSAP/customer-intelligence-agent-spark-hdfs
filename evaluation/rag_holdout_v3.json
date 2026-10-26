@@ -1,0 +1,203 @@
+[
+  {
+    "id": "fresh01",
+    "question": "How many completed invoices did Germany have in February 2011? Return the count only.",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='Germany' AND order_ts>=TIMESTAMP '2011-02-01' AND order_ts<TIMESTAMP '2011-03-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "fresh02",
+    "question": "What was overall average order value in EIRE during August 2010, including anonymous orders?",
+    "gold_sql": "SELECT sum(order_amount)/nullif(count(*),0) FROM orders WHERE country='EIRE' AND order_ts>=TIMESTAMP '2010-08-01' AND order_ts<TIMESTAMP '2010-09-01'",
+    "relevant_ids": [
+      "metric.aov",
+      "schema.orders"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "fresh03",
+    "question": "Count distinct identified purchasing customers in the Netherlands in June 2010.",
+    "gold_sql": "SELECT count(distinct customer_id) FROM orders WHERE country='Netherlands' AND order_ts>=TIMESTAMP '2010-06-01' AND order_ts<TIMESTAMP '2010-07-01'",
+    "relevant_ids": [
+      "metric.customers",
+      "schema.orders"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "fresh04",
+    "question": "For France in August 2011, return the fraction of identified purchasing customers who placed at least two completed invoices in that month.",
+    "gold_sql": "WITH c AS (SELECT customer_id,count(*) AS n FROM orders WHERE country='France' AND customer_id IS NOT NULL AND order_ts>=TIMESTAMP '2011-08-01' AND order_ts<TIMESTAMP '2011-09-01' GROUP BY customer_id) SELECT sum(CASE WHEN n>=2 THEN 1 ELSE 0 END)/nullif(count(*),0) FROM c",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "schema.orders"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "fresh05",
+    "question": "Count anonymous completed invoices from France in May 2011.",
+    "gold_sql": "SELECT count(*) FROM orders WHERE country='France' AND customer_id IS NULL AND order_ts>=TIMESTAMP '2011-05-01' AND order_ts<TIMESTAMP '2011-06-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "fresh06",
+    "question": "Return country and overall AOV for the top three countries by AOV in March 2011, including anonymous orders. Sort descending AOV then ascending country.",
+    "gold_sql": "SELECT country,sum(order_amount)/nullif(count(*),0) AS aov FROM orders WHERE order_ts>=TIMESTAMP '2011-03-01' AND order_ts<TIMESTAMP '2011-04-01' GROUP BY country ORDER BY aov DESC,country ASC LIMIT 3",
+    "relevant_ids": [
+      "metric.aov",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true
+  },
+  {
+    "id": "fresh07",
+    "question": "Return month and completed sales for July through September 2010 using date_trunc MONTH, in ascending month order.",
+    "gold_sql": "SELECT date_trunc('MONTH',order_ts) AS month,sum(order_amount) FROM orders WHERE order_ts>=TIMESTAMP '2010-07-01' AND order_ts<TIMESTAMP '2010-10-01' GROUP BY 1 ORDER BY 1",
+    "relevant_ids": [
+      "metric.sales",
+      "syntax.time"
+    ],
+    "ordered": true
+  },
+  {
+    "id": "fresh08",
+    "question": "Return customer ID and total completed sales for the top three identified customers in January 2011; descending sales, ties by customer ID ascending.",
+    "gold_sql": "SELECT customer_id,sum(order_amount) AS sales FROM orders WHERE customer_id IS NOT NULL AND order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY customer_id ORDER BY sales DESC,customer_id ASC LIMIT 3",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "ordered": true
+  },
+  {
+    "id": "fresh09",
+    "question": "At snapshot 2011-12-01, how many customers are BOTH Inactive and high-value?",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Inactive' AND is_high_value=true",
+    "relevant_ids": [
+      "segment.inactive",
+      "metric.high_value"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "fresh10",
+    "question": "At snapshot 2011-12-01, what fraction of eligible customers have rfm_segment equal to 'Recent repeat'? Return a fraction, not a percentage.",
+    "gold_sql": "SELECT sum(CASE WHEN rfm_segment='Recent repeat' THEN 1 ELSE 0 END)/nullif(count(*),0) FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "fresh11",
+    "question": "At snapshot 2011-12-01, what is the average recency_days across all eligible customers?",
+    "gold_sql": "SELECT avg(recency_days) FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary",
+      "policy.snapshot"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "fresh12",
+    "question": "At snapshot 2011-12-01, count Champions who are NOT high-value.",
+    "gold_sql": "SELECT count(*) FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Champions' AND is_high_value=false",
+    "relevant_ids": [
+      "segment.champions",
+      "metric.high_value"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "fresh13",
+    "question": "At snapshot 2011-12-01, return customer ID and sales_180d for the top three high-value customers, descending sales_180d then customer ID ascending.",
+    "gold_sql": "SELECT customer_id,sales_180d FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND is_high_value=true ORDER BY sales_180d DESC,customer_id ASC LIMIT 3",
+    "relevant_ids": [
+      "metric.high_value",
+      "schema.customer_summary",
+      "syntax.ranking"
+    ],
+    "ordered": true
+  },
+  {
+    "id": "fresh14",
+    "question": "Return product ID and completed sale-line revenue for the top three products in France in November 2010, descending revenue then product ID ascending.",
+    "gold_sql": "SELECT product_id,sum(line_amount) AS revenue FROM sales_lines WHERE country='France' AND transaction_type='sale' AND invoice_ts>=TIMESTAMP '2010-11-01' AND invoice_ts<TIMESTAMP '2010-12-01' GROUP BY product_id ORDER BY revenue DESC,product_id ASC LIMIT 3",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "ordered": true
+  },
+  {
+    "id": "fresh15",
+    "question": "How many return lines were recorded in Germany in June 2011?",
+    "gold_sql": "SELECT count(*) FROM sales_lines WHERE country='Germany' AND transaction_type='return' AND invoice_ts>=TIMESTAMP '2011-06-01' AND invoice_ts<TIMESTAMP '2011-07-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.time"
+    ],
+    "ordered": false
+  },
+  {
+    "id": "fresh16",
+    "question": "จำนวนลูกค้าที่ระบุตัวตนและซื้อสินค้าเท่าไร?",
+    "expected": "clarification",
+    "clarification_policy": "policy.period",
+    "relevant_ids": [
+      "metric.customers",
+      "policy.period"
+    ]
+  },
+  {
+    "id": "fresh17",
+    "question": "What measured profit did EIRE earn in February 2011?",
+    "expected": "clarification",
+    "clarification_policy": "policy.availability",
+    "relevant_ids": [
+      "policy.availability"
+    ]
+  },
+  {
+    "id": "fresh18",
+    "question": "Give actual RFM segment counts at snapshot 2011-11-01.",
+    "expected": "clarification",
+    "clarification_policy": "policy.snapshot",
+    "relevant_ids": [
+      "policy.snapshot",
+      "segment.distribution"
+    ]
+  },
+  {
+    "id": "fresh19",
+    "question": "What was the measured gross margin in the United Kingdom in July 2011?",
+    "expected": "clarification",
+    "clarification_policy": "policy.availability",
+    "relevant_ids": [
+      "policy.availability"
+    ]
+  },
+  {
+    "id": "fresh20",
+    "question": "How many completed invoices were actually recorded in February 2027?",
+    "expected": "clarification",
+    "clarification_policy": "policy.availability",
+    "relevant_ids": [
+      "metric.orders",
+      "policy.availability"
+    ]
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "status": "generated_and_validated",
+  "model": "qwen3.5:9b",
+  "sql": "SELECT SUM(order_amount) AS total_sales_gbp FROM orders WHERE country = 'GB' AND order_ts >= '2011-10-01 00:00:00' AND order_ts < '2011-11-01 00:00:00'",
+  "guarded_sql": "SELECT * FROM (SELECT SUM(order_amount) AS total_sales_gbp FROM orders WHERE country = 'GB' AND order_ts >= '2011-10-01 00:00:00' AND order_ts < '2011-11-01 00:00:00') AS guarded_result LIMIT 201",
+  "elapsed_seconds": 65.60308979998808,
+  "spark_executed": false
+}

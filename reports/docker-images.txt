@@ -1,0 +1,8 @@
+CONTAINER                                          REPOSITORY                         TAG                                       PLATFORM            IMAGE ID            SIZE                CREATED
+customer-intelligence-datanode-1-1                 customer-intelligence-datanode-1   latest                                    linux/amd64         040b1f8f0e63        1.08GB              12 minutes ago
+customer-intelligence-datanode-2-1                 customer-intelligence-datanode-2   latest                                    linux/amd64         1bd9a60c6a89        1.08GB              12 minutes ago
+customer-intelligence-namenode-1                   customer-intelligence-namenode     latest                                    linux/amd64         e142b4fc5cf1        1.08GB              12 minutes ago
+customer-intelligence-spark-job-run-0e8f2bb99409   customer-intelligence-spark-job    latest                                    linux/amd64         e83c3642ad37        1.02GB              31 minutes ago
+customer-intelligence-spark-master-1               apache/spark                       4.1.3-scala2.13-java17-python3-r-ubuntu   linux/amd64         47442571b327        1.02GB              44 minutes ago
+customer-intelligence-spark-worker-1               apache/spark                       4.1.3-scala2.13-java17-python3-r-ubuntu   linux/amd64         47442571b327        1.02GB              44 minutes ago
+customer-intelligence-spark-worker-2               apache/spark                       4.1.3-scala2.13-java17-python3-r-ubuntu   linux/amd64         47442571b327        1.02GB              44 minutes ago

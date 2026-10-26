@@ -1,0 +1,18 @@
+{
+  "version": "rag-v2",
+  "declared_before_holdout": true,
+  "retrieval": {
+    "recall_at_6_min": 0.95,
+    "mrr_at_6_min": 0.85,
+    "ndcg_at_6_min": 0.8,
+    "latency_p95_ms_max": 50
+  },
+  "end_to_end": {
+    "accuracy_min": 0.9,
+    "clarification_accuracy_min": 1,
+    "citation_validity_min": 1,
+    "cited_relevant_evidence_rate_min": 0.95,
+    "latency_p95_seconds_max": 20
+  },
+  "notes": "Small authored project set, not independent external certification. Citation validity/relevance is not proof of textual entailment. Gate failure must remain visible."
+}

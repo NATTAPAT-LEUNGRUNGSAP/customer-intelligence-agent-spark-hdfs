@@ -1,0 +1,4224 @@
+{
+  "status": "completed",
+  "model": "qwen3.5:9b",
+  "split": "dev",
+  "cases": [
+    {
+      "id": "dev01",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 10.363584446000004,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT SUM(sl.line_amount) AS total_completed_sales_gbp FROM sales_lines sl WHERE sl.invoice_ts >= '2011-10-01' AND sl.invoice_ts < '2011-11-01' AND sl.transaction_type = 'completed'",
+        "executed_sql": "SELECT * FROM (SELECT SUM(sl.line_amount) AS total_completed_sales_gbp FROM sales_lines AS sl WHERE sl.invoice_ts >= '2011-10-01' AND sl.invoice_ts < '2011-11-01' AND sl.transaction_type = 'completed') AS guarded_result LIMIT 201",
+        "explanation": "The query calculates the sum of line_amounts from the sales_lines table for transactions occurring between October 1, 2011, and November 1, 2011 (exclusive), filtering only for completed transactions. The dataset metadata indicates an as_of_date of 2011-12-01 and observed data up to 2011-12-09, so October 2011 data is fully available within the historical observation window.",
+        "result": {
+          "columns": [
+            "total_completed_sales_gbp"
+          ],
+          "rows": [
+            [
+              null
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "sum(order_amount)"
+        ],
+        "rows": [
+          [
+            "1154979.3000"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev01",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.7846951639999133,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT SUM(line_amount) AS total_completed_sales_gbp FROM sales_lines WHERE invoice_ts >= TIMESTAMP '2011-10-01 00:00:00' AND invoice_ts < TIMESTAMP '2011-11-01 00:00:00' AND transaction_type = 'sale'",
+        "executed_sql": "SELECT * FROM (SELECT SUM(line_amount) AS total_completed_sales_gbp FROM sales_lines WHERE invoice_ts >= CAST('2011-10-01 00:00:00' AS TIMESTAMP) AND invoice_ts < CAST('2011-11-01 00:00:00' AS TIMESTAMP) AND transaction_type = 'sale') AS guarded_result LIMIT 201",
+        "explanation": "The query sums the line_amount from sales_lines for transactions strictly between October 1, 2011 and November 1, 2011 (inclusive of Oct 1, exclusive of Nov 1), filtering only for 'sale' transaction types to ensure completed sales. The result is in GBP as per schema metadata.",
+        "result": {
+          "columns": [
+            "total_completed_sales_gbp"
+          ],
+          "rows": [
+            [
+              "1154979.3000"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 1.2473278037284465
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 0.7861741422934954
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 0.7559252648311799
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.6031450380162291
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 0.5621303882069454
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "sum(order_amount)"
+        ],
+        "rows": [
+          [
+            "1154979.3000"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev02",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.901717195999936,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(DISTINCT o.invoice_id) AS completed_invoice_count FROM orders o WHERE o.order_ts >= TIMESTAMP '2011-10-01 00:00:00' AND o.order_ts < TIMESTAMP '2011-11-01 00:00:00'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(DISTINCT o.invoice_id) AS completed_invoice_count FROM orders AS o WHERE o.order_ts >= CAST('2011-10-01 00:00:00' AS TIMESTAMP) AND o.order_ts < CAST('2011-11-01 00:00:00' AS TIMESTAMP)) AS guarded_result LIMIT 201",
+        "explanation": "The query counts distinct invoice_ids from the orders table where the order timestamp falls within October 2011 (inclusive of Oct 1, exclusive of Nov 1). This aligns with the schema definition that 'orders' represents consistent completed-sale invoices.",
+        "result": {
+          "columns": [
+            "completed_invoice_count"
+          ],
+          "rows": [
+            [
+              2040
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 1.2200144176165009
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 0.6271500091739971
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.6031450380162291
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.4359909165088962
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 0.4171478141741581
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            2040
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev02",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.131291204000263,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS completed_invoice_count FROM sales_lines WHERE invoice_ts >= '2011-10-01' AND invoice_ts < '2011-11-01' AND transaction_type = 'completed'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS completed_invoice_count FROM sales_lines WHERE invoice_ts >= '2011-10-01' AND invoice_ts < '2011-11-01' AND transaction_type = 'completed') AS guarded_result LIMIT 201",
+        "explanation": "The query counts rows in the sales_lines table where the invoice timestamp falls within October 2011 (from Oct 1 to Nov 1) and the transaction type is 'completed'. The dataset metadata indicates data is available up to 2011-12-09, so October 2011 is fully observed. No external sources or functions are used.",
+        "result": {
+          "columns": [
+            "completed_invoice_count"
+          ],
+          "rows": [
+            [
+              0
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            2040
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev03",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 3.036187361999964,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT AVG(o.order_amount) AS avg_order_value_gbp FROM orders o WHERE DATE(o.order_ts) = '2011-10-31'",
+        "executed_sql": "SELECT * FROM (SELECT AVG(o.order_amount) AS avg_order_value_gbp FROM orders AS o WHERE CAST(o.order_ts AS DATE) = '2011-10-31') AS guarded_result LIMIT 201",
+        "explanation": "The query calculates the average order value for all orders occurring on October 31, 2011. Note that the dataset metadata indicates the observed data range ends on 2011-12-09, so October 2011 is within the observation period. The term 'anonymous orders' implies orders without a customer_id; however, the schema for 'orders' does not explicitly show an 'anonymous' flag or separate column, but rather 'customer_id'. If 'anonymous' means NULL customer_id, the current query includes them as they are in the table. If the user meant to exclude them, the logic would differ, but standard interpretation of 'including anonymous' is to include all rows regardless of customer status. The date filter uses DATE() to extract the calendar day from the timestamp.",
+        "result": {
+          "columns": [
+            "avg_order_value_gbp"
+          ],
+          "rows": [
+            [
+              "796.79375000"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "(sum(order_amount) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            "566.166324"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev03",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.5117395810002563,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT AVG(order_amount) AS avg_order_value FROM orders WHERE order_ts >= '2011-10-01' AND order_ts < '2011-11-01'",
+        "executed_sql": "SELECT * FROM (SELECT AVG(order_amount) AS avg_order_value FROM orders WHERE order_ts >= '2011-10-01' AND order_ts < '2011-11-01') AS guarded_result LIMIT 201",
+        "explanation": "The query calculates the average order value (AOV) in GBP for October 2011 by selecting all orders where the timestamp falls within the range [2011-10-01, 2011-11-01). This includes anonymous orders as per the schema definition which retains them. The dataset metadata indicates the observation window ends on 2011-12-09, so October 2011 data is fully available.",
+        "result": {
+          "columns": [
+            "avg_order_value"
+          ],
+          "rows": [
+            [
+              "566.16632353"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 3.0802553391934864
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 1.0868604649957854
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.9233818117277511
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 0.9082152032774699
+          },
+          {
+            "id": "spark_sql.md:3",
+            "text": "Conditional aggregation: sum(CASE WHEN condition THEN 1 ELSE 0 END).\nSafe division: numerator / nullif(denominator, 0).\nMonthly grouping: date_trunc('MONTH', order_ts).\nRanking: row_number() OVER (ORDER BY metric DESC, customer_id ASC).\nComparison: lag(metric) OVER (ORDER BY month).\nCTEs: WITH filtered AS (SELECT ... FROM orders WHERE ...) SELECT ... FROM filtered.",
+            "sha256": "f6067abbca41b295751ea275117e810b70c9b69dba3a5cb2ac4d93bf59e709c1",
+            "score": 0.6880376836774919
+          },
+          {
+            "id": "spark_sql.md:4",
+            "text": "Use an explicit ORDER BY for top N and deterministic ID tie breaking.\nPrefer orders for invoice-level measures, sales_lines for product-level analysis.\nNever sum order_amount after joining it to multiple product lines.\nInspect schema and metric definitions before composing unfamiliar queries.\nRetry failed queries only within the configured retry budget; do not invent results.",
+            "sha256": "d026b82661773ccf5180e36f3df8a9d26c828942a7800f79a42b55806eab8f36",
+            "score": 0.64360032037768
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "(sum(order_amount) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            "566.166324"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev04",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.790761742000086,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT country, SUM(order_amount) AS sales\nFROM orders\nWHERE order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'\nGROUP BY country\nORDER BY sales DESC, country ASC\nLIMIT 5",
+        "executed_sql": "SELECT * FROM (SELECT country, SUM(order_amount) AS sales FROM orders WHERE order_ts >= CAST('2011-10-01 00:00:00' AS TIMESTAMP) AND order_ts < CAST('2011-11-01 00:00:00' AS TIMESTAMP) GROUP BY country ORDER BY sales DESC, country ASC LIMIT 5) AS guarded_result LIMIT 201",
+        "explanation": "The query calculates total sales per country for completed orders in October 2011 (inclusive of Oct 1st, exclusive of Nov 1st). Results are sorted by sales descending and then by country ascending to break ties, limited to the top 5.",
+        "result": {
+          "columns": [
+            "country",
+            "sales"
+          ],
+          "rows": [
+            [
+              "United Kingdom",
+              "938975.0100"
+            ],
+            [
+              "Netherlands",
+              "40708.6500"
+            ],
+            [
+              "France",
+              "33485.4500"
+            ],
+            [
+              "Germany",
+              "31638.4200"
+            ],
+            [
+              "EIRE",
+              "24317.9200"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 2.6416941321410143
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 2.528139818539625
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 1.5118505296623599
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 1.3963357226336723
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 1.304765223958745
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 1.135183132196835
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "country",
+          "sales"
+        ],
+        "rows": [
+          [
+            "United Kingdom",
+            "938975.0100"
+          ],
+          [
+            "Netherlands",
+            "40708.6500"
+          ],
+          [
+            "France",
+            "33485.4500"
+          ],
+          [
+            "Germany",
+            "31638.4200"
+          ],
+          [
+            "EIRE",
+            "24317.9200"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev04",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.1224625079998987,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT country, SUM(line_amount) AS sales FROM sales_lines WHERE invoice_ts >= '2011-10-01' AND invoice_ts < '2011-11-01' GROUP BY country ORDER BY sales DESC, country ASC LIMIT 5",
+        "executed_sql": "SELECT * FROM (SELECT country, SUM(line_amount) AS sales FROM sales_lines WHERE invoice_ts >= '2011-10-01' AND invoice_ts < '2011-11-01' GROUP BY country ORDER BY sales DESC, country ASC LIMIT 5) AS guarded_result LIMIT 201",
+        "explanation": "The query calculates total sales (sum of line_amount) for each country within the specified period of October 2011. It groups by country, orders results by sales descending and then by country ascending to break ties, and limits the output to the top five countries.",
+        "result": {
+          "columns": [
+            "country",
+            "sales"
+          ],
+          "rows": [
+            [
+              "United Kingdom",
+              "877438.1900"
+            ],
+            [
+              "Netherlands",
+              "40708.6500"
+            ],
+            [
+              "Germany",
+              "30614.2700"
+            ],
+            [
+              "France",
+              "25032.0400"
+            ],
+            [
+              "EIRE",
+              "23307.6200"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "country",
+          "sales"
+        ],
+        "rows": [
+          [
+            "United Kingdom",
+            "938975.0100"
+          ],
+          [
+            "Netherlands",
+            "40708.6500"
+          ],
+          [
+            "France",
+            "33485.4500"
+          ],
+          [
+            "Germany",
+            "31638.4200"
+          ],
+          [
+            "EIRE",
+            "24317.9200"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev05",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.1897492450002574,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(DISTINCT customer_id) as distinct_customers FROM sales_lines WHERE invoice_ts >= '2011-10-01' AND invoice_ts < '2011-11-01'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(DISTINCT customer_id) AS distinct_customers FROM sales_lines WHERE invoice_ts >= '2011-10-01' AND invoice_ts < '2011-11-01') AS guarded_result LIMIT 201",
+        "explanation": "The query counts distinct customers who made purchases in October 2011 by filtering the sales_lines table for transactions between October 1st and November 1st, 2011. The dataset metadata indicates observations range from 2009-12-01 to 2011-12-09, so October 2011 data is available.",
+        "result": {
+          "columns": [
+            "distinct_customers"
+          ],
+          "rows": [
+            [
+              1425
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(DISTINCT customer_id)"
+        ],
+        "rows": [
+          [
+            1364
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev05",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.7462936389997594,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(DISTINCT customer_id) AS distinct_purchasing_customers\nFROM orders\nWHERE order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'\nAND customer_id IS NOT NULL",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(DISTINCT customer_id) AS distinct_purchasing_customers FROM orders WHERE order_ts >= CAST('2011-10-01 00:00:00' AS TIMESTAMP) AND order_ts < CAST('2011-11-01 00:00:00' AS TIMESTAMP) AND NOT customer_id IS NULL) AS guarded_result LIMIT 201",
+        "explanation": "The query counts distinct non-null customer_ids from the orders table where the order timestamp falls within October 2011 (inclusive start, exclusive end). This aligns with the definition of 'identified purchasing customers' as those with at least one order in the period.",
+        "result": {
+          "columns": [
+            "distinct_purchasing_customers"
+          ],
+          "rows": [
+            [
+              1364
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 1.8036918858659785
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.9728408676161845
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.9233818117277511
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 0.5992157125533546
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 0.3523338669704896
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(DISTINCT customer_id)"
+        ],
+        "rows": [
+          [
+            1364
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev06",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.696551786999862,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT rfm_segment, COUNT(*) AS customer_count FROM customer_summary GROUP BY rfm_segment ORDER BY rfm_segment",
+        "executed_sql": "SELECT * FROM (SELECT rfm_segment, COUNT(*) AS customer_count FROM customer_summary GROUP BY rfm_segment ORDER BY rfm_segment) AS guarded_result LIMIT 201",
+        "explanation": "This query aggregates the `customer_summary` table to count customers per RFM segment at the 2011-12-01 snapshot. The results are grouped by `rfm_segment` and ordered alphabetically as requested.",
+        "result": {
+          "columns": [
+            "rfm_segment",
+            "customer_count"
+          ],
+          "rows": [
+            [
+              "Champions",
+              937
+            ],
+            [
+              "Inactive",
+              610
+            ],
+            [
+              "Needs attention",
+              1176
+            ],
+            [
+              "Recent repeat",
+              326
+            ],
+            [
+              "Recent single-order",
+              401
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 2.4073548602029065
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 1.6313038596547829
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 1.3605747052069628
+          },
+          {
+            "id": "thai_glossary.md:4",
+            "text": "ลูกค้ามูลค่าสูง high value คือลูกค้า 20% แรกตาม monetary_rank ใน customer_summary\nกลุ่มลูกค้า RFM ใช้ recency_days, orders_180d, sales_180d ณ as_of_date 2011-12-01\nใช้เฉพาะรายการก่อนวัน snapshot และย้อนหลัง 180 วัน ลูกค้าไม่ระบุตัวตนไม่อยู่ใน summary",
+            "sha256": "2188a305497acf3d75d4bb5cc39f8267efde96625dcf0f0d6fbc7ed8be48459a",
+            "score": 1.3061790218036569
+          },
+          {
+            "id": "metrics.md:6",
+            "text": "No cost, margin, campaign outcomes, or data after the observed maximum date is provided.\nDo not infer campaign uplift, profit, or future sales as measured facts.\nFor an unspecified period or ambiguous 'best customer', ask for clarification.\nAlways label incomplete observation periods and absent data; absence is not automatically zero.",
+            "sha256": "6436a8c70b56f246436f807d5eb15625ebf5243ece26fa2f1e1ca5a865edc29c",
+            "score": 1.3050430877238264
+          },
+          {
+            "id": "spark_sql.md:4",
+            "text": "Use an explicit ORDER BY for top N and deterministic ID tie breaking.\nPrefer orders for invoice-level measures, sales_lines for product-level analysis.\nNever sum order_amount after joining it to multiple product lines.\nInspect schema and metric definitions before composing unfamiliar queries.\nRetry failed queries only within the configured retry budget; do not invent results.",
+            "sha256": "d026b82661773ccf5180e36f3df8a9d26c828942a7800f79a42b55806eab8f36",
+            "score": 1.2918626468390493
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "rfm_segment",
+          "count(1)"
+        ],
+        "rows": [
+          [
+            "Champions",
+            937
+          ],
+          [
+            "Inactive",
+            610
+          ],
+          [
+            "Needs attention",
+            1176
+          ],
+          [
+            "Recent repeat",
+            326
+          ],
+          [
+            "Recent single-order",
+            401
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev06",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.9911869900001875,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT rfm_segment, COUNT(*) AS customer_count FROM customer_summary WHERE as_of_date = '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+        "executed_sql": "SELECT * FROM (SELECT rfm_segment, COUNT(*) AS customer_count FROM customer_summary WHERE as_of_date = '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment) AS guarded_result LIMIT 201",
+        "explanation": "This query selects the RFM segment and counts the number of customers for each segment from the customer_summary table. It filters the data to only include records with an as_of_date of '2011-12-01', which matches the snapshot date requested. The results are grouped by rfm_segment and ordered alphabetically by segment name.",
+        "result": {
+          "columns": [
+            "rfm_segment",
+            "customer_count"
+          ],
+          "rows": [
+            [
+              "Champions",
+              937
+            ],
+            [
+              "Inactive",
+              610
+            ],
+            [
+              "Needs attention",
+              1176
+            ],
+            [
+              "Recent repeat",
+              326
+            ],
+            [
+              "Recent single-order",
+              401
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "rfm_segment",
+          "count(1)"
+        ],
+        "rows": [
+          [
+            "Champions",
+            937
+          ],
+          [
+            "Inactive",
+            610
+          ],
+          [
+            "Needs attention",
+            1176
+          ],
+          [
+            "Recent repeat",
+            326
+          ],
+          [
+            "Recent single-order",
+            401
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev07",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.023474399999941,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) as high_value_customer_count FROM customer_summary WHERE is_high_value = true AND as_of_date = '2011-12-01'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS high_value_customer_count FROM customer_summary WHERE is_high_value = TRUE AND as_of_date = '2011-12-01') AS guarded_result LIMIT 201",
+        "explanation": "The query counts the number of customers where the flag 'is_high_value' is true in the 'customer_summary' table, specifically filtering for the snapshot date of '2011-12-01'. The dataset metadata confirms that '2011-12-01' is a valid as_of_date within the observed range (2009-12-01 to 2011-12-09), so no partial observation warning is needed.",
+        "result": {
+          "columns": [
+            "high_value_customer_count"
+          ],
+          "rows": [
+            [
+              690
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            690
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev07",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.8523264439995728,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS high_value_count FROM customer_summary WHERE is_high_value = true",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS high_value_count FROM customer_summary WHERE is_high_value = TRUE) AS guarded_result LIMIT 201",
+        "explanation": "The query counts rows in the customer_summary table where is_high_value is true. According to the schema and metrics documentation, 'high value' is defined as the top 20% of customers by monetary_rank (descending) within the eligible population at the snapshot date 2011-12-01. The count represents the number of eligible customers meeting this criteria.",
+        "result": {
+          "columns": [
+            "high_value_count"
+          ],
+          "rows": [
+            [
+              690
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 2.209112308269896
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 1.63670531881041
+          },
+          {
+            "id": "thai_glossary.md:4",
+            "text": "ลูกค้ามูลค่าสูง high value คือลูกค้า 20% แรกตาม monetary_rank ใน customer_summary\nกลุ่มลูกค้า RFM ใช้ recency_days, orders_180d, sales_180d ณ as_of_date 2011-12-01\nใช้เฉพาะรายการก่อนวัน snapshot และย้อนหลัง 180 วัน ลูกค้าไม่ระบุตัวตนไม่อยู่ใน summary",
+            "sha256": "2188a305497acf3d75d4bb5cc39f8267efde96625dcf0f0d6fbc7ed8be48459a",
+            "score": 1.58936972172656
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.9575655980616257
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 0.918190302332
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.7863980243111826
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            690
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev08",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 3.0968193989997417,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT product_id, SUM(quantity) AS units_sold\nFROM sales_lines\nWHERE invoice_ts >= '2011-10-01' AND invoice_ts < '2011-11-01'\n  AND transaction_type = 'sale'\nGROUP BY product_id\nORDER BY units_sold DESC, product_id ASC\nLIMIT 5",
+        "executed_sql": "SELECT * FROM (SELECT product_id, SUM(quantity) AS units_sold FROM sales_lines WHERE invoice_ts >= '2011-10-01' AND invoice_ts < '2011-11-01' AND transaction_type = 'sale' GROUP BY product_id ORDER BY units_sold DESC, product_id ASC LIMIT 5) AS guarded_result LIMIT 201",
+        "explanation": "The query selects the top five products by total quantity sold in October 2011. It filters sales_lines for the month of October 2011 (between Oct 1 and Nov 1), ensures only 'sale' transaction types are included to exclude returns/cancellations, aggregates quantity by product_id, and orders results by descending units sold with ascending product_id as a tie-breaker before limiting to 5 rows.",
+        "result": {
+          "columns": [
+            "product_id",
+            "units_sold"
+          ],
+          "rows": [
+            [
+              "84077",
+              8180
+            ],
+            [
+              "23084",
+              6323
+            ],
+            [
+              "22197",
+              5907
+            ],
+            [
+              "85099B",
+              5412
+            ],
+            [
+              "20971",
+              4874
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "spark_sql.md:4",
+            "text": "Use an explicit ORDER BY for top N and deterministic ID tie breaking.\nPrefer orders for invoice-level measures, sales_lines for product-level analysis.\nNever sum order_amount after joining it to multiple product lines.\nInspect schema and metric definitions before composing unfamiliar queries.\nRetry failed queries only within the configured retry budget; do not invent results.",
+            "sha256": "d026b82661773ccf5180e36f3df8a9d26c828942a7800f79a42b55806eab8f36",
+            "score": 3.108114067831946
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 2.50968076851195
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 2.247074624436152
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 1.855519989847519
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 1.2682644723504115
+          },
+          {
+            "id": "metrics.md:2",
+            "text": "Data source: UCI Online Retail II, DOI 10.24432/C5CG6D, CC BY 4.0.\nAn original row is an invoice line, not an order. Duplicate source lines are retained;\nthe build report counts exact duplicate extra rows. Results describe this policy.",
+            "sha256": "b32f55fe4b97cdc4d495c226c51707ff85fba2db1abdc4aafc3255b56e3bb836",
+            "score": 1.171273489664024
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "product_id",
+          "units"
+        ],
+        "rows": [
+          [
+            "84077",
+            8180
+          ],
+          [
+            "23084",
+            6323
+          ],
+          [
+            "22197",
+            5907
+          ],
+          [
+            "85099B",
+            5412
+          ],
+          [
+            "20971",
+            4874
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev08",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.252159828999993,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT product_id, SUM(quantity) AS units_sold\nFROM sales_lines\nWHERE invoice_ts >= '2011-10-01' AND invoice_ts < '2011-11-01'\n  AND transaction_type = 'completed'\nGROUP BY product_id\nORDER BY units_sold DESC, product_id ASC\nLIMIT 5",
+        "executed_sql": "SELECT * FROM (SELECT product_id, SUM(quantity) AS units_sold FROM sales_lines WHERE invoice_ts >= '2011-10-01' AND invoice_ts < '2011-11-01' AND transaction_type = 'completed' GROUP BY product_id ORDER BY units_sold DESC, product_id ASC LIMIT 5) AS guarded_result LIMIT 201",
+        "explanation": "This query selects the top five products by total quantity sold in October 2011. It filters sales_lines for completed transactions within the specified month (using the dataset's observed date range which ends in December 2011). Quantities are aggregated per product_id, and results are ordered by descending units sold with ascending product_id to break ties, limiting the output to five rows.",
+        "result": {
+          "columns": [
+            "product_id",
+            "units_sold"
+          ],
+          "rows": [],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "product_id",
+          "units"
+        ],
+        "rows": [
+          [
+            "84077",
+            8180
+          ],
+          [
+            "23084",
+            6323
+          ],
+          [
+            "22197",
+            5907
+          ],
+          [
+            "85099B",
+            5412
+          ],
+          [
+            "20971",
+            4874
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "dev09",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": true,
+      "elapsed_seconds": 2.601547854999808,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT cs.customer_id, cs.first_purchase_date, cs.last_purchase_date, cs.sales_180d, cs.orders_180d, cs.aov_180d, cs.monetary_rank, cs.is_high_value FROM customer_summary cs ORDER BY cs.sales_180d DESC LIMIT 10",
+        "executed_sql": "SELECT * FROM (SELECT cs.customer_id, cs.first_purchase_date, cs.last_purchase_date, cs.sales_180d, cs.orders_180d, cs.aov_180d, cs.monetary_rank, cs.is_high_value FROM customer_summary AS cs ORDER BY cs.sales_180d DESC LIMIT 10) AS guarded_result LIMIT 201",
+        "explanation": "This query identifies the top 10 customers based on their total sales over the last 180 days (sales_180d) from the customer_summary table. The results are ordered by sales amount in descending order to show the 'best' customers according to revenue contribution. Note that the data is historical as of 2011-12-01, and the metrics reflect performance within the observed period (2009-12-01 to 2011-12-09).",
+        "result": {
+          "columns": [
+            "customer_id",
+            "first_purchase_date",
+            "last_purchase_date",
+            "sales_180d",
+            "orders_180d",
+            "aov_180d",
+            "monetary_rank",
+            "is_high_value"
+          ],
+          "rows": [
+            [
+              "18102",
+              "2009-12-01",
+              "2011-11-28",
+              "183529.6500",
+              42,
+              "4369.753571",
+              1,
+              true
+            ],
+            [
+              "14646",
+              "2009-12-02",
+              "2011-11-23",
+              "152342.0800",
+              43,
+              "3542.839070",
+              2,
+              true
+            ],
+            [
+              "17450",
+              "2010-09-27",
+              "2011-11-29",
+              "137228.1300",
+              31,
+              "4426.713871",
+              3,
+              true
+            ],
+            [
+              "14911",
+              "2009-12-01",
+              "2011-11-30",
+              "98046.3600",
+              131,
+              "748.445496",
+              4,
+              true
+            ],
+            [
+              "12415",
+              "2010-06-30",
+              "2011-11-15",
+              "74030.6300",
+              14,
+              "5287.902143",
+              5,
+              true
+            ],
+            [
+              "14156",
+              "2009-12-01",
+              "2011-11-30",
+              "73472.4000",
+              37,
+              "1985.740541",
+              6,
+              true
+            ],
+            [
+              "14096",
+              "2011-08-30",
+              "2011-11-28",
+              "56228.8100",
+              16,
+              "3514.300625",
+              7,
+              true
+            ],
+            [
+              "17511",
+              "2009-12-02",
+              "2011-11-23",
+              "47932.6600",
+              14,
+              "3423.761429",
+              8,
+              true
+            ],
+            [
+              "16029",
+              "2009-12-08",
+              "2011-11-01",
+              "45248.5800",
+              34,
+              "1330.840588",
+              9,
+              true
+            ],
+            [
+              "17949",
+              "2009-12-02",
+              "2011-11-22",
+              "45003.7600",
+              25,
+              "1800.150400",
+              10,
+              true
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": null
+    },
+    {
+      "id": "dev09",
+      "rag": true,
+      "correct": false,
+      "clarification_reason_needs_review": true,
+      "elapsed_seconds": 3.0583011899998382,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT customer_id, first_purchase_date, last_purchase_date, as_of_date, recency_days, orders_180d, sales_180d, aov_180d, monetary_rank, population_size, is_high_value, rfm_segment FROM customer_summary ORDER BY monetary_rank ASC, customer_id ASC",
+        "executed_sql": "SELECT * FROM (SELECT customer_id, first_purchase_date, last_purchase_date, as_of_date, recency_days, orders_180d, sales_180d, aov_180d, monetary_rank, population_size, is_high_value, rfm_segment FROM customer_summary ORDER BY monetary_rank ASC, customer_id ASC) AS guarded_result LIMIT 201",
+        "explanation": "The term 'best customers' is ambiguous. Based on the dataset metadata (as_of_date: 2011-12-01) and schema definitions, I have returned the `customer_summary` table sorted by `monetary_rank` (ascending), which aligns with the definition of 'High Value' customers in the reference data (top 20% by monetary value). The results include all metrics from the snapshot as of 2011-12-01. If you intended a different definition of 'best' (e.g., highest recency, most frequent), please clarify.",
+        "result": {
+          "columns": [
+            "customer_id",
+            "first_purchase_date",
+            "last_purchase_date",
+            "as_of_date",
+            "recency_days",
+            "orders_180d",
+            "sales_180d",
+            "aov_180d",
+            "monetary_rank",
+            "population_size",
+            "is_high_value",
+            "rfm_segment"
+          ],
+          "rows": [
+            [
+              "18102",
+              "2009-12-01",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              42,
+              "183529.6500",
+              "4369.753571",
+              1,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14646",
+              "2009-12-02",
+              "2011-11-23",
+              "2011-12-01",
+              8,
+              43,
+              "152342.0800",
+              "3542.839070",
+              2,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17450",
+              "2010-09-27",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              31,
+              "137228.1300",
+              "4426.713871",
+              3,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14911",
+              "2009-12-01",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              131,
+              "98046.3600",
+              "748.445496",
+              4,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12415",
+              "2010-06-30",
+              "2011-11-15",
+              "2011-12-01",
+              16,
+              14,
+              "74030.6300",
+              "5287.902143",
+              5,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14156",
+              "2009-12-01",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              37,
+              "73472.4000",
+              "1985.740541",
+              6,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14096",
+              "2011-08-30",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              16,
+              "56228.8100",
+              "3514.300625",
+              7,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17511",
+              "2009-12-02",
+              "2011-11-23",
+              "2011-12-01",
+              8,
+              14,
+              "47932.6600",
+              "3423.761429",
+              8,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16029",
+              "2009-12-08",
+              "2011-11-01",
+              "2011-12-01",
+              30,
+              34,
+              "45248.5800",
+              "1330.840588",
+              9,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17949",
+              "2009-12-02",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              25,
+              "45003.7600",
+              "1800.150400",
+              10,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15098",
+              "2011-06-10",
+              "2011-06-10",
+              "2011-12-01",
+              174,
+              3,
+              "39916.5000",
+              "13305.500000",
+              11,
+              3450,
+              true,
+              "Inactive"
+            ],
+            [
+              "12931",
+              "2009-12-01",
+              "2011-11-18",
+              "2011-12-01",
+              13,
+              8,
+              "38135.2600",
+              "4766.907500",
+              12,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16684",
+              "2009-12-07",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              14,
+              "36175.6400",
+              "2583.974286",
+              13,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14088",
+              "2010-10-14",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              10,
+              "35136.9700",
+              "3513.697000",
+              14,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13694",
+              "2009-12-04",
+              "2011-11-14",
+              "2011-12-01",
+              17,
+              21,
+              "33709.1100",
+              "1605.195714",
+              15,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15311",
+              "2009-12-01",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              44,
+              "28383.1600",
+              "645.071818",
+              16,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17841",
+              "2009-12-02",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              73,
+              "26905.6400",
+              "368.570411",
+              17,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13089",
+              "2009-12-02",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              42,
+              "26204.2700",
+              "623.911190",
+              18,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15838",
+              "2009-12-15",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              12,
+              "25434.2000",
+              "2119.516667",
+              19,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15769",
+              "2009-12-11",
+              "2011-11-09",
+              "2011-12-01",
+              22,
+              12,
+              "24959.0000",
+              "2079.916667",
+              20,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12748",
+              "2009-12-04",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              114,
+              "23098.6800",
+              "202.620000",
+              21,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16013",
+              "2009-12-08",
+              "2011-11-21",
+              "2011-12-01",
+              10,
+              23,
+              "22068.2600",
+              "959.489565",
+              22,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17389",
+              "2009-12-04",
+              "2011-11-25",
+              "2011-12-01",
+              6,
+              18,
+              "20976.9800",
+              "1165.387778",
+              23,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14298",
+              "2009-12-11",
+              "2011-11-09",
+              "2011-12-01",
+              22,
+              13,
+              "20395.7100",
+              "1568.900769",
+              24,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15061",
+              "2009-12-01",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              18,
+              "19915.3600",
+              "1106.408889",
+              25,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13098",
+              "2011-01-26",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              17,
+              "19313.0700",
+              "1136.062941",
+              26,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17404",
+              "2010-01-07",
+              "2011-11-14",
+              "2011-12-01",
+              17,
+              8,
+              "17815.2000",
+              "2226.900000",
+              27,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16422",
+              "2010-01-12",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              24,
+              "16512.6800",
+              "688.028333",
+              28,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14607",
+              "2009-12-15",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              13,
+              "16074.5000",
+              "1236.500000",
+              29,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13408",
+              "2009-12-04",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              33,
+              "15203.5100",
+              "460.712424",
+              30,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17857",
+              "2010-03-08",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              12,
+              "15115.6000",
+              "1259.633333",
+              31,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14866",
+              "2010-08-26",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              11,
+              "14286.2200",
+              "1298.747273",
+              32,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14680",
+              "2009-12-04",
+              "2011-11-14",
+              "2011-12-01",
+              17,
+              7,
+              "14220.2300",
+              "2031.461429",
+              33,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13081",
+              "2009-12-08",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              4,
+              "13873.8700",
+              "3468.467500",
+              34,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12678",
+              "2010-01-07",
+              "2011-10-28",
+              "2011-12-01",
+              34,
+              7,
+              "13676.6200",
+              "1953.802857",
+              35,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "13798",
+              "2009-12-08",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              22,
+              "13024.0900",
+              "592.004091",
+              36,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13881",
+              "2010-03-04",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              15,
+              "13020.9400",
+              "868.062667",
+              37,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12536",
+              "2011-10-11",
+              "2011-10-27",
+              "2011-12-01",
+              35,
+              3,
+              "12601.8300",
+              "4200.610000",
+              38,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "13777",
+              "2009-12-02",
+              "2011-11-15",
+              "2011-12-01",
+              16,
+              10,
+              "12404.7200",
+              "1240.472000",
+              39,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16333",
+              "2011-02-03",
+              "2011-11-03",
+              "2011-12-01",
+              28,
+              4,
+              "11992.4000",
+              "2998.100000",
+              40,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15159",
+              "2010-10-04",
+              "2011-11-21",
+              "2011-12-01",
+              10,
+              16,
+              "11779.8500",
+              "736.240625",
+              41,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17675",
+              "2009-12-10",
+              "2011-11-21",
+              "2011-12-01",
+              10,
+              17,
+              "11618.5500",
+              "683.444118",
+              42,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12409",
+              "2010-05-23",
+              "2011-09-22",
+              "2011-12-01",
+              70,
+              3,
+              "11072.6700",
+              "3690.890000",
+              43,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "12921",
+              "2009-12-01",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              24,
+              "11072.6500",
+              "461.360417",
+              44,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12744",
+              "2010-04-27",
+              "2011-10-19",
+              "2011-12-01",
+              43,
+              3,
+              "11016.6400",
+              "3672.213333",
+              45,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "12731",
+              "2010-03-02",
+              "2011-11-16",
+              "2011-12-01",
+              15,
+              6,
+              "10665.8200",
+              "1777.636667",
+              46,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15189",
+              "2010-07-18",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              22,
+              "9880.0200",
+              "449.091818",
+              47,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15482",
+              "2009-12-02",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              9,
+              "9617.5200",
+              "1068.613333",
+              48,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17428",
+              "2009-12-01",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              14,
+              "9552.4300",
+              "682.316429",
+              49,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17677",
+              "2009-12-16",
+              "2011-11-11",
+              "2011-12-01",
+              20,
+              17,
+              "9396.1400",
+              "552.714118",
+              50,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12471",
+              "2009-12-07",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              16,
+              "9188.2200",
+              "574.263750",
+              51,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16839",
+              "2010-02-11",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              19,
+              "9112.6800",
+              "479.614737",
+              52,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13767",
+              "2009-12-01",
+              "2011-11-14",
+              "2011-12-01",
+              17,
+              14,
+              "9093.0900",
+              "649.506429",
+              53,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12901",
+              "2011-03-14",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              16,
+              "9088.9800",
+              "568.061250",
+              54,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14031",
+              "2009-12-03",
+              "2011-11-18",
+              "2011-12-01",
+              13,
+              7,
+              "8875.1800",
+              "1267.882857",
+              55,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17706",
+              "2010-01-19",
+              "2011-10-26",
+              "2011-12-01",
+              36,
+              12,
+              "8839.8000",
+              "736.650000",
+              56,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "15513",
+              "2010-01-13",
+              "2011-11-06",
+              "2011-12-01",
+              25,
+              7,
+              "8688.7600",
+              "1241.251429",
+              57,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12477",
+              "2010-03-26",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              4,
+              "8642.7700",
+              "2160.692500",
+              58,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12753",
+              "2010-12-12",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              2,
+              "8488.8800",
+              "4244.440000",
+              59,
+              3450,
+              true,
+              "Recent repeat"
+            ],
+            [
+              "18139",
+              "2011-11-21",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              6,
+              "8438.3400",
+              "1406.390000",
+              60,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14051",
+              "2009-12-03",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              10,
+              "7813.7100",
+              "781.371000",
+              61,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15502",
+              "2010-06-03",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              8,
+              "7744.4700",
+              "968.058750",
+              62,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16180",
+              "2010-06-23",
+              "2011-08-31",
+              "2011-12-01",
+              92,
+              4,
+              "7508.7500",
+              "1877.187500",
+              63,
+              3450,
+              true,
+              "Inactive"
+            ],
+            [
+              "14194",
+              "2010-01-06",
+              "2011-11-21",
+              "2011-12-01",
+              10,
+              13,
+              "7457.5500",
+              "573.657692",
+              64,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13078",
+              "2009-12-01",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              15,
+              "7321.7000",
+              "488.113333",
+              65,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12540",
+              "2009-12-07",
+              "2011-11-20",
+              "2011-12-01",
+              11,
+              11,
+              "7255.7100",
+              "659.610000",
+              66,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17735",
+              "2010-07-30",
+              "2011-11-02",
+              "2011-12-01",
+              29,
+              10,
+              "7197.4100",
+              "719.741000",
+              67,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16705",
+              "2009-12-09",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              11,
+              "7175.9800",
+              "652.361818",
+              68,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16133",
+              "2010-03-31",
+              "2011-11-23",
+              "2011-12-01",
+              8,
+              19,
+              "7165.2700",
+              "377.119474",
+              69,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12557",
+              "2009-12-17",
+              "2011-11-23",
+              "2011-12-01",
+              8,
+              2,
+              "7136.3400",
+              "3568.170000",
+              70,
+              3450,
+              true,
+              "Recent repeat"
+            ],
+            [
+              "13340",
+              "2010-02-22",
+              "2011-10-25",
+              "2011-12-01",
+              37,
+              6,
+              "7058.4500",
+              "1176.408333",
+              71,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "12798",
+              "2010-10-14",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              3,
+              "6977.0400",
+              "2325.680000",
+              72,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12433",
+              "2010-08-20",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              3,
+              "6950.0600",
+              "2316.686667",
+              73,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17396",
+              "2010-09-24",
+              "2011-10-31",
+              "2011-12-01",
+              31,
+              7,
+              "6933.3000",
+              "990.471429",
+              74,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "16210",
+              "2009-12-02",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              8,
+              "6893.6900",
+              "861.711250",
+              75,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12830",
+              "2011-06-21",
+              "2011-11-02",
+              "2011-12-01",
+              29,
+              6,
+              "6814.6400",
+              "1135.773333",
+              76,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15039",
+              "2009-12-10",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              21,
+              "6713.0700",
+              "319.670000",
+              77,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17107",
+              "2010-01-31",
+              "2011-11-06",
+              "2011-12-01",
+              25,
+              4,
+              "6696.6200",
+              "1674.155000",
+              78,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17581",
+              "2009-12-03",
+              "2011-11-06",
+              "2011-12-01",
+              25,
+              12,
+              "6640.8000",
+              "553.400000",
+              79,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14936",
+              "2010-05-05",
+              "2011-11-06",
+              "2011-12-01",
+              25,
+              7,
+              "6560.6600",
+              "937.237143",
+              80,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17340",
+              "2010-02-14",
+              "2011-11-10",
+              "2011-12-01",
+              21,
+              7,
+              "6550.4800",
+              "935.782857",
+              81,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13969",
+              "2010-03-25",
+              "2011-11-23",
+              "2011-12-01",
+              8,
+              10,
+              "6404.9600",
+              "640.496000",
+              82,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15251",
+              "2010-01-29",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              9,
+              "6389.2700",
+              "709.918889",
+              83,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12682",
+              "2009-12-01",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              19,
+              "6374.3000",
+              "335.489474",
+              84,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17865",
+              "2009-12-01",
+              "2011-11-09",
+              "2011-12-01",
+              22,
+              13,
+              "6364.6600",
+              "489.589231",
+              85,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16843",
+              "2009-12-10",
+              "2011-10-28",
+              "2011-12-01",
+              34,
+              10,
+              "6354.6700",
+              "635.467000",
+              86,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "15856",
+              "2009-12-03",
+              "2011-10-25",
+              "2011-12-01",
+              37,
+              13,
+              "6337.4000",
+              "487.492308",
+              87,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "14895",
+              "2009-12-10",
+              "2011-11-10",
+              "2011-12-01",
+              21,
+              14,
+              "6293.3100",
+              "449.522143",
+              88,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13985",
+              "2010-02-09",
+              "2011-11-25",
+              "2011-12-01",
+              6,
+              12,
+              "6271.7700",
+              "522.647500",
+              89,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12357",
+              "2010-11-16",
+              "2011-11-06",
+              "2011-12-01",
+              25,
+              1,
+              "6207.6700",
+              "6207.670000",
+              90,
+              3450,
+              true,
+              "Recent single-order"
+            ],
+            [
+              "12971",
+              "2009-12-15",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              43,
+              "6168.6700",
+              "143.457442",
+              91,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17381",
+              "2010-06-09",
+              "2011-11-15",
+              "2011-12-01",
+              16,
+              12,
+              "6149.3200",
+              "512.443333",
+              92,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17509",
+              "2011-10-07",
+              "2011-10-13",
+              "2011-12-01",
+              49,
+              8,
+              "6115.1400",
+              "764.392500",
+              93,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "13319",
+              "2009-12-06",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              14,
+              "6008.6100",
+              "429.186429",
+              94,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17139",
+              "2010-01-11",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              8,
+              "5962.5700",
+              "745.321250",
+              95,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16779",
+              "2009-12-03",
+              "2011-11-25",
+              "2011-12-01",
+              6,
+              10,
+              "5891.9000",
+              "589.190000",
+              96,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14367",
+              "2011-03-08",
+              "2011-11-18",
+              "2011-12-01",
+              13,
+              9,
+              "5798.8800",
+              "644.320000",
+              97,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12681",
+              "2009-12-13",
+              "2011-11-25",
+              "2011-12-01",
+              6,
+              10,
+              "5742.6100",
+              "574.261000",
+              98,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16523",
+              "2010-01-24",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              11,
+              "5727.2500",
+              "520.659091",
+              99,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15615",
+              "2009-12-02",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              13,
+              "5660.6800",
+              "435.436923",
+              100,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14062",
+              "2009-12-10",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              6,
+              "5630.2200",
+              "938.370000",
+              101,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15640",
+              "2009-12-14",
+              "2011-11-23",
+              "2011-12-01",
+              8,
+              7,
+              "5557.5700",
+              "793.938571",
+              102,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14849",
+              "2010-01-10",
+              "2011-11-18",
+              "2011-12-01",
+              13,
+              15,
+              "5517.6300",
+              "367.842000",
+              103,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12567",
+              "2010-02-11",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              6,
+              "5516.9600",
+              "919.493333",
+              104,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13090",
+              "2010-08-02",
+              "2011-11-20",
+              "2011-12-01",
+              11,
+              6,
+              "5443.8400",
+              "907.306667",
+              105,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17306",
+              "2010-11-01",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              11,
+              "5435.6500",
+              "494.150000",
+              106,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13199",
+              "2009-12-05",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              19,
+              "5435.1400",
+              "286.060000",
+              107,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16126",
+              "2009-12-02",
+              "2011-11-10",
+              "2011-12-01",
+              21,
+              3,
+              "5396.4200",
+              "1798.806667",
+              108,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12626",
+              "2011-01-17",
+              "2011-11-16",
+              "2011-12-01",
+              15,
+              7,
+              "5346.3800",
+              "763.768571",
+              109,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13709",
+              "2010-01-11",
+              "2011-11-03",
+              "2011-12-01",
+              28,
+              10,
+              "5325.0400",
+              "532.504000",
+              110,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15498",
+              "2009-12-16",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              13,
+              "5308.6100",
+              "408.354615",
+              111,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14667",
+              "2009-12-02",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              14,
+              "5287.3900",
+              "377.670714",
+              112,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16525",
+              "2009-12-02",
+              "2011-11-23",
+              "2011-12-01",
+              8,
+              10,
+              "5284.4400",
+              "528.444000",
+              113,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12621",
+              "2010-02-09",
+              "2011-11-16",
+              "2011-12-01",
+              15,
+              9,
+              "5145.6500",
+              "571.738889",
+              114,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16033",
+              "2010-08-11",
+              "2011-11-06",
+              "2011-12-01",
+              25,
+              8,
+              "5116.8600",
+              "639.607500",
+              115,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16656",
+              "2009-12-04",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              9,
+              "5068.3200",
+              "563.146667",
+              116,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14258",
+              "2009-12-04",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              3,
+              "5062.1600",
+              "1687.386667",
+              117,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12432",
+              "2011-06-20",
+              "2011-10-28",
+              "2011-12-01",
+              34,
+              5,
+              "5059.3200",
+              "1011.864000",
+              118,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "12444",
+              "2011-06-21",
+              "2011-11-18",
+              "2011-12-01",
+              13,
+              5,
+              "5005.4600",
+              "1001.092000",
+              119,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15786",
+              "2010-06-21",
+              "2011-10-24",
+              "2011-12-01",
+              38,
+              3,
+              "4932.2000",
+              "1644.066667",
+              120,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "14606",
+              "2009-12-03",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              42,
+              "4909.8100",
+              "116.900238",
+              121,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13629",
+              "2010-02-11",
+              "2011-11-16",
+              "2011-12-01",
+              15,
+              7,
+              "4904.3600",
+              "700.622857",
+              122,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17243",
+              "2009-12-01",
+              "2011-11-25",
+              "2011-12-01",
+              6,
+              13,
+              "4877.1700",
+              "375.166923",
+              123,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12688",
+              "2011-08-18",
+              "2011-08-18",
+              "2011-12-01",
+              105,
+              1,
+              "4873.8100",
+              "4873.810000",
+              124,
+              3450,
+              true,
+              "Inactive"
+            ],
+            [
+              "16532",
+              "2010-03-29",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              2,
+              "4838.4000",
+              "2419.200000",
+              125,
+              3450,
+              true,
+              "Recent repeat"
+            ],
+            [
+              "15150",
+              "2010-06-14",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              9,
+              "4813.2200",
+              "534.802222",
+              126,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15152",
+              "2010-01-07",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              13,
+              "4745.6900",
+              "365.053077",
+              127,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15078",
+              "2009-12-04",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              15,
+              "4735.8700",
+              "315.724667",
+              128,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12474",
+              "2010-02-11",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              10,
+              "4656.6600",
+              "465.666000",
+              129,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12709",
+              "2009-12-09",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              7,
+              "4583.3900",
+              "654.770000",
+              130,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14944",
+              "2010-02-17",
+              "2011-11-10",
+              "2011-12-01",
+              21,
+              8,
+              "4575.9200",
+              "571.990000",
+              131,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14952",
+              "2009-12-03",
+              "2011-10-11",
+              "2011-12-01",
+              51,
+              4,
+              "4564.8800",
+              "1141.220000",
+              132,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "16303",
+              "2010-03-18",
+              "2011-11-14",
+              "2011-12-01",
+              17,
+              2,
+              "4533.4500",
+              "2266.725000",
+              133,
+              3450,
+              true,
+              "Recent repeat"
+            ],
+            [
+              "14527",
+              "2009-12-02",
+              "2011-11-27",
+              "2011-12-01",
+              4,
+              27,
+              "4523.7900",
+              "167.547778",
+              134,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "18092",
+              "2009-12-04",
+              "2011-11-01",
+              "2011-12-01",
+              30,
+              5,
+              "4510.1800",
+              "902.036000",
+              135,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14769",
+              "2009-12-16",
+              "2011-09-18",
+              "2011-12-01",
+              74,
+              3,
+              "4495.4300",
+              "1498.476667",
+              136,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "14056",
+              "2011-02-28",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              12,
+              "4487.6500",
+              "373.970833",
+              137,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15903",
+              "2010-01-14",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              5,
+              "4485.1200",
+              "897.024000",
+              138,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16984",
+              "2010-03-07",
+              "2011-09-12",
+              "2011-12-01",
+              80,
+              2,
+              "4481.3500",
+              "2240.675000",
+              139,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "12627",
+              "2011-07-22",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              7,
+              "4478.5300",
+              "639.790000",
+              140,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "18229",
+              "2009-12-03",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              12,
+              "4418.2000",
+              "368.183333",
+              141,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15290",
+              "2010-02-24",
+              "2011-11-08",
+              "2011-12-01",
+              23,
+              7,
+              "4372.9400",
+              "624.705714",
+              142,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12476",
+              "2010-07-26",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              6,
+              "4371.3200",
+              "728.553333",
+              143,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15382",
+              "2009-12-04",
+              "2011-11-25",
+              "2011-12-01",
+              6,
+              4,
+              "4367.6900",
+              "1091.922500",
+              144,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12752",
+              "2011-09-19",
+              "2011-09-19",
+              "2011-12-01",
+              73,
+              1,
+              "4366.7800",
+              "4366.780000",
+              145,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "15144",
+              "2009-12-13",
+              "2011-11-15",
+              "2011-12-01",
+              16,
+              11,
+              "4359.5200",
+              "396.320000",
+              146,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13316",
+              "2010-03-10",
+              "2011-11-02",
+              "2011-12-01",
+              29,
+              3,
+              "4355.2500",
+              "1451.750000",
+              147,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12939",
+              "2010-01-12",
+              "2011-10-06",
+              "2011-12-01",
+              56,
+              5,
+              "4353.4800",
+              "870.696000",
+              148,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "16187",
+              "2011-02-28",
+              "2011-11-08",
+              "2011-12-01",
+              23,
+              8,
+              "4346.8000",
+              "543.350000",
+              149,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "18251",
+              "2009-12-22",
+              "2011-09-13",
+              "2011-12-01",
+              79,
+              1,
+              "4314.7200",
+              "4314.720000",
+              150,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "16713",
+              "2009-12-15",
+              "2011-11-21",
+              "2011-12-01",
+              10,
+              7,
+              "4311.5000",
+              "615.928571",
+              151,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16558",
+              "2009-12-03",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              9,
+              "4288.9400",
+              "476.548889",
+              152,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15125",
+              "2010-03-31",
+              "2011-11-14",
+              "2011-12-01",
+              17,
+              11,
+              "4217.7600",
+              "383.432727",
+              153,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17716",
+              "2009-12-02",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              9,
+              "4204.3700",
+              "467.152222",
+              154,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "18109",
+              "2010-07-01",
+              "2011-11-25",
+              "2011-12-01",
+              6,
+              12,
+              "4200.0300",
+              "350.002500",
+              155,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16258",
+              "2010-03-10",
+              "2011-10-25",
+              "2011-12-01",
+              37,
+              4,
+              "4171.0500",
+              "1042.762500",
+              156,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "13384",
+              "2010-07-27",
+              "2011-11-09",
+              "2011-12-01",
+              22,
+              7,
+              "4151.9300",
+              "593.132857",
+              157,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14796",
+              "2009-12-14",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              7,
+              "4116.5100",
+              "588.072857",
+              158,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16729",
+              "2011-04-12",
+              "2011-11-01",
+              "2011-12-01",
+              30,
+              11,
+              "4111.1000",
+              "373.736364",
+              159,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16182",
+              "2010-03-09",
+              "2011-09-28",
+              "2011-12-01",
+              64,
+              2,
+              "4100.6500",
+              "2050.325000",
+              160,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "16923",
+              "2010-01-31",
+              "2011-11-27",
+              "2011-12-01",
+              4,
+              10,
+              "4087.0900",
+              "408.709000",
+              161,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12449",
+              "2010-09-27",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              4,
+              "4067.2900",
+              "1016.822500",
+              162,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14159",
+              "2009-12-03",
+              "2011-11-20",
+              "2011-12-01",
+              11,
+              9,
+              "4040.9200",
+              "448.991111",
+              163,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16549",
+              "2010-03-28",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              9,
+              "4035.1500",
+              "448.350000",
+              164,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16672",
+              "2011-03-18",
+              "2011-11-04",
+              "2011-12-01",
+              27,
+              10,
+              "4023.8000",
+              "402.380000",
+              165,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12378",
+              "2010-05-26",
+              "2011-08-02",
+              "2011-12-01",
+              121,
+              1,
+              "4008.6200",
+              "4008.620000",
+              166,
+              3450,
+              true,
+              "Inactive"
+            ],
+            [
+              "13871",
+              "2009-12-20",
+              "2011-11-17",
+              "2011-12-01",
+              14,
+              8,
+              "4007.5200",
+              "500.940000",
+              167,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15218",
+              "2010-01-26",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              8,
+              "3999.6300",
+              "499.953750",
+              168,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13576",
+              "2009-12-08",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              11,
+              "3970.9400",
+              "360.994545",
+              169,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17651",
+              "2010-07-01",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              10,
+              "3945.0000",
+              "394.500000",
+              170,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16353",
+              "2009-12-07",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              10,
+              "3926.4300",
+              "392.643000",
+              171,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13139",
+              "2010-09-28",
+              "2011-11-23",
+              "2011-12-01",
+              8,
+              5,
+              "3894.9200",
+              "778.984000",
+              172,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14961",
+              "2009-12-04",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              4,
+              "3865.0200",
+              "966.255000",
+              173,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12435",
+              "2009-12-02",
+              "2011-09-21",
+              "2011-12-01",
+              71,
+              1,
+              "3850.9000",
+              "3850.900000",
+              174,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "15249",
+              "2010-03-26",
+              "2011-11-08",
+              "2011-12-01",
+              23,
+              8,
+              "3847.0900",
+              "480.886250",
+              175,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "18172",
+              "2009-12-11",
+              "2011-11-25",
+              "2011-12-01",
+              6,
+              13,
+              "3841.5200",
+              "295.501538",
+              176,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14562",
+              "2010-02-07",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              13,
+              "3835.3500",
+              "295.026923",
+              177,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14191",
+              "2009-12-11",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              10,
+              "3829.5400",
+              "382.954000",
+              178,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12490",
+              "2009-12-01",
+              "2011-11-22",
+              "2011-12-01",
+              9,
+              7,
+              "3759.9100",
+              "537.130000",
+              179,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12451",
+              "2010-06-28",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              3,
+              "3727.7000",
+              "1242.566667",
+              180,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12362",
+              "2009-12-01",
+              "2011-11-04",
+              "2011-12-01",
+              27,
+              7,
+              "3722.8500",
+              "531.835714",
+              181,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16652",
+              "2010-03-17",
+              "2011-10-12",
+              "2011-12-01",
+              50,
+              4,
+              "3719.3500",
+              "929.837500",
+              182,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "16240",
+              "2011-09-23",
+              "2011-11-15",
+              "2011-12-01",
+              16,
+              2,
+              "3718.8000",
+              "1859.400000",
+              183,
+              3450,
+              true,
+              "Recent repeat"
+            ],
+            [
+              "12705",
+              "2010-06-24",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              6,
+              "3704.1900",
+              "617.365000",
+              184,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14004",
+              "2010-09-30",
+              "2011-10-27",
+              "2011-12-01",
+              35,
+              6,
+              "3682.6200",
+              "613.770000",
+              185,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "17049",
+              "2010-03-04",
+              "2011-11-18",
+              "2011-12-01",
+              13,
+              5,
+              "3682.1800",
+              "736.436000",
+              186,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15005",
+              "2009-12-01",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              16,
+              "3661.7700",
+              "228.860625",
+              187,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "13263",
+              "2010-10-22",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              18,
+              "3657.2500",
+              "203.180556",
+              188,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "14110",
+              "2009-12-01",
+              "2011-11-18",
+              "2011-12-01",
+              13,
+              9,
+              "3656.1900",
+              "406.243333",
+              189,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "12757",
+              "2011-05-12",
+              "2011-11-24",
+              "2011-12-01",
+              7,
+              8,
+              "3654.8700",
+              "456.858750",
+              190,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "18073",
+              "2011-05-26",
+              "2011-08-17",
+              "2011-12-01",
+              106,
+              10,
+              "3636.4400",
+              "363.644000",
+              191,
+              3450,
+              true,
+              "Inactive"
+            ],
+            [
+              "12637",
+              "2010-06-14",
+              "2011-10-03",
+              "2011-12-01",
+              59,
+              4,
+              "3630.1500",
+              "907.537500",
+              192,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "14390",
+              "2010-10-10",
+              "2011-11-29",
+              "2011-12-01",
+              2,
+              6,
+              "3616.7400",
+              "602.790000",
+              193,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "15505",
+              "2011-07-07",
+              "2011-10-18",
+              "2011-12-01",
+              44,
+              5,
+              "3610.9600",
+              "722.192000",
+              194,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "15113",
+              "2011-10-16",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              3,
+              "3609.3300",
+              "1203.110000",
+              195,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "16745",
+              "2011-02-01",
+              "2011-09-14",
+              "2011-12-01",
+              78,
+              8,
+              "3606.2700",
+              "450.783750",
+              196,
+              3450,
+              true,
+              "Needs attention"
+            ],
+            [
+              "13018",
+              "2010-03-01",
+              "2011-11-23",
+              "2011-12-01",
+              8,
+              17,
+              "3603.7400",
+              "211.984706",
+              197,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17811",
+              "2010-09-20",
+              "2011-11-28",
+              "2011-12-01",
+              3,
+              20,
+              "3594.6700",
+              "179.733500",
+              198,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17017",
+              "2009-12-03",
+              "2011-11-30",
+              "2011-12-01",
+              1,
+              8,
+              "3569.8400",
+              "446.230000",
+              199,
+              3450,
+              true,
+              "Champions"
+            ],
+            [
+              "17203",
+              "2010-11-16",
+              "2011-11-04",
+              "2011-12-01",
+              27,
+              6,
+              "3563.8500",
+              "593.975000",
+              200,
+              3450,
+              true,
+              "Champions"
+            ]
+          ],
+          "truncated": true
+        },
+        "references": [
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 0.6673581576003146
+          },
+          {
+            "id": "metrics.md:6",
+            "text": "No cost, margin, campaign outcomes, or data after the observed maximum date is provided.\nDo not infer campaign uplift, profit, or future sales as measured facts.\nFor an unspecified period or ambiguous 'best customer', ask for clarification.\nAlways label incomplete observation periods and absent data; absence is not automatically zero.",
+            "sha256": "6436a8c70b56f246436f807d5eb15625ebf5243ece26fa2f1e1ca5a865edc29c",
+            "score": 0.4805349578314883
+          },
+          {
+            "id": "metrics.md:2",
+            "text": "Data source: UCI Online Retail II, DOI 10.24432/C5CG6D, CC BY 4.0.\nAn original row is an invoice line, not an order. Duplicate source lines are retained;\nthe build report counts exact duplicate extra rows. Results describe this policy.",
+            "sha256": "b32f55fe4b97cdc4d495c226c51707ff85fba2db1abdc4aafc3255b56e3bb836",
+            "score": 0.4359995785974835
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 0.3988227813182936
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.3202367737115221
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 0.318150518449882
+          }
+        ],
+        "attempts": []
+      },
+      "gold": null
+    },
+    {
+      "id": "dev10",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": true,
+      "elapsed_seconds": 1.5421562639999138,
+      "result": {
+        "status": "clarification",
+        "message": "The requested metric 'profit' cannot be calculated from the available data. The provided schemas (orders, sales_lines, customer_summary) contain fields for order_amount and line_amount, but do not include cost, margin, or profit figures. Additionally, the reference documents explicitly state: 'No cost, margin, campaign outcomes, or data after the observed maximum date is provided.' Therefore, profit cannot be derived.",
+        "references": [
+          {
+            "id": "metrics.md:6",
+            "text": "No cost, margin, campaign outcomes, or data after the observed maximum date is provided.\nDo not infer campaign uplift, profit, or future sales as measured facts.\nFor an unspecified period or ambiguous 'best customer', ask for clarification.\nAlways label incomplete observation periods and absent data; absence is not automatically zero.",
+            "sha256": "6436a8c70b56f246436f807d5eb15625ebf5243ece26fa2f1e1ca5a865edc29c",
+            "score": 0.910014918717319
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 0.65776047875168
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.6031450380162291
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.4359909165088962
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 0.3523338669704896
+          }
+        ],
+        "attempts": []
+      },
+      "gold": null
+    },
+    {
+      "id": "dev10",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": true,
+      "elapsed_seconds": 1.0726021760001458,
+      "result": {
+        "status": "clarification",
+        "message": "The requested metric 'measured profit' cannot be calculated from the provided dataset schemas. The available tables (customer_summary, orders, sales_lines) contain fields for order_amount, line_amount, quantity, and unit_price, but there is no field representing cost, margin, or profit per transaction. Without cost data, profit cannot be derived.",
+        "references": [],
+        "attempts": []
+      },
+      "gold": null
+    }
+  ],
+  "started_at_utc": "2026-10-26T04:33:53.878711+00:00",
+  "spark_version": "4.1.3",
+  "spark_master": "spark://spark-master:7077",
+  "provenance": {
+    "files_sha256": {
+      "jobs/agent.py": "d5373327e3ec297c16edf5639bee9c83f38fa57a5bce67dde49cdb1755ad0def",
+      "jobs/build_tables.py": "4ad0a4d6946602f57a6fd3dd69a29e24f4aa04c0670bcc366356076c21ab206d",
+      "jobs/check_model.py": "0e51bf11f30dcbd529e107f65231e2f5c44b81e9fcf3e5ce0832551b3e606e40",
+      "jobs/evaluate.py": "303079b9450e952d9a6cb56be1bf2c66f375cdd0cdfb910149da395188ae87aa",
+      "jobs/prepare_data.py": "c744c6dd460628eb978dc6a4a651da27006a90b5d52846fe99edadd6695126ff",
+      "jobs/provenance.py": "2d4bc5f87ff234f3383e1dd114c5528cbe28ed39c1134655700e713310249a39",
+      "jobs/query_runtime.py": "6140b7286dde4164d3eed119e3bf1fd029934114d3b8affc6675a84d5e5f7291",
+      "jobs/retrieval.py": "b90da4964eb8605b4c578bb037e7819a57fb34cb083b0b5902f47f571403e93e",
+      "jobs/smoke_hdfs.py": "8c49e735416e2ba88943590a67d87d085c8300ed2bb86556c0b466c816b5b938",
+      "jobs/sql_guard.py": "0628b69f52c18a34a8eeb829adf070ea3f25eed2d197608acf88dd0c2e904846",
+      "jobs/test_agent_spark.py": "9894cf71bb5a7ca7c5fafe974cf2edaa1714be777a604b78ab4f3eaeba092ed9",
+      "jobs/test_model_spark.py": "0f8524346a414d17697ac47d7d414e79fd0a428b12f8061a24b37545ee10f0ec",
+      "jobs/test_pipeline.py": "c4a1828b8d5a1046448d6d61837d6378ccae2d88cea553a03fcceafa2db267b0",
+      "knowledge/metrics.md": "2b51ac1d506559ce2b2f0a68e8513777c630ad8dbf11397e50802b7231f82c65",
+      "knowledge/schema.md": "e182a6969e4bc3b80c2dd7ed485ac10d080e799b78127e3cfdc43e3752359dc9",
+      "knowledge/spark_sql.md": "44d248a18fd5bd5bcbf59c823fe4a3d5307637058159f87d2e4c1d117644b894",
+      "knowledge/thai_glossary.md": "e1ee8275da67259c51c48b276ee293d662ecae31d368a3c6da784dfb78a9f1c4",
+      "sql/customer_summary.sql": "3b71dfcea27ec4dae8e92316ec2ab8033a14b880dec3722dd25acdc7c1c41d4b",
+      "sql/orders.sql": "76583aeaf72c09d3c03918f226fe8bd905392ee889641287db680b56b0564f9e",
+      "sql/sales_lines.sql": "b82aa6abca8594c7d45f5a45e111daadda0021e7b598a2aaaa57f59d1877d593",
+      "evaluation/dev.json": "434f0731e0d92811e090d2a6b890c4e8bca4a2bd52d03663ee2507f4f1824069",
+      "evaluation/test.json": "02b63f980ea8719dd46ffc8b17e5510197296e8a607dd4f0d4a52756666ab87c"
+    },
+    "model": {
+      "name": "qwen3.5:9b",
+      "model": "qwen3.5:9b",
+      "modified_at": "2026-10-26T11:03:02.5902654+07:00",
+      "size": 6550825550,
+      "digest": "56671c2ab9385f9cfcb404638e32cd62d88e3501d44822208363c010179a3c90",
+      "details": {
+        "parent_model": "model.gguf",
+        "format": "gguf",
+        "family": "qwen35",
+        "families": [
+          "qwen35"
+        ],
+        "parameter_size": "9.0B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 262144,
+        "embedding_length": 4096,
+        "runner": "llamacpp"
+      },
+      "capabilities": [
+        "completion",
+        "vision",
+        "tools",
+        "thinking"
+      ]
+    }
+  },
+  "build_run_id": "c81fa72c3c174a96bf8c03195b9e6f5e",
+  "summary": {
+    "False": {
+      "correct": 3,
+      "total": 10
+    },
+    "True": {
+      "correct": 9,
+      "total": 10
+    }
+  }
+}

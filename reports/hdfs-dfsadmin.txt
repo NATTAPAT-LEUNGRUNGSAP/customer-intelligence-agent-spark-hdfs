@@ -1,0 +1,62 @@
+Configured Capacity: 2162202353664 (1.97 TB)
+Present Capacity: 2008826828774 (1.83 TB)
+DFS Remaining: 2008771092480 (1.83 TB)
+DFS Used: 55736294 (53.15 MB)
+DFS Used%: 0.00%
+Replicated Blocks:
+	Under replicated blocks: 0
+	Blocks with corrupt replicas: 0
+	Missing blocks: 0
+	Missing blocks (with replication factor 1): 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+Erasure Coded Block Groups: 
+	Low redundancy block groups: 0
+	Block groups with corrupt internal blocks: 0
+	Missing block groups: 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+
+-------------------------------------------------
+Live datanodes (2):
+
+Name: 172.23.0.6:9866 (customer-intelligence-datanode-1-1.customer-intelligence_default)
+Hostname: datanode-1
+Decommission Status : Normal
+Configured Capacity: 1081101176832 (1006.85 GB)
+DFS Used: 27868147 (26.58 MB)
+Non DFS Used: 21695407117 (20.21 GB)
+DFS Remaining: 1004385546240 (935.41 GB)
+DFS Used%: 0.00%
+DFS Remaining%: 92.90%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Mon Oct 26 04:37:30 UTC 2026
+Last Block Report: Mon Oct 26 04:28:03 UTC 2026
+Num of Blocks: 15
+
+
+Name: 172.23.0.7:9866 (customer-intelligence-datanode-2-1.customer-intelligence_default)
+Hostname: datanode-2
+Decommission Status : Normal
+Configured Capacity: 1081101176832 (1006.85 GB)
+DFS Used: 27868147 (26.58 MB)
+Non DFS Used: 21695407117 (20.21 GB)
+DFS Remaining: 1004385546240 (935.41 GB)
+DFS Used%: 0.00%
+DFS Remaining%: 92.90%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Mon Oct 26 04:37:30 UTC 2026
+Last Block Report: Mon Oct 26 04:28:03 UTC 2026
+Num of Blocks: 15
+
+

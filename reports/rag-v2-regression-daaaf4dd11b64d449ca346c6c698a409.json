@@ -1,0 +1,2795 @@
+{
+  "status": "completed",
+  "rag_required": true,
+  "model": "qwen3.5:9b",
+  "split": "regression",
+  "cases": [
+    {
+      "id": "test01",
+      "question": "ยอดขาย completed sales เดือนกันยายน 2011 รวมกี่ปอนด์?",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.010713497999859,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 29.28845771774159
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 20.874417339818827
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 11.933756015048376
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 10.171867712128531
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": 9.178087785310723
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": 7.501814134325167
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "metric.sales",
+            "policy.period",
+            "syntax.time",
+            "schema.orders",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "context_ids": [
+            "metric.sales",
+            "policy.period",
+            "syntax.time",
+            "schema.orders",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 2556,
+          "elapsed_ms": 23.984958000255574
+        },
+        "status": "executed",
+        "sql": "SELECT SUM(order_amount) as total_sales FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01'",
+        "executed_sql": "SELECT * FROM (SELECT SUM(order_amount) AS total_sales FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01') AS guarded_result LIMIT 201",
+        "explanation": "Calculates the sum of order_amount for completed sales in September 2011 using the orders table, filtering by timestamp range [start inclusive, end exclusive).",
+        "grain": "invoice",
+        "citations": [
+          "metric.sales",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query correctly sums order_amount from orders for September 2011. Citations support metric definition and time syntax.",
+          "citations": [
+            "metric.sales",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "total_sales"
+          ],
+          "rows": [
+            [
+              "1058590.1720"
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "sum(order_amount)"
+        ],
+        "rows": [
+          [
+            "1058590.1720"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test02",
+      "question": "เดือนกันยายน 2011 มี completed orders กี่ใบ?",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.2425784150000254,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "metric.orders",
+            "source": "metrics.md",
+            "text": "Completed orders / invoices / จำนวนคำสั่งซื้อ / กี่ใบ = COUNT(*) from orders. One orders row is ONE INVOICE. A sales_lines row is ONE PRODUCT LINE, not an invoice. Never COUNT(*) from sales_lines to answer how many orders/invoices. Anonymous / unidentified / ไม่ระบุตัวตน orders are retained. ONLY when asked for anonymous orders alone, filter customer_id IS NULL. With no customer_id filter, COUNT(*) already includes both identified and anonymous invoices.",
+            "sha256": "e5f37b85b10b44cf47915f2c2b45915e9650fcad9d5b101d2dfb14a43776931f",
+            "score": 22.48661535749317
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 10.817763618999123
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 9.798987668219812
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 8.126800821085471
+          },
+          {
+            "id": "metric.customers",
+            "source": "metrics.md",
+            "text": "Identified purchasing customers / ลูกค้าที่ซื้อ = COUNT(DISTINCT customer_id) from orders in the requested period; NULL customer IDs are excluded. Count customers, not invoices or lines.",
+            "sha256": "571a4e25b8bbc757284bde199ee8c9cb9e3da45e4546a7a742553cbef3a260cb",
+            "score": 7.219356514982647
+          },
+          {
+            "id": "metric.repeat_rate",
+            "source": "metrics.md",
+            "text": "Repeat customer rate / ลูกค้าซื้อซ้ำ is a FRACTION in the requested transaction period. First filter orders to the period and customer_id IS NOT NULL. Group the ORIGINAL invoice rows by customer_id and COUNT(*) as number of orders. Do NOT DISTINCT customer_id before counting orders: that destroys frequency. Numerator = number of these customers with >=2 orders; denominator = number with >=1 order. It is not cohort retention or a snapshot measure. Do not use customer_summary for arbitrary periods.",
+            "sha256": "bc84a27f184306ca76b276cb4200f7276fce3c8b4c78434b64fdb510b6bc03d5",
+            "score": 6.694735181204866
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "metric.orders",
+            "syntax.time",
+            "policy.period",
+            "schema.orders",
+            "metric.customers",
+            "metric.repeat_rate"
+          ],
+          "context_ids": [
+            "metric.orders",
+            "syntax.time",
+            "policy.period",
+            "schema.orders",
+            "metric.customers",
+            "metric.repeat_rate",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3370,
+          "elapsed_ms": 12.135019000197644
+        },
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS completed_orders FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS completed_orders FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01') AS guarded_result LIMIT 201",
+        "explanation": "Count completed orders (invoices) in September 2011 by filtering the orders table for timestamps between September 1, 2011 (inclusive) and October 1, 2011 (exclusive).",
+        "grain": "invoice",
+        "citations": [
+          "metric.orders",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query correctly counts invoices in September 2011 using orders table and timestamp range. Approved.",
+          "citations": [
+            "metric.orders",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "completed_orders"
+          ],
+          "rows": [
+            [
+              1837
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            1837
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test03",
+      "question": "What was overall AOV including anonymous orders in September 2011?",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 4.173635084000125,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "metric.aov",
+            "source": "metrics.md",
+            "text": "AOV / average order value / เฉลี่ยต่อคำสั่งซื้อ = SUM(order_amount) / NULLIF(COUNT(*),0) from orders in the requested period. No customer_id filter means BOTH anonymous and identified orders are included; no extra NULL handling is required to include anonymous orders. Protect the DENOMINATOR count, not the numerator sum, from zero division. Do not average customer AOVs or product-line amounts to get overall order value.",
+            "sha256": "5ec453d76015878cc5b4f33452323763085e9fe8744bcf1ab83b5dbeb0d8b318",
+            "score": 36.6032638341287
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 31.628347390093538
+          },
+          {
+            "id": "metric.orders",
+            "source": "metrics.md",
+            "text": "Completed orders / invoices / จำนวนคำสั่งซื้อ / กี่ใบ = COUNT(*) from orders. One orders row is ONE INVOICE. A sales_lines row is ONE PRODUCT LINE, not an invoice. Never COUNT(*) from sales_lines to answer how many orders/invoices. Anonymous / unidentified / ไม่ระบุตัวตน orders are retained. ONLY when asked for anonymous orders alone, filter customer_id IS NULL. With no customer_id filter, COUNT(*) already includes both identified and anonymous invoices.",
+            "sha256": "e5f37b85b10b44cf47915f2c2b45915e9650fcad9d5b101d2dfb14a43776931f",
+            "score": 29.868683545517975
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 18.733816204361727
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 10.817763618999123
+          },
+          {
+            "id": "syntax.aggregation",
+            "source": "spark_sql.md",
+            "text": "Use GROUP BY for customer, product or country aggregation. Conditional aggregation: SUM(CASE WHEN condition THEN 1 ELSE 0 END). Division: numerator / NULLIF(denominator,0). For repeat-customer rate group original orders by customer BEFORE aggregating frequencies. COUNT(DISTINCT customer_id) excludes NULL; COUNT(*) includes anonymous invoice rows.",
+            "sha256": "608084c8d7bd8aa1c87609acc0af23f93a8d10979056ac6b9bbc34718d350492",
+            "score": 9.787922107123435
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "metric.aov",
+            "schema.orders",
+            "metric.orders",
+            "policy.period",
+            "syntax.time",
+            "syntax.aggregation"
+          ],
+          "context_ids": [
+            "metric.aov",
+            "schema.orders",
+            "metric.orders",
+            "policy.period",
+            "syntax.time",
+            "syntax.aggregation",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3454,
+          "elapsed_ms": 13.01855599922419
+        },
+        "status": "executed",
+        "sql": "SELECT SUM(order_amount) / NULLIF(COUNT(*), 0) AS aov FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01'",
+        "executed_sql": "SELECT * FROM (SELECT SUM(order_amount) / NULLIF(COUNT(*), 0) AS aov FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01') AS guarded_result LIMIT 201",
+        "explanation": "Calculated Average Order Value (AOV) for September 2011 by summing order_amount and dividing by the count of orders within the timestamp range [2011-09-01, 2011-10-01). Per metric.aov and schema.orders, this includes both identified and anonymous orders (customer_id IS NULL) as no filter is applied.",
+        "grain": "invoice",
+        "citations": [
+          "metric.aov",
+          "schema.orders",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query correctly calculates AOV for September 2011 using orders table, includes anonymous orders via missing customer_id filter, and applies correct timestamp range.",
+          "citations": [
+            "metric.aov",
+            "schema.orders",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "aov"
+          ],
+          "rows": [
+            [
+              "576.260300"
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "(sum(order_amount) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            "576.260300"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test04",
+      "question": "Return country and total sales for the top three countries in September 2011; sort by sales descending then country ascending.",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.946341564999784,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 30.06359205065379
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 20.473391653300038
+          },
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.",
+            "sha256": "526fd57d60ccd056d3948738f4f3d600984e0c374d29d68869b3fd173de67484",
+            "score": 16.84619063616557
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 14.193010305117982
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 13.007739613674795
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": 10.554538723184198
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "metric.sales",
+            "policy.period",
+            "schema.sales_lines",
+            "syntax.time",
+            "schema.orders",
+            "policy.availability"
+          ],
+          "context_ids": [
+            "metric.sales",
+            "policy.period",
+            "schema.sales_lines",
+            "syntax.time",
+            "schema.orders",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3121,
+          "elapsed_ms": 13.993325999763329
+        },
+        "status": "executed",
+        "sql": "SELECT country, SUM(order_amount) AS total_sales FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01' GROUP BY country ORDER BY total_sales DESC, country ASC LIMIT 3",
+        "executed_sql": "SELECT * FROM (SELECT country, SUM(order_amount) AS total_sales FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01' GROUP BY country ORDER BY total_sales DESC, country ASC LIMIT 3) AS guarded_result LIMIT 201",
+        "explanation": "The query calculates total sales (SUM(order_amount)) for each country from the 'orders' table. It filters for September 2011 using timestamp comparisons (start inclusive, end exclusive) as per schema.sales_lines and syntax.time policies. Results are grouped by country, sorted by sales descending then country ascending, and limited to the top three.",
+        "grain": "invoice",
+        "citations": [
+          "metric.sales",
+          "schema.orders",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query correctly uses orders table for September 2011 sales aggregation with proper timestamp filtering and sorting.",
+          "citations": [
+            "metric.sales",
+            "schema.orders",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "country",
+            "total_sales"
+          ],
+          "rows": [
+            [
+              "United Kingdom",
+              "897076.4720"
+            ],
+            [
+              "EIRE",
+              "43086.5500"
+            ],
+            [
+              "Netherlands",
+              "26937.2600"
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "country",
+          "sales"
+        ],
+        "rows": [
+          [
+            "United Kingdom",
+            "897076.4720"
+          ],
+          [
+            "EIRE",
+            "43086.5500"
+          ],
+          [
+            "Netherlands",
+            "26937.2600"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test05",
+      "question": "How many unique identified customers placed completed orders in September 2011?",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 4.114391447999878,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "metric.customers",
+            "source": "metrics.md",
+            "text": "Identified purchasing customers / ลูกค้าที่ซื้อ = COUNT(DISTINCT customer_id) from orders in the requested period; NULL customer IDs are excluded. Count customers, not invoices or lines.",
+            "sha256": "571a4e25b8bbc757284bde199ee8c9cb9e3da45e4546a7a742553cbef3a260cb",
+            "score": 22.135797802600987
+          },
+          {
+            "id": "metric.orders",
+            "source": "metrics.md",
+            "text": "Completed orders / invoices / จำนวนคำสั่งซื้อ / กี่ใบ = COUNT(*) from orders. One orders row is ONE INVOICE. A sales_lines row is ONE PRODUCT LINE, not an invoice. Never COUNT(*) from sales_lines to answer how many orders/invoices. Anonymous / unidentified / ไม่ระบุตัวตน orders are retained. ONLY when asked for anonymous orders alone, filter customer_id IS NULL. With no customer_id filter, COUNT(*) already includes both identified and anonymous invoices.",
+            "sha256": "e5f37b85b10b44cf47915f2c2b45915e9650fcad9d5b101d2dfb14a43776931f",
+            "score": 16.08174905781029
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 14.414756783572688
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 11.79668373737845
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 10.817763618999123
+          },
+          {
+            "id": "metric.aov",
+            "source": "metrics.md",
+            "text": "AOV / average order value / เฉลี่ยต่อคำสั่งซื้อ = SUM(order_amount) / NULLIF(COUNT(*),0) from orders in the requested period. No customer_id filter means BOTH anonymous and identified orders are included; no extra NULL handling is required to include anonymous orders. Protect the DENOMINATOR count, not the numerator sum, from zero division. Do not average customer AOVs or product-line amounts to get overall order value.",
+            "sha256": "5ec453d76015878cc5b4f33452323763085e9fe8744bcf1ab83b5dbeb0d8b318",
+            "score": 9.197958807127634
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "metric.customers",
+            "metric.orders",
+            "schema.orders",
+            "policy.period",
+            "syntax.time",
+            "metric.aov"
+          ],
+          "context_ids": [
+            "metric.customers",
+            "metric.orders",
+            "schema.orders",
+            "policy.period",
+            "syntax.time",
+            "metric.aov",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3292,
+          "elapsed_ms": 14.372282999829622
+        },
+        "status": "executed",
+        "sql": "SELECT COUNT(DISTINCT customer_id) AS unique_identified_customers FROM orders WHERE customer_id IS NOT NULL AND order_ts >= '2011-09-01' AND order_ts < '2011-10-01'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(DISTINCT customer_id) AS unique_identified_customers FROM orders WHERE NOT customer_id IS NULL AND order_ts >= '2011-09-01' AND order_ts < '2011-10-01') AS guarded_result LIMIT 201",
+        "explanation": "Count distinct identified customers (customer_id IS NOT NULL) who placed completed orders in September 2011. The time range includes all of September 2011 and excludes October 1, 2011.",
+        "grain": "invoice",
+        "citations": [
+          "metric.customers",
+          "metric.orders",
+          "schema.orders",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query correctly counts distinct identified customers in September 2011 using orders table and proper timestamp range.",
+          "citations": [
+            "metric.customers",
+            "metric.orders",
+            "schema.orders",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "unique_identified_customers"
+          ],
+          "rows": [
+            [
+              1266
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "count(DISTINCT customer_id)"
+        ],
+        "rows": [
+          [
+            1266
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test06",
+      "question": "What fraction of identified purchasing customers placed at least two completed orders in September 2011? Return a fraction, not a percentage.",
+      "correct": false,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 13.094811304999894,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "metric.repeat_rate",
+            "source": "metrics.md",
+            "text": "Repeat customer rate / ลูกค้าซื้อซ้ำ is a FRACTION in the requested transaction period. First filter orders to the period and customer_id IS NOT NULL. Group the ORIGINAL invoice rows by customer_id and COUNT(*) as number of orders. Do NOT DISTINCT customer_id before counting orders: that destroys frequency. Numerator = number of these customers with >=2 orders; denominator = number with >=1 order. It is not cohort retention or a snapshot measure. Do not use customer_summary for arbitrary periods.",
+            "sha256": "bc84a27f184306ca76b276cb4200f7276fce3c8b4c78434b64fdb510b6bc03d5",
+            "score": 28.55197419386598
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 25.272285789015097
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 25.15940720547232
+          },
+          {
+            "id": "metric.customers",
+            "source": "metrics.md",
+            "text": "Identified purchasing customers / ลูกค้าที่ซื้อ = COUNT(DISTINCT customer_id) from orders in the requested period; NULL customer IDs are excluded. Count customers, not invoices or lines.",
+            "sha256": "571a4e25b8bbc757284bde199ee8c9cb9e3da45e4546a7a742553cbef3a260cb",
+            "score": 24.073922409666967
+          },
+          {
+            "id": "metric.orders",
+            "source": "metrics.md",
+            "text": "Completed orders / invoices / จำนวนคำสั่งซื้อ / กี่ใบ = COUNT(*) from orders. One orders row is ONE INVOICE. A sales_lines row is ONE PRODUCT LINE, not an invoice. Never COUNT(*) from sales_lines to answer how many orders/invoices. Anonymous / unidentified / ไม่ระบุตัวตน orders are retained. ONLY when asked for anonymous orders alone, filter customer_id IS NULL. With no customer_id filter, COUNT(*) already includes both identified and anonymous invoices.",
+            "sha256": "e5f37b85b10b44cf47915f2c2b45915e9650fcad9d5b101d2dfb14a43776931f",
+            "score": 16.341815339693866
+          },
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.",
+            "sha256": "526fd57d60ccd056d3948738f4f3d600984e0c374d29d68869b3fd173de67484",
+            "score": 15.86356854306252
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "metric.repeat_rate",
+            "policy.period",
+            "schema.orders",
+            "metric.customers",
+            "metric.orders",
+            "schema.sales_lines"
+          ],
+          "context_ids": [
+            "metric.repeat_rate",
+            "policy.period",
+            "schema.orders",
+            "metric.customers",
+            "metric.orders",
+            "schema.sales_lines",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3567,
+          "elapsed_ms": 16.780839999228192
+        },
+        "status": "executed",
+        "sql": "WITH period_orders AS (\n  SELECT customer_id\n  FROM orders\n  WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01'\n    AND customer_id IS NOT NULL\n),\ncustomer_order_counts AS (\n  SELECT customer_id,\n         COUNT(*) AS order_count\n  FROM period_orders\n  GROUP BY customer_id\n),\nrepeat_customers AS (\n  SELECT customer_id\n  FROM customer_order_counts\n  WHERE order_count >= 2\n),\nall_purchasing_customers AS (\n  SELECT customer_id\n  FROM orders\n  WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01'\n    AND customer_id IS NOT NULL\n)\nSELECT CAST(COUNT(DISTINCT rc.customer_id) AS DOUBLE) / COUNT(DISTINCT apc.customer_id)\nFROM repeat_customers rc\nJOIN all_purchasing_customers apc ON rc.customer_id = apc.customer_id",
+        "executed_sql": "SELECT * FROM (WITH period_orders AS (SELECT customer_id FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01' AND NOT customer_id IS NULL), customer_order_counts AS (SELECT customer_id, COUNT(*) AS order_count FROM period_orders GROUP BY customer_id), repeat_customers AS (SELECT customer_id FROM customer_order_counts WHERE order_count >= 2), all_purchasing_customers AS (SELECT customer_id FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01' AND NOT customer_id IS NULL) SELECT CAST(COUNT(DISTINCT rc.customer_id) AS DOUBLE) / COUNT(DISTINCT apc.customer_id) FROM repeat_customers AS rc JOIN all_purchasing_customers AS apc ON rc.customer_id = apc.customer_id) AS guarded_result LIMIT 201",
+        "explanation": "The corrected query calculates the repeat rate for September 2011. It filters 'orders' to completed sales in September 2011 (order_ts between 2011-09-01 and 2011-10-01) where customer_id is not null. It groups by customer_id to count orders per customer, identifying those with >=2 orders. The numerator counts distinct customers who placed at least two orders in the period. The denominator counts distinct customers who placed at least one order in the period. The result is the fraction of these customers who are repeat buyers.",
+        "grain": "customer",
+        "citations": [
+          "metric.repeat_rate",
+          "policy.period",
+          "schema.orders"
+        ],
+        "review": {
+          "reason": "Query correctly filters orders to September 2011, excludes NULL customer_ids, counts orders per customer without DISTINCT before grouping, and calculates the repeat fraction. All constraints met.",
+          "citations": [
+            "metric.repeat_rate",
+            "policy.period",
+            "schema.orders"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "(CAST(count(DISTINCT customer_id) AS DOUBLE) / count(DISTINCT customer_id))"
+          ],
+          "rows": [
+            [
+              1.0
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [
+          {
+            "sql": "WITH period_orders AS (\n  SELECT customer_id\n  FROM orders\n  WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01'\n    AND customer_id IS NOT NULL\n),\ncustomer_order_counts AS (\n  SELECT customer_id,\n         COUNT(*) AS order_count\n  FROM period_orders\n  GROUP BY customer_id\n),\nrepeat_customers AS (\n  SELECT customer_id\n  FROM customer_order_counts\n  WHERE order_count >= 2\n),\nall_purchasing_customers AS (\n  SELECT DISTINCT customer_id\n  FROM orders\n  WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01'\n    AND customer_id IS NOT NULL\n)\nSELECT CAST(COUNT(*) FILTER (WHERE customer_id IN (SELECT customer_id FROM repeat_customers)) AS DOUBLE) / COUNT(*)\nFROM all_purchasing_customers",
+            "error": "Evidence consistency review rejected SQL: Query uses DISTINCT on orders to count unique customers, violating metric.repeat_rate which forbids DISTINCT before counting orders. It also incorrectly filters the denominator to only customers with >=1 order in Sept 2011 instead of all identified purchasing customers."
+          }
+        ],
+        "model_calls": 4
+      },
+      "gold": {
+        "columns": [
+          "(sum(CASE WHEN (n >= 2) THEN 1 ELSE 0 END) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            0.21406003159557663
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test07",
+      "question": "How many anonymous completed orders were recorded during September 2011?",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.5114018349995604,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "metric.orders",
+            "source": "metrics.md",
+            "text": "Completed orders / invoices / จำนวนคำสั่งซื้อ / กี่ใบ = COUNT(*) from orders. One orders row is ONE INVOICE. A sales_lines row is ONE PRODUCT LINE, not an invoice. Never COUNT(*) from sales_lines to answer how many orders/invoices. Anonymous / unidentified / ไม่ระบุตัวตน orders are retained. ONLY when asked for anonymous orders alone, filter customer_id IS NULL. With no customer_id filter, COUNT(*) already includes both identified and anonymous invoices.",
+            "sha256": "e5f37b85b10b44cf47915f2c2b45915e9650fcad9d5b101d2dfb14a43776931f",
+            "score": 31.187883459778757
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 19.64689550663579
+          },
+          {
+            "id": "metric.aov",
+            "source": "metrics.md",
+            "text": "AOV / average order value / เฉลี่ยต่อคำสั่งซื้อ = SUM(order_amount) / NULLIF(COUNT(*),0) from orders in the requested period. No customer_id filter means BOTH anonymous and identified orders are included; no extra NULL handling is required to include anonymous orders. Protect the DENOMINATOR count, not the numerator sum, from zero division. Do not average customer AOVs or product-line amounts to get overall order value.",
+            "sha256": "5ec453d76015878cc5b4f33452323763085e9fe8744bcf1ab83b5dbeb0d8b318",
+            "score": 14.098618957436168
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 10.817763618999123
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 9.798987668219812
+          },
+          {
+            "id": "syntax.aggregation",
+            "source": "spark_sql.md",
+            "text": "Use GROUP BY for customer, product or country aggregation. Conditional aggregation: SUM(CASE WHEN condition THEN 1 ELSE 0 END). Division: numerator / NULLIF(denominator,0). For repeat-customer rate group original orders by customer BEFORE aggregating frequencies. COUNT(DISTINCT customer_id) excludes NULL; COUNT(*) includes anonymous invoice rows.",
+            "sha256": "608084c8d7bd8aa1c87609acc0af23f93a8d10979056ac6b9bbc34718d350492",
+            "score": 9.787922107123435
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "metric.orders",
+            "schema.orders",
+            "metric.aov",
+            "syntax.time",
+            "policy.period",
+            "syntax.aggregation"
+          ],
+          "context_ids": [
+            "metric.orders",
+            "schema.orders",
+            "metric.aov",
+            "syntax.time",
+            "policy.period",
+            "syntax.aggregation",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3454,
+          "elapsed_ms": 11.498294000375608
+        },
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS anonymous_orders_count FROM orders WHERE customer_id IS NULL AND order_ts >= '2011-09-01' AND order_ts < '2011-10-01'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS anonymous_orders_count FROM orders WHERE customer_id IS NULL AND order_ts >= '2011-09-01' AND order_ts < '2011-10-01') AS guarded_result LIMIT 201",
+        "explanation": "Count rows in the 'orders' table where customer_id is NULL (anonymous) and order_ts falls within September 2011 (inclusive start, exclusive end).",
+        "grain": "invoice",
+        "citations": [
+          "metric.orders",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query correctly filters anonymous orders (customer_id IS NULL) for September 2011 using the 'orders' table and timestamp range. Citations support invoice counting and time syntax.",
+          "citations": [
+            "metric.orders",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "anonymous_orders_count"
+          ],
+          "rows": [
+            [
+              82
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            82
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test08",
+      "question": "Return month and completed sales for each month January through March 2011, using date_trunc MONTH and ascending month order.",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 4.25039988700064,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 35.69183525051122
+          },
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 33.067047275843635
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 20.404049718334203
+          },
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.",
+            "sha256": "526fd57d60ccd056d3948738f4f3d600984e0c374d29d68869b3fd173de67484",
+            "score": 16.907150157784347
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 15.291311956463673
+          },
+          {
+            "id": "metric.orders",
+            "source": "metrics.md",
+            "text": "Completed orders / invoices / จำนวนคำสั่งซื้อ / กี่ใบ = COUNT(*) from orders. One orders row is ONE INVOICE. A sales_lines row is ONE PRODUCT LINE, not an invoice. Never COUNT(*) from sales_lines to answer how many orders/invoices. Anonymous / unidentified / ไม่ระบุตัวตน orders are retained. ONLY when asked for anonymous orders alone, filter customer_id IS NULL. With no customer_id filter, COUNT(*) already includes both identified and anonymous invoices.",
+            "sha256": "e5f37b85b10b44cf47915f2c2b45915e9650fcad9d5b101d2dfb14a43776931f",
+            "score": 14.973874397702662
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "syntax.time",
+            "metric.sales",
+            "policy.period",
+            "schema.sales_lines",
+            "schema.orders",
+            "metric.orders"
+          ],
+          "context_ids": [
+            "syntax.time",
+            "metric.sales",
+            "policy.period",
+            "schema.sales_lines",
+            "schema.orders",
+            "metric.orders",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3579,
+          "elapsed_ms": 17.05325700004323
+        },
+        "status": "executed",
+        "sql": "SELECT DATE_TRUNC('MONTH', o.order_ts) AS month, SUM(o.order_amount) AS completed_sales FROM orders o WHERE o.order_ts >= '2011-01-01' AND o.order_ts < '2011-04-01' GROUP BY DATE_TRUNC('MONTH', o.order_ts) ORDER BY month ASC",
+        "executed_sql": "SELECT * FROM (SELECT DATE_TRUNC('MONTH', o.order_ts) AS month, SUM(o.order_amount) AS completed_sales FROM orders AS o WHERE o.order_ts >= '2011-01-01' AND o.order_ts < '2011-04-01' GROUP BY DATE_TRUNC('MONTH', o.order_ts) ORDER BY month ASC) AS guarded_result LIMIT 201",
+        "explanation": "The query calculates completed sales (SUM of order_amount) for each month from January to March 2011. It uses the 'orders' table which contains completed-sale invoices only. The time range is inclusive of Jan 1 and exclusive of April 1 to capture Jan, Feb, Mar. Results are grouped by truncated month and ordered ascending.",
+        "grain": "invoice",
+        "citations": [
+          "metric.sales",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query correctly uses orders table for completed sales, applies correct time range (Jan 1 to Apr 1 exclusive), groups by truncated month, and orders ascending. No discrepancies found.",
+          "citations": [
+            "metric.sales",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "month",
+            "completed_sales"
+          ],
+          "rows": [
+            [
+              "2011-01-01 00:00:00",
+              "691364.5600"
+            ],
+            [
+              "2011-02-01 00:00:00",
+              "523631.8900"
+            ],
+            [
+              "2011-03-01 00:00:00",
+              "717639.3600"
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "month",
+          "sum(order_amount)"
+        ],
+        "rows": [
+          [
+            "2011-01-01 00:00:00",
+            "691364.5600"
+          ],
+          [
+            "2011-02-01 00:00:00",
+            "523631.8900"
+          ],
+          [
+            "2011-03-01 00:00:00",
+            "717639.3600"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test09",
+      "question": "Return product ID and completed sale-line revenue for the top three products in September 2011, breaking revenue ties by product ID ascending.",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 4.752815745000589,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.",
+            "sha256": "526fd57d60ccd056d3948738f4f3d600984e0c374d29d68869b3fd173de67484",
+            "score": 35.66577804136543
+          },
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 30.200933455924023
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 18.317588292847507
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 16.054403182016966
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 14.193010305117982
+          },
+          {
+            "id": "metric.aov",
+            "source": "metrics.md",
+            "text": "AOV / average order value / เฉลี่ยต่อคำสั่งซื้อ = SUM(order_amount) / NULLIF(COUNT(*),0) from orders in the requested period. No customer_id filter means BOTH anonymous and identified orders are included; no extra NULL handling is required to include anonymous orders. Protect the DENOMINATOR count, not the numerator sum, from zero division. Do not average customer AOVs or product-line amounts to get overall order value.",
+            "sha256": "5ec453d76015878cc5b4f33452323763085e9fe8744bcf1ab83b5dbeb0d8b318",
+            "score": 13.454284906277385
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "schema.sales_lines",
+            "metric.sales",
+            "policy.period",
+            "schema.orders",
+            "syntax.time",
+            "metric.aov"
+          ],
+          "context_ids": [
+            "schema.sales_lines",
+            "metric.sales",
+            "policy.period",
+            "schema.orders",
+            "syntax.time",
+            "metric.aov",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3544,
+          "elapsed_ms": 12.057910999828891
+        },
+        "status": "executed",
+        "sql": "SELECT product_id, SUM(line_amount) AS revenue FROM sales_lines WHERE transaction_type = 'sale' AND DATE_TRUNC('MONTH', invoice_ts) = TIMESTAMP '2011-09-01 00:00:00' GROUP BY product_id ORDER BY revenue DESC, product_id ASC LIMIT 3",
+        "executed_sql": "SELECT * FROM (SELECT product_id, SUM(line_amount) AS revenue FROM sales_lines WHERE transaction_type = 'sale' AND DATE_TRUNC('MONTH', invoice_ts) = CAST('2011-09-01 00:00:00' AS TIMESTAMP) GROUP BY product_id ORDER BY revenue DESC, product_id ASC LIMIT 3) AS guarded_result LIMIT 201",
+        "explanation": "The query selects the top three products by completed sale-line revenue in September 2011. It filters sales_lines for transaction_type='sale', truncates invoice_ts to the month of September 2011 (inclusive start, exclusive end per policy), groups by product_id, sums line_amount, and orders by revenue descending then product_id ascending to break ties.",
+        "grain": "product_line",
+        "citations": [
+          "schema.sales_lines",
+          "metric.sales",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query uses correct table, metric, transaction_type filter, time period logic, and tie-breaking order.",
+          "citations": [
+            "schema.sales_lines",
+            "metric.sales",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "product_id",
+            "revenue"
+          ],
+          "rows": [
+            [
+              "DOT",
+              "15177.4000"
+            ],
+            [
+              "23243",
+              "9981.4100"
+            ],
+            [
+              "22423",
+              "9619.5300"
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "product_id",
+          "revenue"
+        ],
+        "rows": [
+          [
+            "DOT",
+            "15177.4000"
+          ],
+          [
+            "23243",
+            "9981.4100"
+          ],
+          [
+            "22423",
+            "9619.5300"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test10",
+      "question": "Count cancellation lines recorded in September 2011.",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.429208649999964,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 18.918642538648985
+          },
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.",
+            "sha256": "526fd57d60ccd056d3948738f4f3d600984e0c374d29d68869b3fd173de67484",
+            "score": 18.376430510607864
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 9.005990426294844
+          },
+          {
+            "id": "metric.customers",
+            "source": "metrics.md",
+            "text": "Identified purchasing customers / ลูกค้าที่ซื้อ = COUNT(DISTINCT customer_id) from orders in the requested period; NULL customer IDs are excluded. Count customers, not invoices or lines.",
+            "sha256": "571a4e25b8bbc757284bde199ee8c9cb9e3da45e4546a7a742553cbef3a260cb",
+            "score": 8.479364453793714
+          },
+          {
+            "id": "metric.aov",
+            "source": "metrics.md",
+            "text": "AOV / average order value / เฉลี่ยต่อคำสั่งซื้อ = SUM(order_amount) / NULLIF(COUNT(*),0) from orders in the requested period. No customer_id filter means BOTH anonymous and identified orders are included; no extra NULL handling is required to include anonymous orders. Protect the DENOMINATOR count, not the numerator sum, from zero division. Do not average customer AOVs or product-line amounts to get overall order value.",
+            "sha256": "5ec453d76015878cc5b4f33452323763085e9fe8744bcf1ab83b5dbeb0d8b318",
+            "score": 5.685783566758069
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": 5.595992256303177
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "policy.period",
+            "schema.sales_lines",
+            "syntax.time",
+            "metric.customers",
+            "metric.aov",
+            "policy.snapshot"
+          ],
+          "context_ids": [
+            "policy.period",
+            "schema.sales_lines",
+            "syntax.time",
+            "metric.customers",
+            "metric.aov",
+            "policy.snapshot",
+            "policy.availability"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 2962,
+          "elapsed_ms": 29.815482999765663
+        },
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS cancellation_count FROM sales_lines WHERE transaction_type = 'cancellation' AND invoice_ts >= '2011-09-01 00:00:00' AND invoice_ts < '2011-10-01 00:00:00'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS cancellation_count FROM sales_lines WHERE transaction_type = 'cancellation' AND invoice_ts >= '2011-09-01 00:00:00' AND invoice_ts < '2011-10-01 00:00:00') AS guarded_result LIMIT 201",
+        "explanation": "Counts cancellation lines in September 2011 using sales_lines with transaction_type='cancellation' and timestamp range [Sep 1, Oct 1).",
+        "grain": "invoice",
+        "citations": [
+          "schema.sales_lines",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query correctly filters cancellation lines in September 2011 using sales_lines schema and time syntax.",
+          "citations": [
+            "schema.sales_lines",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "cancellation_count"
+          ],
+          "rows": [
+            [
+              805
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            805
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test11",
+      "question": "Count return lines recorded in September 2011.",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.1952610329999516,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 15.799240761661839
+          },
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.",
+            "sha256": "526fd57d60ccd056d3948738f4f3d600984e0c374d29d68869b3fd173de67484",
+            "score": 13.78860845738059
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 9.005990426294844
+          },
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 8.595056702011274
+          },
+          {
+            "id": "metric.customers",
+            "source": "metrics.md",
+            "text": "Identified purchasing customers / ลูกค้าที่ซื้อ = COUNT(DISTINCT customer_id) from orders in the requested period; NULL customer IDs are excluded. Count customers, not invoices or lines.",
+            "sha256": "571a4e25b8bbc757284bde199ee8c9cb9e3da45e4546a7a742553cbef3a260cb",
+            "score": 8.479364453793714
+          },
+          {
+            "id": "metric.aov",
+            "source": "metrics.md",
+            "text": "AOV / average order value / เฉลี่ยต่อคำสั่งซื้อ = SUM(order_amount) / NULLIF(COUNT(*),0) from orders in the requested period. No customer_id filter means BOTH anonymous and identified orders are included; no extra NULL handling is required to include anonymous orders. Protect the DENOMINATOR count, not the numerator sum, from zero division. Do not average customer AOVs or product-line amounts to get overall order value.",
+            "sha256": "5ec453d76015878cc5b4f33452323763085e9fe8744bcf1ab83b5dbeb0d8b318",
+            "score": 5.685783566758069
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "policy.period",
+            "schema.sales_lines",
+            "syntax.time",
+            "metric.sales",
+            "metric.customers",
+            "metric.aov"
+          ],
+          "context_ids": [
+            "policy.period",
+            "schema.sales_lines",
+            "syntax.time",
+            "metric.sales",
+            "metric.customers",
+            "metric.aov",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3293,
+          "elapsed_ms": 12.68610900024214
+        },
+        "status": "executed",
+        "sql": "SELECT COUNT(*) as return_count FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'return'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS return_count FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'return') AS guarded_result LIMIT 201",
+        "explanation": "Counts the number of rows in sales_lines where transaction_type is 'return' and the timestamp falls within September 2011 (inclusive start, exclusive end).",
+        "grain": "invoice",
+        "citations": [
+          "schema.sales_lines",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query correctly counts return lines in sales_lines for September 2011 using proper timestamp range and transaction_type filter.",
+          "citations": [
+            "schema.sales_lines",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "return_count"
+          ],
+          "rows": [
+            [
+              0
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            0
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test12",
+      "question": "For the 2011-12-01 snapshot return customer ID and sales_180d of the five customers with greatest 180-day sales, sorting sales descending then customer ID ascending.",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.672772119000001,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 26.42662967540701
+          },
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 26.29390723292753
+          },
+          {
+            "id": "schema.customer_summary",
+            "source": "schema.md",
+            "text": "customer_summary: one IDENTIFIED CUSTOMER in the 180-day window for one snapshot. customer_id string; first_purchase_date/last_purchase_date/as_of_date dates; recency_days int; orders_180d bigint; sales_180d/aov_180d decimal; monetary_rank/population_size bigint; is_high_value boolean; rfm_segment string. Anonymous customers and those without a purchase in the window are excluded. first_purchase_date is first OBSERVED, not necessarily first-ever purchase.",
+            "sha256": "dfa5501ba643a911f9d64f4b4e998564a13aa106c5c13d2ff84b70bad82ac174",
+            "score": 22.080771051041182
+          },
+          {
+            "id": "metric.customers",
+            "source": "metrics.md",
+            "text": "Identified purchasing customers / ลูกค้าที่ซื้อ = COUNT(DISTINCT customer_id) from orders in the requested period; NULL customer IDs are excluded. Count customers, not invoices or lines.",
+            "sha256": "571a4e25b8bbc757284bde199ee8c9cb9e3da45e4546a7a742553cbef3a260cb",
+            "score": 21.139699777384234
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": 20.37629338240895
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 17.96284910241658
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "policy.period",
+            "metric.sales",
+            "schema.customer_summary",
+            "metric.customers",
+            "policy.snapshot",
+            "schema.orders"
+          ],
+          "context_ids": [
+            "policy.period",
+            "metric.sales",
+            "schema.customer_summary",
+            "metric.customers",
+            "policy.snapshot",
+            "schema.orders",
+            "policy.availability"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 2833,
+          "elapsed_ms": 12.316432000261557
+        },
+        "status": "executed",
+        "sql": "SELECT customer_id, sales_180d FROM customer_summary WHERE as_of_date = '2011-12-01' ORDER BY sales_180d DESC, customer_id ASC LIMIT 5",
+        "executed_sql": "SELECT * FROM (SELECT customer_id, sales_180d FROM customer_summary WHERE as_of_date = '2011-12-01' ORDER BY sales_180d DESC, customer_id ASC LIMIT 5) AS guarded_result LIMIT 201",
+        "explanation": "The query selects the top 5 customers by their 180-day sales (sales_180d) from the customer_summary table for the snapshot date of 2011-12-01. The results are sorted by sales descending and then by customer ID ascending to handle ties.",
+        "grain": "customer",
+        "citations": [
+          "schema.customer_summary",
+          "policy.snapshot"
+        ],
+        "review": {
+          "reason": "Query correctly filters snapshot date, selects top 5 customers by sales_180d with proper sorting.",
+          "citations": [
+            "schema.customer_summary",
+            "policy.snapshot"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "customer_id",
+            "sales_180d"
+          ],
+          "rows": [
+            [
+              "18102",
+              "183529.6500"
+            ],
+            [
+              "14646",
+              "152342.0800"
+            ],
+            [
+              "17450",
+              "137228.1300"
+            ],
+            [
+              "14911",
+              "98046.3600"
+            ],
+            [
+              "12415",
+              "74030.6300"
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "customer_id",
+          "sales_180d"
+        ],
+        "rows": [
+          [
+            "18102",
+            "183529.6500"
+          ],
+          [
+            "14646",
+            "152342.0800"
+          ],
+          [
+            "17450",
+            "137228.1300"
+          ],
+          [
+            "14911",
+            "98046.3600"
+          ],
+          [
+            "12415",
+            "74030.6300"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test13",
+      "question": "How many Champions are there at the 2011-12-01 snapshot?",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.527775632000157,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "segment.champions",
+            "source": "metrics.md",
+            "text": "Champions / แชมเปี้ยน is customer_summary.rfm_segment = 'Champions' at the requested snapshot. Definition: recency_days <=30 and orders_180d >=3. Count customer_summary rows with rfm_segment='Champions'. Do NOT substitute is_high_value=true: these labels are different.",
+            "sha256": "ffe662e9d4c6b537b6a8f9f4d5ca83a4da5c1cc26c14f11fc6285e6e294f1a2b",
+            "score": 26.985225889316407
+          },
+          {
+            "id": "metric.high_value",
+            "source": "metrics.md",
+            "text": "High-value / มูลค่าสูง customers: customer_summary.is_high_value = true at the requested snapshot. This is the first CEIL(20% * population_size) customers ranked by sales_180d DESC, then customer_id ASC. It is NOT the Champions segment. Fraction = high-value count / population count. Use the requested available as_of_date; never add is_high_value filters for other segments.",
+            "sha256": "eafb871099c2f56126f125e34e2ee5b2c0ed89ada2bbfc11c5255c82dc1a942c",
+            "score": 14.729331839682128
+          },
+          {
+            "id": "segment.distribution",
+            "source": "metrics.md",
+            "text": "RFM segment / กลุ่มลูกค้า distribution groups customer_summary by rfm_segment for one as_of_date. Segments: Champions (recency<=30, frequency>=3); Recent repeat (recency<=30, frequency=2); Recent single-order (recency<=30, frequency=1); Needs attention (recency 31..90); Inactive (recency>90 within the eligible population). These are project definitions. Frequency is invoices, monetary is 180-day sales. Do not infer other snapshot distributions.",
+            "sha256": "41e444eb6404217089b3cb0bbfdb663fabdf70014435f080fe5599901f9ff976",
+            "score": 14.039701135835955
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": 13.880203410204246
+          },
+          {
+            "id": "schema.customer_summary",
+            "source": "schema.md",
+            "text": "customer_summary: one IDENTIFIED CUSTOMER in the 180-day window for one snapshot. customer_id string; first_purchase_date/last_purchase_date/as_of_date dates; recency_days int; orders_180d bigint; sales_180d/aov_180d decimal; monetary_rank/population_size bigint; is_high_value boolean; rfm_segment string. Anonymous customers and those without a purchase in the window are excluded. first_purchase_date is first OBSERVED, not necessarily first-ever purchase.",
+            "sha256": "dfa5501ba643a911f9d64f4b4e998564a13aa106c5c13d2ff84b70bad82ac174",
+            "score": 12.519846041668913
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 12.261495844757665
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "segment.champions",
+            "metric.high_value",
+            "segment.distribution",
+            "policy.snapshot",
+            "schema.customer_summary",
+            "policy.period"
+          ],
+          "context_ids": [
+            "segment.champions",
+            "metric.high_value",
+            "segment.distribution",
+            "policy.snapshot",
+            "schema.customer_summary",
+            "policy.period",
+            "policy.availability"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 2972,
+          "elapsed_ms": 12.76978500027326
+        },
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS champions_count FROM customer_summary WHERE as_of_date = '2011-12-01' AND rfm_segment = 'Champions'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS champions_count FROM customer_summary WHERE as_of_date = '2011-12-01' AND rfm_segment = 'Champions') AS guarded_result LIMIT 201",
+        "explanation": "Count the number of customers in the customer_summary table where the snapshot date is 2011-12-01 and the RFM segment is 'Champions'. The definition of Champions requires recency_days <= 30 and orders_180d >= 3, which is already encoded in the rfm_segment column.",
+        "grain": "customer",
+        "citations": [
+          "segment.champions",
+          "policy.snapshot"
+        ],
+        "review": {
+          "reason": "Query correctly filters customer_summary for snapshot 2011-12-01 and segment 'Champions'. Citations support definition and snapshot policy.",
+          "citations": [
+            "segment.champions",
+            "policy.snapshot"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "champions_count"
+          ],
+          "rows": [
+            [
+              937
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            937
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test14",
+      "question": "How many Inactive customers are there in the eligible 180-day population at the 2011-12-01 snapshot?",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.4577396079994287,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "segment.inactive",
+            "source": "metrics.md",
+            "text": "Inactive / ไม่เคลื่อนไหว is customer_summary.rfm_segment = 'Inactive' at the requested snapshot. Definition: recency_days >90 within the eligible 180-day purchasing population. Include BOTH high-value and non-high-value customers. Do not add is_high_value=false.",
+            "sha256": "92d845efd53b13722b31b1fa6575dcbd8bb617266ca4f283dcdae2e8c00b9998",
+            "score": 36.84446607558782
+          },
+          {
+            "id": "segment.distribution",
+            "source": "metrics.md",
+            "text": "RFM segment / กลุ่มลูกค้า distribution groups customer_summary by rfm_segment for one as_of_date. Segments: Champions (recency<=30, frequency>=3); Recent repeat (recency<=30, frequency=2); Recent single-order (recency<=30, frequency=1); Needs attention (recency 31..90); Inactive (recency>90 within the eligible population). These are project definitions. Frequency is invoices, monetary is 180-day sales. Do not infer other snapshot distributions.",
+            "sha256": "41e444eb6404217089b3cb0bbfdb663fabdf70014435f080fe5599901f9ff976",
+            "score": 22.264022173046772
+          },
+          {
+            "id": "metric.customers",
+            "source": "metrics.md",
+            "text": "Identified purchasing customers / ลูกค้าที่ซื้อ = COUNT(DISTINCT customer_id) from orders in the requested period; NULL customer IDs are excluded. Count customers, not invoices or lines.",
+            "sha256": "571a4e25b8bbc757284bde199ee8c9cb9e3da45e4546a7a742553cbef3a260cb",
+            "score": 18.37372740620372
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": 17.607925760056727
+          },
+          {
+            "id": "schema.customer_summary",
+            "source": "schema.md",
+            "text": "customer_summary: one IDENTIFIED CUSTOMER in the 180-day window for one snapshot. customer_id string; first_purchase_date/last_purchase_date/as_of_date dates; recency_days int; orders_180d bigint; sales_180d/aov_180d decimal; monetary_rank/population_size bigint; is_high_value boolean; rfm_segment string. Anonymous customers and those without a purchase in the window are excluded. first_purchase_date is first OBSERVED, not necessarily first-ever purchase.",
+            "sha256": "dfa5501ba643a911f9d64f4b4e998564a13aa106c5c13d2ff84b70bad82ac174",
+            "score": 16.381432869116544
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 14.259191913916302
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "segment.inactive",
+            "segment.distribution",
+            "metric.customers",
+            "policy.snapshot",
+            "schema.customer_summary",
+            "policy.period"
+          ],
+          "context_ids": [
+            "segment.inactive",
+            "segment.distribution",
+            "metric.customers",
+            "policy.snapshot",
+            "schema.customer_summary",
+            "policy.period",
+            "policy.availability"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 2775,
+          "elapsed_ms": 12.13078500040865
+        },
+        "status": "executed",
+        "sql": "SELECT COUNT(*) as inactive_customer_count FROM customer_summary WHERE as_of_date = '2011-12-01' AND rfm_segment = 'Inactive'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS inactive_customer_count FROM customer_summary WHERE as_of_date = '2011-12-01' AND rfm_segment = 'Inactive') AS guarded_result LIMIT 201",
+        "explanation": "Counts the number of customers in the 'Inactive' segment from the customer_summary table at the 2011-12-01 snapshot. The definition of Inactive includes both high-value and non-high-value customers with recency_days > 90 within the eligible 180-day population.",
+        "grain": "customer",
+        "citations": [
+          "segment.inactive",
+          "policy.snapshot"
+        ],
+        "review": {
+          "reason": "Query correctly filters customer_summary for snapshot 2011-12-01 and 'Inactive' segment, including all high-value/non-high-value customers per evidence.",
+          "citations": [
+            "segment.inactive",
+            "policy.snapshot"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "inactive_customer_count"
+          ],
+          "rows": [
+            [
+              610
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            610
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test15",
+      "question": "What are minimum and maximum observed transaction timestamps in sales_lines? Return min then max.",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.65445648000059,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 21.48368757946986
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 17.822855422792408
+          },
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.",
+            "sha256": "526fd57d60ccd056d3948738f4f3d600984e0c374d29d68869b3fd173de67484",
+            "score": 16.430083751741112
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 6.79522325005491
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 6.465114136992769
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": 5.946165047601518
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "metric.sales",
+            "policy.period",
+            "schema.sales_lines",
+            "schema.orders",
+            "syntax.time",
+            "policy.snapshot"
+          ],
+          "context_ids": [
+            "metric.sales",
+            "policy.period",
+            "schema.sales_lines",
+            "schema.orders",
+            "syntax.time",
+            "policy.snapshot",
+            "policy.availability"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3121,
+          "elapsed_ms": 12.592473000040627
+        },
+        "status": "executed",
+        "sql": "SELECT MIN(invoice_ts) as min_timestamp, MAX(invoice_ts) as max_timestamp FROM sales_lines",
+        "executed_sql": "SELECT * FROM (SELECT MIN(invoice_ts) AS min_timestamp, MAX(invoice_ts) AS max_timestamp FROM sales_lines) AS guarded_result LIMIT 201",
+        "explanation": "The query retrieves the minimum and maximum invoice_ts values from the sales_lines table to determine the observed transaction timestamp range.",
+        "grain": "sales_lines",
+        "citations": [
+          "schema.sales_lines"
+        ],
+        "review": {
+          "reason": "Query correctly uses sales_lines and MIN/MAX on invoice_ts. Evidence confirms schema columns.",
+          "citations": [
+            "schema.sales_lines"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "min_timestamp",
+            "max_timestamp"
+          ],
+          "rows": [
+            [
+              "2009-12-01 07:45:00",
+              "2011-12-09 12:50:00"
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [
+          {
+            "sql": "SELECT MIN(invoice_ts) as min_timestamp, MAX(invoice_ts) as max_timestamp FROM sales_lines",
+            "error": "Cite at least one supplied evidence ID; invented IDs are rejected"
+          }
+        ],
+        "model_calls": 3
+      },
+      "gold": {
+        "columns": [
+          "min(invoice_ts)",
+          "max(invoice_ts)"
+        ],
+        "rows": [
+          [
+            "2009-12-01 07:45:00",
+            "2011-12-09 12:50:00"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test16",
+      "question": "Return country and completed order count for the five countries with most orders in September 2011, ties by country ascending.",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 4.196060643000237,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 17.29227453807232
+          },
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 17.018219570845044
+          },
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.",
+            "sha256": "526fd57d60ccd056d3948738f4f3d600984e0c374d29d68869b3fd173de67484",
+            "score": 16.610739424245303
+          },
+          {
+            "id": "metric.orders",
+            "source": "metrics.md",
+            "text": "Completed orders / invoices / จำนวนคำสั่งซื้อ / กี่ใบ = COUNT(*) from orders. One orders row is ONE INVOICE. A sales_lines row is ONE PRODUCT LINE, not an invoice. Never COUNT(*) from sales_lines to answer how many orders/invoices. Anonymous / unidentified / ไม่ระบุตัวตน orders are retained. ONLY when asked for anonymous orders alone, filter customer_id IS NULL. With no customer_id filter, COUNT(*) already includes both identified and anonymous invoices.",
+            "sha256": "e5f37b85b10b44cf47915f2c2b45915e9650fcad9d5b101d2dfb14a43776931f",
+            "score": 14.753028304939228
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 14.499274202611872
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 11.737259247355498
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "policy.period",
+            "metric.sales",
+            "schema.sales_lines",
+            "metric.orders",
+            "syntax.time",
+            "schema.orders"
+          ],
+          "context_ids": [
+            "policy.period",
+            "metric.sales",
+            "schema.sales_lines",
+            "metric.orders",
+            "syntax.time",
+            "schema.orders",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3579,
+          "elapsed_ms": 18.016662999798427
+        },
+        "status": "executed",
+        "sql": "SELECT country, COUNT(*) AS order_count FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01' GROUP BY country ORDER BY order_count DESC, country ASC LIMIT 5",
+        "executed_sql": "SELECT * FROM (SELECT country, COUNT(*) AS order_count FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01' GROUP BY country ORDER BY order_count DESC, country ASC LIMIT 5) AS guarded_result LIMIT 201",
+        "explanation": "The query counts completed orders (from the `orders` table) for each country within September 2011. The time range is defined as starting at '2011-09-01' and ending before '2011-10-01' to include all of September. Results are grouped by country, ordered by count descending then country ascending for ties, and limited to the top 5.",
+        "grain": "invoice",
+        "citations": [
+          "metric.orders",
+          "schema.orders",
+          "syntax.time"
+        ],
+        "review": {
+          "reason": "Query correctly counts orders from `orders` table for September 2011 with proper time range and sorting.",
+          "citations": [
+            "metric.orders",
+            "schema.orders",
+            "syntax.time"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "country",
+            "order_count"
+          ],
+          "rows": [
+            [
+              "United Kingdom",
+              1645
+            ],
+            [
+              "France",
+              45
+            ],
+            [
+              "Germany",
+              41
+            ],
+            [
+              "EIRE",
+              38
+            ],
+            [
+              "Australia",
+              8
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "country",
+          "n"
+        ],
+        "rows": [
+          [
+            "United Kingdom",
+            1645
+          ],
+          [
+            "France",
+            45
+          ],
+          [
+            "Germany",
+            41
+          ],
+          [
+            "EIRE",
+            38
+          ],
+          [
+            "Australia",
+            8
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test17",
+      "question": "At the 2011-12-01 snapshot, what is the fraction of high-value customers among eligible customers?",
+      "correct": true,
+      "expected": "result",
+      "citation_valid": true,
+      "elapsed_seconds": 3.509412013999281,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "metric.high_value",
+            "source": "metrics.md",
+            "text": "High-value / มูลค่าสูง customers: customer_summary.is_high_value = true at the requested snapshot. This is the first CEIL(20% * population_size) customers ranked by sales_180d DESC, then customer_id ASC. It is NOT the Champions segment. Fraction = high-value count / population count. Use the requested available as_of_date; never add is_high_value filters for other segments.",
+            "sha256": "eafb871099c2f56126f125e34e2ee5b2c0ed89ada2bbfc11c5255c82dc1a942c",
+            "score": 35.9265457814402
+          },
+          {
+            "id": "segment.inactive",
+            "source": "metrics.md",
+            "text": "Inactive / ไม่เคลื่อนไหว is customer_summary.rfm_segment = 'Inactive' at the requested snapshot. Definition: recency_days >90 within the eligible 180-day purchasing population. Include BOTH high-value and non-high-value customers. Do not add is_high_value=false.",
+            "sha256": "92d845efd53b13722b31b1fa6575dcbd8bb617266ca4f283dcdae2e8c00b9998",
+            "score": 26.428255771395914
+          },
+          {
+            "id": "metric.customers",
+            "source": "metrics.md",
+            "text": "Identified purchasing customers / ลูกค้าที่ซื้อ = COUNT(DISTINCT customer_id) from orders in the requested period; NULL customer IDs are excluded. Count customers, not invoices or lines.",
+            "sha256": "571a4e25b8bbc757284bde199ee8c9cb9e3da45e4546a7a742553cbef3a260cb",
+            "score": 19.917999760236523
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": 17.00140732482899
+          },
+          {
+            "id": "schema.customer_summary",
+            "source": "schema.md",
+            "text": "customer_summary: one IDENTIFIED CUSTOMER in the 180-day window for one snapshot. customer_id string; first_purchase_date/last_purchase_date/as_of_date dates; recency_days int; orders_180d bigint; sales_180d/aov_180d decimal; monetary_rank/population_size bigint; is_high_value boolean; rfm_segment string. Anonymous customers and those without a purchase in the window are excluded. first_purchase_date is first OBSERVED, not necessarily first-ever purchase.",
+            "sha256": "dfa5501ba643a911f9d64f4b4e998564a13aa106c5c13d2ff84b70bad82ac174",
+            "score": 15.748420648886658
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 14.98686291386198
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "metric.high_value",
+            "segment.inactive",
+            "metric.customers",
+            "policy.snapshot",
+            "schema.customer_summary",
+            "policy.period"
+          ],
+          "context_ids": [
+            "metric.high_value",
+            "segment.inactive",
+            "metric.customers",
+            "policy.snapshot",
+            "schema.customer_summary",
+            "policy.period",
+            "policy.availability"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 2703,
+          "elapsed_ms": 11.347132000082638
+        },
+        "status": "executed",
+        "sql": "SELECT CAST(SUM(CASE WHEN is_high_value THEN 1 ELSE 0 END) AS DOUBLE) / COUNT(*) AS fraction FROM customer_summary WHERE as_of_date = '2011-12-01'",
+        "executed_sql": "SELECT * FROM (SELECT CAST(SUM(CASE WHEN is_high_value THEN 1 ELSE 0 END) AS DOUBLE) / COUNT(*) AS fraction FROM customer_summary WHERE as_of_date = '2011-12-01') AS guarded_result LIMIT 201",
+        "explanation": "The query calculates the fraction of high-value customers at the 2011-12-01 snapshot by counting customers where is_high_value is true and dividing by the total count of identified customers in the customer_summary table for that snapshot date.",
+        "grain": "customer",
+        "citations": [
+          "metric.high_value",
+          "policy.snapshot"
+        ],
+        "review": {
+          "reason": "Query correctly uses customer_summary, filters by as_of_date='2011-12-01', and calculates high-value fraction using is_high_value. Citations support metric definition and snapshot policy.",
+          "citations": [
+            "metric.high_value",
+            "policy.snapshot"
+          ],
+          "approved": true
+        },
+        "result": {
+          "columns": [
+            "fraction"
+          ],
+          "rows": [
+            [
+              0.2
+            ]
+          ],
+          "truncated": false
+        },
+        "attempts": [],
+        "model_calls": 2
+      },
+      "gold": {
+        "columns": [
+          "(sum(CASE WHEN is_high_value THEN 1 ELSE 0 END) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            0.2
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test18",
+      "question": "ยอดขายรวมเท่าไร?",
+      "correct": true,
+      "expected": "clarification",
+      "citation_valid": true,
+      "elapsed_seconds": 0.02175470000020141,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 30.599599834177706
+          },
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 21.691300753191697
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 6.79522325005491
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 2.9277655887535334
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": 2.8790101251606353
+          },
+          {
+            "id": "metric.high_value",
+            "source": "metrics.md",
+            "text": "High-value / มูลค่าสูง customers: customer_summary.is_high_value = true at the requested snapshot. This is the first CEIL(20% * population_size) customers ranked by sales_180d DESC, then customer_id ASC. It is NOT the Champions segment. Fraction = high-value count / population count. Use the requested available as_of_date; never add is_high_value filters for other segments.",
+            "sha256": "eafb871099c2f56126f125e34e2ee5b2c0ed89ada2bbfc11c5255c82dc1a942c",
+            "score": 2.8318518921522715
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "policy.period",
+            "metric.sales",
+            "schema.orders",
+            "syntax.time",
+            "policy.availability",
+            "metric.high_value"
+          ],
+          "context_ids": [
+            "policy.period",
+            "metric.sales",
+            "schema.orders",
+            "syntax.time",
+            "policy.availability",
+            "metric.high_value",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 2932,
+          "elapsed_ms": 21.573697000349057
+        },
+        "status": "clarification",
+        "message": "Which time period should be used? Please specify start/end dates or a month and year.",
+        "citations": [
+          "policy.period"
+        ],
+        "attempts": [],
+        "policy_enforced": true,
+        "model_calls": 0
+      },
+      "gold": null
+    },
+    {
+      "id": "test19",
+      "question": "What measured campaign uplift did our October 2011 email campaign produce?",
+      "correct": true,
+      "expected": "clarification",
+      "citation_valid": true,
+      "elapsed_seconds": 0.02391193099992961,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": 33.88340973380889
+          },
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 10.20911149121679
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.",
+            "sha256": "30b1f45729b2dd9cd14b156154bd3222eae2becb51c878c57e7a544ead064b2c",
+            "score": 9.005990426294844
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": 8.305953891809331
+          },
+          {
+            "id": "metric.customers",
+            "source": "metrics.md",
+            "text": "Identified purchasing customers / ลูกค้าที่ซื้อ = COUNT(DISTINCT customer_id) from orders in the requested period; NULL customer IDs are excluded. Count customers, not invoices or lines.",
+            "sha256": "571a4e25b8bbc757284bde199ee8c9cb9e3da45e4546a7a742553cbef3a260cb",
+            "score": 5.273929253750411
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": 4.733446511972947
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "policy.availability",
+            "metric.sales",
+            "syntax.time",
+            "policy.period",
+            "metric.customers",
+            "policy.snapshot"
+          ],
+          "context_ids": [
+            "policy.availability",
+            "metric.sales",
+            "syntax.time",
+            "policy.period",
+            "metric.customers",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 2305,
+          "elapsed_ms": 23.88254900051834
+        },
+        "status": "clarification",
+        "message": "The dataset has no costs, profit or measured campaign outcomes to answer this question.",
+        "citations": [
+          "policy.availability"
+        ],
+        "attempts": [],
+        "policy_enforced": true,
+        "model_calls": 0
+      },
+      "gold": null
+    },
+    {
+      "id": "test20",
+      "question": "What was the actual RFM segment distribution at the 2010-06-01 snapshot?",
+      "correct": true,
+      "expected": "clarification",
+      "citation_valid": true,
+      "elapsed_seconds": 0.023402520000672666,
+      "result": {
+        "rag": true,
+        "references": [
+          {
+            "id": "segment.distribution",
+            "source": "metrics.md",
+            "text": "RFM segment / กลุ่มลูกค้า distribution groups customer_summary by rfm_segment for one as_of_date. Segments: Champions (recency<=30, frequency>=3); Recent repeat (recency<=30, frequency=2); Recent single-order (recency<=30, frequency=1); Needs attention (recency 31..90); Inactive (recency>90 within the eligible population). These are project definitions. Frequency is invoices, monetary is 180-day sales. Do not infer other snapshot distributions.",
+            "sha256": "41e444eb6404217089b3cb0bbfdb663fabdf70014435f080fe5599901f9ff976",
+            "score": 27.54321557123956
+          },
+          {
+            "id": "schema.customer_summary",
+            "source": "schema.md",
+            "text": "customer_summary: one IDENTIFIED CUSTOMER in the 180-day window for one snapshot. customer_id string; first_purchase_date/last_purchase_date/as_of_date dates; recency_days int; orders_180d bigint; sales_180d/aov_180d decimal; monetary_rank/population_size bigint; is_high_value boolean; rfm_segment string. Anonymous customers and those without a purchase in the window are excluded. first_purchase_date is first OBSERVED, not necessarily first-ever purchase.",
+            "sha256": "dfa5501ba643a911f9d64f4b4e998564a13aa106c5c13d2ff84b70bad82ac174",
+            "score": 18.820406477192957
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": 15.909817503375894
+          },
+          {
+            "id": "segment.champions",
+            "source": "metrics.md",
+            "text": "Champions / แชมเปี้ยน is customer_summary.rfm_segment = 'Champions' at the requested snapshot. Definition: recency_days <=30 and orders_180d >=3. Count customer_summary rows with rfm_segment='Champions'. Do NOT substitute is_high_value=true: these labels are different.",
+            "sha256": "ffe662e9d4c6b537b6a8f9f4d5ca83a4da5c1cc26c14f11fc6285e6e294f1a2b",
+            "score": 13.276125462594623
+          },
+          {
+            "id": "segment.inactive",
+            "source": "metrics.md",
+            "text": "Inactive / ไม่เคลื่อนไหว is customer_summary.rfm_segment = 'Inactive' at the requested snapshot. Definition: recency_days >90 within the eligible 180-day purchasing population. Include BOTH high-value and non-high-value customers. Do not add is_high_value=false.",
+            "sha256": "92d845efd53b13722b31b1fa6575dcbd8bb617266ca4f283dcdae2e8c00b9998",
+            "score": 12.899819648815585
+          },
+          {
+            "id": "metric.high_value",
+            "source": "metrics.md",
+            "text": "High-value / มูลค่าสูง customers: customer_summary.is_high_value = true at the requested snapshot. This is the first CEIL(20% * population_size) customers ranked by sales_180d DESC, then customer_id ASC. It is NOT the Champions segment. Fraction = high-value count / population count. Use the requested available as_of_date; never add is_high_value filters for other segments.",
+            "sha256": "eafb871099c2f56126f125e34e2ee5b2c0ed89ada2bbfc11c5255c82dc1a942c",
+            "score": 12.353641946965627
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "53213e38e7ecec5b27f8722030fa389cd9900b1c1f66f02cc77f0e375b354178",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+primary-topic-field+bilingual-concepts-v2",
+          "ranked_ids": [
+            "segment.distribution",
+            "schema.customer_summary",
+            "policy.snapshot",
+            "segment.champions",
+            "segment.inactive",
+            "metric.high_value"
+          ],
+          "context_ids": [
+            "segment.distribution",
+            "schema.customer_summary",
+            "policy.snapshot",
+            "segment.champions",
+            "segment.inactive",
+            "metric.high_value",
+            "policy.period",
+            "policy.availability"
+          ],
+          "corpus_sha256": "469b12581e29845c3c555171293d05eb18538de958bae6c416b8cd7e0c4b993e",
+          "corpus_chunks": 20,
+          "context_characters": 3234,
+          "elapsed_ms": 23.339054999269138
+        },
+        "status": "clarification",
+        "message": "Only snapshot 2011-12-01 has been built; the requested snapshot is unavailable.",
+        "citations": [
+          "policy.snapshot"
+        ],
+        "attempts": [],
+        "policy_enforced": true,
+        "model_calls": 0
+      },
+      "gold": null
+    }
+  ],
+  "started_at_utc": "2026-10-26T05:05:48.156459+00:00",
+  "spark_version": "4.1.3",
+  "spark_master": "spark://spark-master:7077",
+  "gates": {
+    "accuracy_min": 0.9,
+    "clarification_accuracy_min": 1,
+    "citation_validity_min": 1,
+    "cited_relevant_evidence_rate_min": 0.95,
+    "latency_p95_seconds_max": 20
+  },
+  "provenance": {
+    "files_sha256": {
+      "jobs/agent.py": "dd68daf2434c1e23befadfafa9c23798bd9277ddad6995895dc21d163c7c5868",
+      "jobs/build_tables.py": "4ad0a4d6946602f57a6fd3dd69a29e24f4aa04c0670bcc366356076c21ab206d",
+      "jobs/check_model.py": "0e51bf11f30dcbd529e107f65231e2f5c44b81e9fcf3e5ce0832551b3e606e40",
+      "jobs/evaluate.py": "5ba9b17f9ba4bb320461146ba764ebc399b30d0ed8dae982afd6a7bc233c00b7",
+      "jobs/evaluate_retrieval.py": "d47fe0bac1ea14e3efee239b1b6dbf7223d5535f0bf0f1ee322248455d4d364e",
+      "jobs/prepare_data.py": "c744c6dd460628eb978dc6a4a651da27006a90b5d52846fe99edadd6695126ff",
+      "jobs/provenance.py": "77510abcbf79e6e06494ec5a5068c0399364c143915e3289d6d2fdaac4b9f009",
+      "jobs/query_runtime.py": "6140b7286dde4164d3eed119e3bf1fd029934114d3b8affc6675a84d5e5f7291",
+      "jobs/rag_metrics.py": "672f3dc2e436b747577c1daf6edf9c1c073a7f31f9425067de1f6ef61a4aee0a",
+      "jobs/retrieval.py": "533f7d17defbf783d329edcbd7d4fb916c34c359ac22f8fc84ff1d66dd6583ee",
+      "jobs/smoke_hdfs.py": "bd9989548d198b947e39c2a0ea40ee2c846491308a09a330db59b01befc5ee29",
+      "jobs/sql_guard.py": "0628b69f52c18a34a8eeb829adf070ea3f25eed2d197608acf88dd0c2e904846",
+      "jobs/test_agent_spark.py": "9894cf71bb5a7ca7c5fafe974cf2edaa1714be777a604b78ab4f3eaeba092ed9",
+      "jobs/test_model_spark.py": "0f8524346a414d17697ac47d7d414e79fd0a428b12f8061a24b37545ee10f0ec",
+      "jobs/test_pipeline.py": "c4a1828b8d5a1046448d6d61837d6378ccae2d88cea553a03fcceafa2db267b0",
+      "knowledge/metrics.md": "305c246e9f4a15d75e8f9954820bc81b329af948011d09033181387c245b95db",
+      "knowledge/schema.md": "0bd54abd4b184c786aa51837aa11164958b6f3c45775d051cff0bd53470e175f",
+      "knowledge/spark_sql.md": "802fbc310f3c6031bf1aa5d0161bd996bfe99ccf0a9c7647441f4d6d68d9a161",
+      "knowledge/thai_glossary.md": "bb472e7e786728fa2f7168b340e891fc8f689c2eb40e2be2902e2b7e770d6598",
+      "sql/customer_summary.sql": "3b71dfcea27ec4dae8e92316ec2ab8033a14b880dec3722dd25acdc7c1c41d4b",
+      "sql/orders.sql": "76583aeaf72c09d3c03918f226fe8bd905392ee889641287db680b56b0564f9e",
+      "sql/sales_lines.sql": "b82aa6abca8594c7d45f5a45e111daadda0021e7b598a2aaaa57f59d1877d593",
+      "evaluation/dev.json": "434f0731e0d92811e090d2a6b890c4e8bca4a2bd52d03663ee2507f4f1824069",
+      "evaluation/quality_gates_v2.json": "3f5a35420eeb913981390aa7edb846a16b4a5423c1dd53fafdb34369e6a4db0c",
+      "evaluation/rag_holdout_v2.json": "b0ab85123b8910c7497c8ba05ecc599c40b68d14d27a12f74a98655737a427b2",
+      "evaluation/retrieval_dev_v2.json": "094e5418718288687dbc023d14dbb107a3401954487e1a3695fa623df44e73d3",
+      "evaluation/test.json": "02b63f980ea8719dd46ffc8b17e5510197296e8a607dd4f0d4a52756666ab87c",
+      "infra/spark/Dockerfile": "85ab051b46c9153b3aeb403270f81b5eca31da594a92a2036c17ac0663146079",
+      "infra/spark/spark-defaults.conf": "c611e9ea51932f085d6cf6c7a13fdd8b9a12e96ff3ff81831d0d3c02686c808b",
+      "infra/hadoop/config/core-site.xml": "c00026c28bf1ce49d53e8ef4ca86174b5ef740734a43af4ddd29816f98462d9e",
+      "infra/hadoop/config/hdfs-site.xml": "a9e52c53f38ddfa76985772c60ad12412ea07e30280e1c91a4a6e1671b3c18fc",
+      "infra/hadoop/config/log4j.properties": "e98cd7090e3eab0f2c6baafd1ddceac2563ff55c43ba733c71c74c8654f618c8",
+      "compose.yaml": "2e8474c722add91ade335b851a4bf612029f74a909fabcfe7df2139a52e86263",
+      "requirements-agent.txt": "81845b8768d704d4a9c6bfa7307d4e9fdf273f80a1ec141081fbc9b97f92b1ef"
+    },
+    "model": {
+      "name": "qwen3.5:9b",
+      "model": "qwen3.5:9b",
+      "modified_at": "2026-10-26T11:03:02.5902654+07:00",
+      "size": 6550825550,
+      "digest": "56671c2ab9385f9cfcb404638e32cd62d88e3501d44822208363c010179a3c90",
+      "details": {
+        "parent_model": "model.gguf",
+        "format": "gguf",
+        "family": "qwen35",
+        "families": [
+          "qwen35"
+        ],
+        "parameter_size": "9.0B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 262144,
+        "embedding_length": 4096,
+        "runner": "llamacpp"
+      },
+      "capabilities": [
+        "completion",
+        "vision",
+        "tools",
+        "thinking"
+      ]
+    }
+  },
+  "build_run_id": "c81fa72c3c174a96bf8c03195b9e6f5e",
+  "model_warmup_seconds": 0.17432456099959381,
+  "summary": {
+    "accuracy": 0.95,
+    "correct": 19,
+    "total": 20,
+    "clarification_accuracy": 1.0,
+    "citation_validity": 1.0,
+    "latency_p95_seconds": 4.752815745000589,
+    "latency_mean_seconds": 3.6404422056000385,
+    "model_calls": 37
+  },
+  "quality_checks": {
+    "accuracy": true,
+    "citations_valid": true,
+    "latency": true,
+    "clarification": true
+  },
+  "quality_passed": true
+}

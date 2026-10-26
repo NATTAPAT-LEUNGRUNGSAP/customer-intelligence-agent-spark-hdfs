@@ -1,0 +1,92 @@
+[
+  {
+    "id": "rd01",
+    "question": "Repeat customer rate in a selected period",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "schema.orders"
+    ]
+  },
+  {
+    "id": "rd02",
+    "question": "จำนวน completed orders กี่ใบ",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ]
+  },
+  {
+    "id": "rd03",
+    "question": "AOV average order value including anonymous invoices",
+    "relevant_ids": [
+      "metric.aov",
+      "schema.orders"
+    ]
+  },
+  {
+    "id": "rd04",
+    "question": "Champions segment definition",
+    "relevant_ids": [
+      "segment.champions"
+    ]
+  },
+  {
+    "id": "rd05",
+    "question": "Inactive customer count including all high-value statuses",
+    "relevant_ids": [
+      "segment.inactive"
+    ]
+  },
+  {
+    "id": "rd06",
+    "question": "high-value customer fraction",
+    "relevant_ids": [
+      "metric.high_value"
+    ]
+  },
+  {
+    "id": "rd07",
+    "question": "RFM segment distribution",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ]
+  },
+  {
+    "id": "rd08",
+    "question": "product revenue and sale-line units",
+    "relevant_ids": [
+      "schema.sales_lines"
+    ]
+  },
+  {
+    "id": "rd09",
+    "question": "ยอดขายรวมเท่าไร",
+    "relevant_ids": [
+      "metric.sales",
+      "policy.period"
+    ]
+  },
+  {
+    "id": "rd10",
+    "question": "profit and campaign uplift evidence",
+    "relevant_ids": [
+      "policy.availability"
+    ]
+  },
+  {
+    "id": "rd11",
+    "question": "monthly invoice counts time boundaries",
+    "relevant_ids": [
+      "syntax.time",
+      "metric.orders"
+    ]
+  },
+  {
+    "id": "rd12",
+    "question": "join invoice lines and orders without duplicating revenue",
+    "relevant_ids": [
+      "schema.joins"
+    ]
+  }
+]

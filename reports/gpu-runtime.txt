@@ -1,0 +1,4 @@
+name, memory.total [MiB], memory.used [MiB], utilization.gpu [%]
+NVIDIA GeForce RTX 5070, 12227 MiB, 8614 MiB, 5 %
+NAME          ID              SIZE      PROCESSOR    CONTEXT    RUNNER      UNTIL              
+qwen3.5:9b    56671c2ab938    5.8 GB    100% GPU     8192       llamacpp    4 minutes from now    

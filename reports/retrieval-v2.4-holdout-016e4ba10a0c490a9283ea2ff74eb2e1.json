@@ -1,0 +1,851 @@
+{
+  "status": "completed",
+  "version": "rag-required-v2.4",
+  "benchmark": "rag_holdout_v6.json",
+  "split": "holdout",
+  "cases": [
+    {
+      "id": "verify01",
+      "relevant_ids": [
+        "metric.orders",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.orders",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.customers",
+          "metric.repeat_rate"
+        ],
+        "context_ids": [
+          "metric.orders",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.customers",
+          "metric.repeat_rate",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3744,
+        "elapsed_ms": 27.92380999926536
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify02",
+      "relevant_ids": [
+        "metric.sales",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.sales",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.customers",
+          "policy.availability"
+        ],
+        "context_ids": [
+          "metric.sales",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.customers",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 2742,
+        "elapsed_ms": 11.855423001179588
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify03",
+      "relevant_ids": [
+        "metric.aov",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.aov",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.orders",
+          "metric.repeat_rate"
+        ],
+        "context_ids": [
+          "metric.aov",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.orders",
+          "metric.repeat_rate",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3981,
+        "elapsed_ms": 13.39611299954413
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify04",
+      "relevant_ids": [
+        "metric.customers",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.customers",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.repeat_rate",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "metric.customers",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.repeat_rate",
+          "policy.snapshot",
+          "policy.availability"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3286,
+        "elapsed_ms": 15.58397700136993
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify05",
+      "relevant_ids": [
+        "metric.repeat_rate",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.repeat_rate",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.customers",
+          "metric.orders"
+        ],
+        "context_ids": [
+          "metric.repeat_rate",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.customers",
+          "metric.orders",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3744,
+        "elapsed_ms": 12.264126999070868
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify06",
+      "relevant_ids": [
+        "metric.sales",
+        "schema.orders",
+        "syntax.ranking"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.sales",
+          "schema.orders",
+          "policy.period",
+          "syntax.ranking",
+          "syntax.time",
+          "metric.customers"
+        ],
+        "context_ids": [
+          "metric.sales",
+          "schema.orders",
+          "policy.period",
+          "syntax.ranking",
+          "syntax.time",
+          "metric.customers",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3002,
+        "elapsed_ms": 13.859460001185653
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.5,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.9674679834891693,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify07",
+      "relevant_ids": [
+        "metric.orders",
+        "schema.orders",
+        "syntax.ranking"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.orders",
+          "metric.customers",
+          "schema.orders",
+          "policy.period",
+          "syntax.ranking",
+          "syntax.time"
+        ],
+        "context_ids": [
+          "metric.orders",
+          "metric.customers",
+          "schema.orders",
+          "policy.period",
+          "syntax.ranking",
+          "syntax.time",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3129,
+        "elapsed_ms": 14.228756001102738
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.5,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.8854598815714874,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify08",
+      "relevant_ids": [
+        "metric.sales",
+        "schema.orders",
+        "syntax.ranking"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.sales",
+          "schema.orders",
+          "policy.period",
+          "syntax.ranking",
+          "syntax.time",
+          "segment.distribution"
+        ],
+        "context_ids": [
+          "metric.sales",
+          "schema.orders",
+          "policy.period",
+          "syntax.ranking",
+          "syntax.time",
+          "segment.distribution",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3264,
+        "elapsed_ms": 14.020920998518704
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.5,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.9674679834891693,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify09",
+      "relevant_ids": [
+        "metric.sales",
+        "schema.orders",
+        "syntax.time"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.sales",
+          "syntax.time",
+          "schema.orders",
+          "policy.period",
+          "metric.orders",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "metric.sales",
+          "syntax.time",
+          "schema.orders",
+          "policy.period",
+          "metric.orders",
+          "policy.snapshot",
+          "policy.availability"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3014,
+        "elapsed_ms": 14.911874999597785
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.5,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify10",
+      "relevant_ids": [
+        "schema.sales_lines"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "schema.sales_lines",
+          "metric.aov",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.customers"
+        ],
+        "context_ids": [
+          "schema.sales_lines",
+          "metric.aov",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.customers",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3399,
+        "elapsed_ms": 16.68730600067647
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.16666666666666666,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify11",
+      "relevant_ids": [
+        "schema.sales_lines"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "schema.sales_lines",
+          "metric.aov",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.sales"
+        ],
+        "context_ids": [
+          "schema.sales_lines",
+          "metric.aov",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.sales",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3544,
+        "elapsed_ms": 14.321447999463999
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.16666666666666666,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify12",
+      "relevant_ids": [
+        "schema.sales_lines",
+        "syntax.ranking"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "schema.sales_lines",
+          "metric.aov",
+          "schema.orders",
+          "policy.period",
+          "syntax.ranking",
+          "syntax.time"
+        ],
+        "context_ids": [
+          "schema.sales_lines",
+          "metric.aov",
+          "schema.orders",
+          "policy.period",
+          "syntax.ranking",
+          "syntax.time",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3473,
+        "elapsed_ms": 12.712259000181803
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.8503449055347546,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify13",
+      "relevant_ids": [
+        "segment.champions",
+        "metric.high_value",
+        "schema.customer_summary"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "segment.champions",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "syntax.time",
+          "metric.high_value",
+          "segment.inactive"
+        ],
+        "context_ids": [
+          "segment.champions",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "syntax.time",
+          "metric.high_value",
+          "segment.inactive",
+          "policy.period",
+          "policy.availability"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3898,
+        "elapsed_ms": 13.073635000182549
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.5,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.9469024295259745,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify14",
+      "relevant_ids": [
+        "segment.inactive",
+        "metric.high_value",
+        "schema.customer_summary"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.high_value",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "syntax.time",
+          "segment.inactive",
+          "metric.customers"
+        ],
+        "context_ids": [
+          "metric.high_value",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "syntax.time",
+          "segment.inactive",
+          "metric.customers",
+          "policy.period",
+          "policy.availability"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3618,
+        "elapsed_ms": 12.512514998888946
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.5,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.9469024295259745,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify15",
+      "relevant_ids": [
+        "segment.distribution",
+        "schema.customer_summary"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "segment.distribution",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "syntax.time",
+          "metric.customers",
+          "schema.orders"
+        ],
+        "context_ids": [
+          "segment.distribution",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "syntax.time",
+          "metric.customers",
+          "schema.orders",
+          "policy.period",
+          "policy.availability"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3318,
+        "elapsed_ms": 12.035431000185781
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify16",
+      "relevant_ids": [
+        "metric.high_value",
+        "schema.customer_summary"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.high_value",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "syntax.time",
+          "metric.customers",
+          "schema.orders"
+        ],
+        "context_ids": [
+          "metric.high_value",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "syntax.time",
+          "metric.customers",
+          "schema.orders",
+          "policy.period",
+          "policy.availability"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3447,
+        "elapsed_ms": 12.809642001229804
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.3333333333333333,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 1.0,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify17",
+      "relevant_ids": [
+        "metric.sales",
+        "metric.orders",
+        "schema.orders"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.sales",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.orders",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "metric.sales",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.orders",
+          "policy.snapshot",
+          "policy.availability"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3014,
+        "elapsed_ms": 13.056456999038346
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.5,
+        "mrr_at_6": 1.0,
+        "ndcg_at_6": 0.9469024295259745,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify18",
+      "relevant_ids": [
+        "policy.period"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.customers",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.repeat_rate",
+          "policy.snapshot"
+        ],
+        "context_ids": [
+          "metric.customers",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.repeat_rate",
+          "policy.snapshot",
+          "policy.availability"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3286,
+        "elapsed_ms": 12.33467200108862
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.16666666666666666,
+        "mrr_at_6": 0.3333333333333333,
+        "ndcg_at_6": 0.5,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify19",
+      "relevant_ids": [
+        "policy.snapshot"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "segment.distribution",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "syntax.time",
+          "metric.high_value",
+          "policy.period"
+        ],
+        "context_ids": [
+          "segment.distribution",
+          "schema.customer_summary",
+          "policy.snapshot",
+          "syntax.time",
+          "metric.high_value",
+          "policy.period",
+          "policy.availability"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 3272,
+        "elapsed_ms": 11.352801999237272
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.16666666666666666,
+        "mrr_at_6": 0.3333333333333333,
+        "ndcg_at_6": 0.5,
+        "context_coverage": 1.0
+      }
+    },
+    {
+      "id": "verify20",
+      "relevant_ids": [
+        "policy.availability"
+      ],
+      "trace": {
+        "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+        "ranked_ids": [
+          "metric.sales",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.customers",
+          "policy.availability"
+        ],
+        "context_ids": [
+          "metric.sales",
+          "schema.orders",
+          "policy.period",
+          "syntax.time",
+          "metric.customers",
+          "policy.availability",
+          "policy.snapshot"
+        ],
+        "corpus_sha256": "13afd8e93a80e7c2c0367c052dceb2dd2efa9db6e629d16d7bc5997c2daddc8f",
+        "corpus_chunks": 20,
+        "context_characters": 2742,
+        "elapsed_ms": 11.533146000147099
+      },
+      "metrics": {
+        "recall_at_6": 1.0,
+        "precision_at_6": 0.16666666666666666,
+        "mrr_at_6": 0.16666666666666666,
+        "ndcg_at_6": 0.3562071871080222,
+        "context_coverage": 1.0
+      }
+    }
+  ],
+  "summary": {
+    "recall_at_6": 1.0,
+    "precision_at_6": 0.35,
+    "mrr_at_6": 0.8916666666666666,
+    "ndcg_at_6": 0.8933827614885261,
+    "context_coverage": 1.0,
+    "latency_p95_ms": 16.68730600067647
+  },
+  "gates": {
+    "recall_at_6_min": 0.95,
+    "mrr_at_6_min": 0.85,
+    "ndcg_at_6_min": 0.8,
+    "latency_p95_ms_max": 50
+  },
+  "quality_checks": {
+    "recall": true,
+    "mrr": true,
+    "ndcg": true,
+    "latency": true
+  },
+  "quality_passed": true,
+  "provenance": {
+    "files_sha256": {
+      "jobs/agent.py": "a407f49276ecae2e432461e1c27088787a6b2221f67cc766b34b807084e757ef",
+      "jobs/build_tables.py": "4ad0a4d6946602f57a6fd3dd69a29e24f4aa04c0670bcc366356076c21ab206d",
+      "jobs/check_model.py": "0e51bf11f30dcbd529e107f65231e2f5c44b81e9fcf3e5ce0832551b3e606e40",
+      "jobs/context_budget.py": "70d236b491295bf3527e990925ddd9c51d6a6eb3f4e3dd6282217ee219d2ae89",
+      "jobs/evaluate.py": "2b463ce4ed818ec099850800d6a4144c64d7d012d0b4e0ec9220eb46e4258c6a",
+      "jobs/evaluate_retrieval.py": "95ea40f19adb0d06c9afa8c26c880f234bb4ba866a2c1f4493008b6f05401177",
+      "jobs/freeze_candidate.py": "b8d6ee99369602478fe029f74d2143c3c1ebe9b04951d3221f96e0f9c9a71aa7",
+      "jobs/prepare_data.py": "c744c6dd460628eb978dc6a4a651da27006a90b5d52846fe99edadd6695126ff",
+      "jobs/provenance.py": "192372885ea86f500d8a2601c16b6fad0a6908feb5b09d6791cee51c15a3d0c0",
+      "jobs/query_runtime.py": "6140b7286dde4164d3eed119e3bf1fd029934114d3b8affc6675a84d5e5f7291",
+      "jobs/rag_metrics.py": "672f3dc2e436b747577c1daf6edf9c1c073a7f31f9425067de1f6ef61a4aee0a",
+      "jobs/result_contracts.py": "b6a9d8108369d5bef47fb2bca3736cfb2cc7a32b2fe880f3734754e3f20c3de1",
+      "jobs/retrieval.py": "48eeeabd811a8ef3ff67407d286b3fcdf2915578aa6d67fa7e219dbe9d95205c",
+      "jobs/smoke_hdfs.py": "bd9989548d198b947e39c2a0ea40ee2c846491308a09a330db59b01befc5ee29",
+      "jobs/sql_guard.py": "29c0b858873e8f0bc2a39c4fcb73f00e3faf164d0f51737b4e6a7390dc705fec",
+      "jobs/test_agent_spark.py": "9894cf71bb5a7ca7c5fafe974cf2edaa1714be777a604b78ab4f3eaeba092ed9",
+      "jobs/test_model_spark.py": "0f8524346a414d17697ac47d7d414e79fd0a428b12f8061a24b37545ee10f0ec",
+      "jobs/test_pipeline.py": "c4a1828b8d5a1046448d6d61837d6378ccae2d88cea553a03fcceafa2db267b0",
+      "jobs/verify_iteration.py": "2bd804910191d9f2ef25add38ef5926ad374b338746910ffd91db9a1d4652e5d",
+      "jobs/web_app.py": "a55dec4c9e1adf82a5dc41f737112f05f19027dbe6330aa610fce6e06339ddfd",
+      "knowledge/metrics.md": "0ad6abfa2ace5aa6238cc8757b64b22aaac87ca60ef2dc5a89aa8549d82200dd",
+      "knowledge/schema.md": "0bd54abd4b184c786aa51837aa11164958b6f3c45775d051cff0bd53470e175f",
+      "knowledge/spark_sql.md": "802fbc310f3c6031bf1aa5d0161bd996bfe99ccf0a9c7647441f4d6d68d9a161",
+      "knowledge/thai_glossary.md": "bb472e7e786728fa2f7168b340e891fc8f689c2eb40e2be2902e2b7e770d6598",
+      "sql/customer_summary.sql": "3b71dfcea27ec4dae8e92316ec2ab8033a14b880dec3722dd25acdc7c1c41d4b",
+      "sql/orders.sql": "76583aeaf72c09d3c03918f226fe8bd905392ee889641287db680b56b0564f9e",
+      "sql/sales_lines.sql": "b82aa6abca8594c7d45f5a45e111daadda0021e7b598a2aaaa57f59d1877d593",
+      "evaluation/dev.json": "434f0731e0d92811e090d2a6b890c4e8bca4a2bd52d03663ee2507f4f1824069",
+      "evaluation/quality_gates_v2.json": "3f5a35420eeb913981390aa7edb846a16b4a5423c1dd53fafdb34369e6a4db0c",
+      "evaluation/rag_holdout_v2.json": "b0ab85123b8910c7497c8ba05ecc599c40b68d14d27a12f74a98655737a427b2",
+      "evaluation/rag_holdout_v3.json": "df12a3b2f01fa5ab16f35e3ac40c982aee3ae0f71ee473d5f8cedb3f151f09bf",
+      "evaluation/rag_holdout_v4.json": "179578d9db77effcf8d40632fb119f60febbbd756d4d38a443ae018206bea91d",
+      "evaluation/rag_holdout_v5.json": "8d904cc22913819ae8c03bd355a3e7b04c5d86cba50e6dcb86ba61e02c4c5d36",
+      "evaluation/rag_holdout_v6.json": "59c430375d9f5ed8c0b3051473b1a1aa2e5b728f78b8b6b6d923a6ff97895ada",
+      "evaluation/retrieval_dev_v2.json": "094e5418718288687dbc023d14dbb107a3401954487e1a3695fa623df44e73d3",
+      "evaluation/test.json": "02b63f980ea8719dd46ffc8b17e5510197296e8a607dd4f0d4a52756666ab87c",
+      "infra/spark/Dockerfile": "85ab051b46c9153b3aeb403270f81b5eca31da594a92a2036c17ac0663146079",
+      "infra/spark/spark-defaults.conf": "c611e9ea51932f085d6cf6c7a13fdd8b9a12e96ff3ff81831d0d3c02686c808b",
+      "infra/hadoop/config/core-site.xml": "c00026c28bf1ce49d53e8ef4ca86174b5ef740734a43af4ddd29816f98462d9e",
+      "infra/hadoop/config/hdfs-site.xml": "a9e52c53f38ddfa76985772c60ad12412ea07e30280e1c91a4a6e1671b3c18fc",
+      "infra/hadoop/config/log4j.properties": "e98cd7090e3eab0f2c6baafd1ddceac2563ff55c43ba733c71c74c8654f618c8",
+      "compose.yaml": "2e8474c722add91ade335b851a4bf612029f74a909fabcfe7df2139a52e86263",
+      "requirements-agent.txt": "81845b8768d704d4a9c6bfa7307d4e9fdf273f80a1ec141081fbc9b97f92b1ef"
+    }
+  }
+}

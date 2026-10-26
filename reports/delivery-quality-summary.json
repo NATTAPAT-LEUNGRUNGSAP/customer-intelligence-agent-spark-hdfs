@@ -1,0 +1,61 @@
+{
+  "version": "v2.4",
+  "status": "completed",
+  "quality_passed": true,
+  "source_reports": {
+    "evaluation": "rag-v2.4-holdout-d2b7e5379bbf4781941a21125feb7039.json",
+    "retrieval": "retrieval-v2.4-holdout-016e4ba10a0c490a9283ea2ff74eb2e1.json",
+    "freeze": "freeze-rag-v2.4.json"
+  },
+  "end_to_end": {
+    "accuracy": 1.0,
+    "correct": 20,
+    "total": 20,
+    "executed": 17,
+    "failed_or_error": 0,
+    "clarification_accuracy": 1.0,
+    "citation_validity": 1.0,
+    "latency_p95_seconds": 5.433247893999578,
+    "latency_mean_seconds": 3.593404962100158,
+    "model_calls": 35,
+    "citation_scope": "All response traces, including failed attempts with validated evidence IDs; not proof of a correct answer",
+    "cited_relevant_evidence_rate": 1.0,
+    "retrieval": {
+      "recall_at_6": 1.0,
+      "precision_at_6": 0.35,
+      "mrr_at_6": 0.8916666666666666,
+      "ndcg_at_6": 0.8933827614885261,
+      "context_coverage": 1.0
+    }
+  },
+  "retrieval": {
+    "recall_at_6": 1.0,
+    "precision_at_6": 0.35,
+    "mrr_at_6": 0.8916666666666666,
+    "ndcg_at_6": 0.8933827614885261,
+    "context_coverage": 1.0,
+    "latency_p95_ms": 16.68730600067647
+  },
+  "failures": [],
+  "checks": {
+    "end_to_end": {
+      "accuracy": true,
+      "citations_valid": true,
+      "latency": true,
+      "clarification": true,
+      "cited_relevant": true
+    },
+    "retrieval": {
+      "recall": true,
+      "mrr": true,
+      "ndcg": true,
+      "latency": true
+    }
+  },
+  "prior_failed_holdouts": [
+    "rag-v2.2-holdout-c348d44e7954423bbb96cf06274833af.json",
+    "retrieval-v2.3-holdout-526ff78dfbf241c4a6856140962f8152.json",
+    "rag-v2.3-holdout-f3efa4011cdf461697b7dbabee6d6c54.json"
+  ],
+  "github_publication": "pending user browser sign-in; local Git initialized"
+}

@@ -1,0 +1,2488 @@
+{
+  "status": "completed",
+  "model": "qwen3.5:9b",
+  "split": "test",
+  "cases": [
+    {
+      "id": "test01",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.5062998240000525,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT SUM(sl.line_amount) as total_completed_sales_gbp FROM sales_lines sl WHERE DATE_TRUNC('month', sl.invoice_ts) = '2011-09' AND sl.transaction_type = 'completed'",
+        "executed_sql": "SELECT * FROM (SELECT SUM(sl.line_amount) AS total_completed_sales_gbp FROM sales_lines AS sl WHERE DATE_TRUNC('MONTH', sl.invoice_ts) = '2011-09' AND sl.transaction_type = 'completed') AS guarded_result LIMIT 201",
+        "explanation": "This query calculates the total completed sales in GBP for September 2011 by summing the line_amount from the sales_lines table where the invoice timestamp falls within September 2011 and the transaction type is 'completed'. The dataset metadata indicates an as_of_date of 2011-12-01 and observed timestamps ranging from 2009-12-01 to 2011-12-09, so September 2011 data is available.",
+        "result": {
+          "columns": [
+            "total_completed_sales_gbp"
+          ],
+          "rows": [
+            [
+              null
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "sum(order_amount)"
+        ],
+        "rows": [
+          [
+            "1058590.1720"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test01",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.6117459629999757,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT SUM(line_amount) AS total_sales_gbp FROM sales_lines WHERE transaction_type = 'sale' AND invoice_ts >= TIMESTAMP '2011-09-01 00:00:00' AND invoice_ts < TIMESTAMP '2011-10-01 00:00:00'",
+        "executed_sql": "SELECT * FROM (SELECT SUM(line_amount) AS total_sales_gbp FROM sales_lines WHERE transaction_type = 'sale' AND invoice_ts >= CAST('2011-09-01 00:00:00' AS TIMESTAMP) AND invoice_ts < CAST('2011-10-01 00:00:00' AS TIMESTAMP)) AS guarded_result LIMIT 201",
+        "explanation": "This query sums the line_amount for all rows in sales_lines where transaction_type is 'sale' (completed sales) and the invoice timestamp falls within September 2011. The result is in GBP as per the schema definition.",
+        "result": {
+          "columns": [
+            "total_sales_gbp"
+          ],
+          "rows": [
+            [
+              "1058590.1720"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "thai_glossary.md:2",
+            "text": "ยอดขาย sales คือ sum(order_amount) จาก orders หน่วย GBP ก่อนหักคืนสินค้า\nจำนวนคำสั่งซื้อ orders คือ count(*) ของตาราง orders ไม่ใช่จำนวนรายการสินค้า\nยอดเฉลี่ยต่อคำสั่งซื้อ AOV คือยอดขายรวมหารจำนวนใบสั่งซื้อ รวมลูกค้าไม่ระบุตัวตน",
+            "sha256": "71b66f957a71320f19ace507995fa23da35cafd3c4b6a348971f0a434d61c4ce",
+            "score": 1.8536805521641304
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 0.7559252648311799
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 0.43384027532300573
+          },
+          {
+            "id": "metrics.md:6",
+            "text": "No cost, margin, campaign outcomes, or data after the observed maximum date is provided.\nDo not infer campaign uplift, profit, or future sales as measured facts.\nFor an unspecified period or ambiguous 'best customer', ask for clarification.\nAlways label incomplete observation periods and absent data; absence is not automatically zero.",
+            "sha256": "6436a8c70b56f246436f807d5eb15625ebf5243ece26fa2f1e1ca5a865edc29c",
+            "score": 0.34879273320711696
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.3202367737115221
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "sum(order_amount)"
+        ],
+        "rows": [
+          [
+            "1058590.1720"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test02",
+      "rag": true,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.207094319999669,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS completed_orders_count FROM sales_lines WHERE transaction_type = 'sale' AND invoice_ts >= TIMESTAMP '2011-09-01 00:00:00' AND invoice_ts < TIMESTAMP '2011-10-01 00:00:00'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS completed_orders_count FROM sales_lines WHERE transaction_type = 'sale' AND invoice_ts >= CAST('2011-09-01 00:00:00' AS TIMESTAMP) AND invoice_ts < CAST('2011-10-01 00:00:00' AS TIMESTAMP)) AS guarded_result LIMIT 201",
+        "explanation": "Counted completed orders (sales_lines with transaction_type='sale') in September 2011. The time range includes start and excludes end per schema rules.",
+        "result": {
+          "columns": [
+            "completed_orders_count"
+          ],
+          "rows": [
+            [
+              49261
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 0.7695440920300081
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 0.4171478141741581
+          },
+          {
+            "id": "schema.md:5",
+            "text": "Join orders to customer_summary on customer_id only after selecting the intended as_of_date.\nJoining invoice lines to orders repeats order_amount per line: do not sum the repeated amount.\nDo not use the December snapshot to answer historical RFM questions.",
+            "sha256": "dd0f176f4032238aac0d27c6100587362e6200a21f2ad231b4cee57283b27480",
+            "score": 0.38120845157661654
+          },
+          {
+            "id": "spark_sql.md:3",
+            "text": "Conditional aggregation: sum(CASE WHEN condition THEN 1 ELSE 0 END).\nSafe division: numerator / nullif(denominator, 0).\nMonthly grouping: date_trunc('MONTH', order_ts).\nRanking: row_number() OVER (ORDER BY metric DESC, customer_id ASC).\nComparison: lag(metric) OVER (ORDER BY month).\nCTEs: WITH filtered AS (SELECT ... FROM orders WHERE ...) SELECT ... FROM filtered.",
+            "sha256": "f6067abbca41b295751ea275117e810b70c9b69dba3a5cb2ac4d93bf59e709c1",
+            "score": 0.3357038167070022
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.3202367737115221
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            1837
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test02",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.8694049609998729,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS completed_orders_count FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'completed'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS completed_orders_count FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'completed') AS guarded_result LIMIT 201",
+        "explanation": "The query counts the number of completed orders (represented as completed lines in sales_lines) for September 2011. The dataset metadata indicates an observed max timestamp of 2011-12-09, so September 2011 data is available within the historical observation period.",
+        "result": {
+          "columns": [
+            "completed_orders_count"
+          ],
+          "rows": [
+            [
+              0
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            1837
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test03",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 8.31273869000006,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT AVG(line_amount) AS overall_aov FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01'",
+        "executed_sql": "SELECT * FROM (SELECT AVG(line_amount) AS overall_aov FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01') AS guarded_result LIMIT 201",
+        "explanation": "The query calculates the average line amount (AOV) for all transactions in September 2011. The dataset metadata indicates an as_of_date of 2011-12-01 and observed timestamps ranging from 2009-12-01 to 2011-12-09, so September 2011 data is available within the historical observation period. The term 'anonymous orders' implies transactions without a specific customer_id; however, the sales_lines schema does not explicitly filter for anonymous vs identified customers in a way that affects the line_amount calculation unless a customer_id is NULL or empty, but the schema provided shows customer_id as string. Assuming all rows in sales_lines represent valid order lines (including those potentially from anonymous sessions if they were recorded with a placeholder or null customer_id, though the schema doesn't specify a separate flag), the AVG(line_amount) over the date range captures the requested metric. If 'anonymous orders' implies excluding identified customers, the schema lacks a clear boolean flag for anonymity other than perhaps NULL customer_id, but standard practice in such datasets often treats all rows as valid sales lines. Given the instruction to never invent results or filters not asked for, and lacking a specific 'anonymous' flag in the provided schema description beyond the column existence, I will calculate AOV over all sales_lines in that period. If the dataset structure implies customer_id is always present (no NULLs for anonymous), then this covers all orders. If anonymous means no customer_id, I would need to filter WHERE customer_id IS NULL, but without explicit schema details on nullability or anonymity flags beyond the column name, and adhering to 'never introduce filters the user did not ask for' unless data availability suggests otherwise, I will assume the request implies all sales lines in that period. However, re-reading 'including anonymous orders', if the dataset has a specific way to denote anonymous (e.g., customer_id = ''), I should include them. Since the schema just says string, and no examples of values are given, I cannot assume NULL means anonymous without risk. But typically, 'anonymous' in e-commerce data might be represented by a specific value or NULL. Given the constraint 'never introduce filters... user did not ask for', if I don't know how anonymous is stored, I can't filter. However, the prompt asks to include them, implying they exist. Without schema details on anonymous representation, I must assume all rows are included as per standard interpretation unless a specific flag exists. Wait, the instruction says 'never introduce filters the user did not ask for'. If I don't know how to identify anonymous, I can't filter. But the question asks for AOV including them, suggesting they are part of the dataset. I will calculate AVG(line_amount) for all sales_lines in September 2011, as filtering for 'anonymous' without knowing the representation (e.g., NULL customer_id or specific string) would be inventing a filter. Thus, the SQL selects all lines in that month.",
+        "result": {
+          "columns": [
+            "overall_aov"
+          ],
+          "rows": [
+            [
+              "20.30198746"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "(sum(order_amount) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            "576.260300"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test03",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.48855834699998,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT SUM(o.order_amount) / COUNT(*) AS overall_aov FROM orders o WHERE o.order_ts >= TIMESTAMP '2011-09-01 00:00:00' AND o.order_ts < TIMESTAMP '2011-10-01 00:00:00'",
+        "executed_sql": "SELECT * FROM (SELECT SUM(o.order_amount) / COUNT(*) AS overall_aov FROM orders AS o WHERE o.order_ts >= CAST('2011-09-01 00:00:00' AS TIMESTAMP) AND o.order_ts < CAST('2011-10-01 00:00:00' AS TIMESTAMP)) AS guarded_result LIMIT 201",
+        "explanation": "This query calculates the overall Average Order Value (AOV) for September 2011 by summing the order_amount and dividing by the count of orders from the orders table, including anonymous orders as per the metric definition. The time range is strictly between September 1st and October 1st, 2011.",
+        "result": {
+          "columns": [
+            "overall_aov"
+          ],
+          "rows": [
+            [
+              "576.260300"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 2.0845618500596492
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 1.0868604649957854
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.9233818117277511
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "thai_glossary.md:2",
+            "text": "ยอดขาย sales คือ sum(order_amount) จาก orders หน่วย GBP ก่อนหักคืนสินค้า\nจำนวนคำสั่งซื้อ orders คือ count(*) ของตาราง orders ไม่ใช่จำนวนรายการสินค้า\nยอดเฉลี่ยต่อคำสั่งซื้อ AOV คือยอดขายรวมหารจำนวนใบสั่งซื้อ รวมลูกค้าไม่ระบุตัวตน",
+            "sha256": "71b66f957a71320f19ace507995fa23da35cafd3c4b6a348971f0a434d61c4ce",
+            "score": 0.43692787681161577
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.4359909165088962
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "(sum(order_amount) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            "576.260300"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test04",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.7604329559999314,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT c.country, SUM(c.order_amount) AS total_sales\nFROM orders c\nWHERE c.order_ts >= '2011-09-01' AND c.order_ts < '2011-10-01'\nGROUP BY c.country\nORDER BY total_sales DESC, c.country ASC\nLIMIT 3",
+        "executed_sql": "SELECT * FROM (SELECT c.country, SUM(c.order_amount) AS total_sales FROM orders AS c WHERE c.order_ts >= '2011-09-01' AND c.order_ts < '2011-10-01' GROUP BY c.country ORDER BY total_sales DESC, c.country ASC LIMIT 3) AS guarded_result LIMIT 201",
+        "explanation": "The query filters the 'orders' table for transactions occurring in September 2011 (between 2011-09-01 and 2011-10-01). It groups the results by country, sums the order_amount to get total sales per country, and orders them by total sales descending and country ascending. The top three countries are selected using LIMIT 3.",
+        "result": {
+          "columns": [
+            "country",
+            "total_sales"
+          ],
+          "rows": [
+            [
+              "United Kingdom",
+              "897076.4720"
+            ],
+            [
+              "EIRE",
+              "43086.5500"
+            ],
+            [
+              "Netherlands",
+              "26937.2600"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 2.4869985295725683
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 1.9198733896394082
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 1.855519989847519
+          },
+          {
+            "id": "spark_sql.md:4",
+            "text": "Use an explicit ORDER BY for top N and deterministic ID tie breaking.\nPrefer orders for invoice-level measures, sales_lines for product-level analysis.\nNever sum order_amount after joining it to multiple product lines.\nInspect schema and metric definitions before composing unfamiliar queries.\nRetry failed queries only within the configured retry budget; do not invent results.",
+            "sha256": "d026b82661773ccf5180e36f3df8a9d26c828942a7800f79a42b55806eab8f36",
+            "score": 1.7459255020872733
+          },
+          {
+            "id": "metrics.md:6",
+            "text": "No cost, margin, campaign outcomes, or data after the observed maximum date is provided.\nDo not infer campaign uplift, profit, or future sales as measured facts.\nFor an unspecified period or ambiguous 'best customer', ask for clarification.\nAlways label incomplete observation periods and absent data; absence is not automatically zero.",
+            "sha256": "6436a8c70b56f246436f807d5eb15625ebf5243ece26fa2f1e1ca5a865edc29c",
+            "score": 1.3469414012495473
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 1.2682644723504115
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "country",
+          "sales"
+        ],
+        "rows": [
+          [
+            "United Kingdom",
+            "897076.4720"
+          ],
+          [
+            "EIRE",
+            "43086.5500"
+          ],
+          [
+            "Netherlands",
+            "26937.2600"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test04",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 5.50740008799994,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT s.country, SUM(s.line_amount) AS total_sales\nFROM sales_lines s\nJOIN orders o ON s.invoice_id = o.invoice_id\nWHERE DATE(o.order_ts) >= '2011-09-01' AND DATE(o.order_ts) < '2011-10-01'\nGROUP BY s.country\nORDER BY total_sales DESC, s.country ASC\nLIMIT 3",
+        "executed_sql": "SELECT * FROM (SELECT s.country, SUM(s.line_amount) AS total_sales FROM sales_lines AS s JOIN orders AS o ON s.invoice_id = o.invoice_id WHERE CAST(o.order_ts AS DATE) >= '2011-09-01' AND CAST(o.order_ts AS DATE) < '2011-10-01' GROUP BY s.country ORDER BY total_sales DESC, s.country ASC LIMIT 3) AS guarded_result LIMIT 201",
+        "explanation": "The query calculates total sales for the top three countries in September 2011. It joins sales_lines with orders to filter by the order timestamp within September 2011, groups by country (from sales_lines), sums the line amounts, and sorts by total sales descending and country ascending, limiting the result to the top three.",
+        "result": {
+          "columns": [
+            "country",
+            "total_sales"
+          ],
+          "rows": [
+            [
+              "United Kingdom",
+              "897076.4720"
+            ],
+            [
+              "EIRE",
+              "43086.5500"
+            ],
+            [
+              "Netherlands",
+              "26937.2600"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": [
+          {
+            "sql": "SELECT c.country, SUM(s.line_amount) AS total_sales\nFROM sales_lines s\nJOIN orders o ON s.invoice_id = o.invoice_id\nWHERE DATE(o.order_ts) >= '2011-09-01' AND DATE(o.order_ts) < '2011-10-01'\nGROUP BY c.country\nORDER BY total_sales DESC, c.country ASC\nLIMIT 3",
+            "error": "[UNRESOLVED_COLUMN.WITH_SUGGESTION] A column, variable, or function parameter with name `c`.`country` cannot be resolved. Did you mean one of the following? [`o`.`country`, `s`.`country`, `s`.`quantity`, `o`.`order_ts`, `s`.`product_id`]. SQLSTATE: 42703; line 1 pos 22;\n'GlobalLimit 201\n+- 'LocalLimit 201\n   +- 'Project [*]\n      +- 'SubqueryAlias guarded_result\n         +- 'GlobalLimit 3\n            +- 'LocalLimit 3\n               +- 'Sort ['total_sales DESC NULLS LAST, 'c.country ASC NULLS FIRST], true\n                  +- 'Aggregate ['c.country], ['c.country, sum(line_amount#27) AS total_sales#129]\n                     +- Filter ((cast(order_ts#14 as date) >= cast(2011-09-01 as date)) AND (cast(order_ts#14 as date) < cast(2011-10-01 as date)))\n                        +- Join Inner, (invoice_id#19 = invoice_id#12)\n                           :- SubqueryAlias s\n                           :  +- SubqueryAlias sales_lines\n                           :     +- View (`sales_lines`, [invoice_id#19, customer_id#20, product_id#21, description#22, invoice_ts#23, country#24, quantity#25L, unit_price#26, line_amount#27, transaction_type#28, source_sheet#29, source_row#30L])\n                           :        +- Relation [invoice_id#19,customer_id#20,product_id#21,description#22,invoice_ts#23,country#24,quantity#25L,unit_price#26,line_amount#27,transaction_type#28,source_sheet#29,source_row#30L] parquet\n                           +- SubqueryAlias o\n                              +- Subquer"
+          }
+        ]
+      },
+      "gold": {
+        "columns": [
+          "country",
+          "sales"
+        ],
+        "rows": [
+          [
+            "United Kingdom",
+            "897076.4720"
+          ],
+          [
+            "EIRE",
+            "43086.5500"
+          ],
+          [
+            "Netherlands",
+            "26937.2600"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test05",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.107468068000344,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(DISTINCT customer_id) AS unique_customers\nFROM sales_lines\nWHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01'\nAND transaction_type = 'completed'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(DISTINCT customer_id) AS unique_customers FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'completed') AS guarded_result LIMIT 201",
+        "explanation": "The query counts distinct customers from the sales_lines table who have completed transactions between September 1, 2011 and October 1, 2011. The dataset metadata indicates an observed max timestamp of 2011-12-09, so September 2011 data is available.",
+        "result": {
+          "columns": [
+            "unique_customers"
+          ],
+          "rows": [
+            [
+              0
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(DISTINCT customer_id)"
+        ],
+        "rows": [
+          [
+            1266
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test05",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.705083335999916,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(DISTINCT customer_id) AS unique_customers\nFROM orders\nWHERE order_ts >= TIMESTAMP '2011-09-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-10-01 00:00:00'\nAND customer_id IS NOT NULL",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(DISTINCT customer_id) AS unique_customers FROM orders WHERE order_ts >= CAST('2011-09-01 00:00:00' AS TIMESTAMP) AND order_ts < CAST('2011-10-01 00:00:00' AS TIMESTAMP) AND NOT customer_id IS NULL) AS guarded_result LIMIT 201",
+        "explanation": "The query counts distinct non-null customer_ids from the orders table where the order timestamp falls within September 2011 (inclusive of start, exclusive of end). This aligns with the schema definition that one row in 'orders' represents a completed sale invoice and excludes anonymous customers (NULL IDs) as per metadata rules.",
+        "result": {
+          "columns": [
+            "unique_customers"
+          ],
+          "rows": [
+            [
+              1266
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 1.272309521745508
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 1.1218779590004977
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.9728408676161845
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.9233818117277511
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 0.5992157125533546
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(DISTINCT customer_id)"
+        ],
+        "rows": [
+          [
+            1266
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test06",
+      "rag": true,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 3.575871125000049,
+      "result": {
+        "status": "executed",
+        "sql": "WITH identified_customers AS (\n    SELECT DISTINCT customer_id\n    FROM orders\n    WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01'\n),\ncustomer_order_counts AS (\n    SELECT \n        customer_id,\n        COUNT(*) as order_count\n    FROM identified_customers\n    GROUP BY customer_id\n)\nSELECT \n    CAST(SUM(CASE WHEN order_count >= 2 THEN 1 ELSE 0 END) AS DOUBLE) / SUM(1) AS fraction\nFROM customer_order_counts;",
+        "executed_sql": "SELECT * FROM (WITH identified_customers AS (SELECT DISTINCT customer_id FROM orders WHERE order_ts >= '2011-09-01' AND order_ts < '2011-10-01'), customer_order_counts AS (SELECT customer_id, COUNT(*) AS order_count FROM identified_customers GROUP BY customer_id) SELECT CAST(SUM(CASE WHEN order_count >= 2 THEN 1 ELSE 0 END) AS DOUBLE) / SUM(1) AS fraction FROM customer_order_counts) AS guarded_result LIMIT 201",
+        "explanation": "The query identifies all unique customers who placed at least one completed order in September 2011 (between '2011-09-01' and '2011-10-01'). It then counts the number of orders per customer within that month. Finally, it calculates the fraction of these identified customers who have an order count greater than or equal to 2.",
+        "result": {
+          "columns": [
+            "fraction"
+          ],
+          "rows": [
+            [
+              0.0
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 2.6485451898620234
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 1.9378088104487499
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 1.538687913604915
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 1.1218779590004977
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.9728408676161845
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 0.8838846250843269
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "(sum(CASE WHEN (n >= 2) THEN 1 ELSE 0 END) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            0.21406003159557663
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test06",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 11.738411796000037,
+      "result": {
+        "status": "executed",
+        "sql": "WITH september_orders AS (\n    SELECT customer_id\n    FROM sales_lines\n    WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01'\n      AND transaction_type = 'completed'\n    GROUP BY customer_id\n    HAVING COUNT(*) >= 2\n),\nall_purchasing_customers AS (\n    SELECT DISTINCT customer_id\n    FROM sales_lines\n    WHERE invoice_ts >= '2009-12-01' AND invoice_ts < '2011-12-01'\n)\nSELECT \n    CASE \n        WHEN COUNT(*) = 0 THEN NULL \n        ELSE CAST(COUNT(*) AS DOUBLE) / COUNT(*) \n    END AS fraction\nFROM september_orders s\nJOIN all_purchasing_customers p ON s.customer_id = p.customer_id",
+        "executed_sql": "SELECT * FROM (WITH september_orders AS (SELECT customer_id FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'completed' GROUP BY customer_id HAVING COUNT(*) >= 2), all_purchasing_customers AS (SELECT DISTINCT customer_id FROM sales_lines WHERE invoice_ts >= '2009-12-01' AND invoice_ts < '2011-12-01') SELECT CASE WHEN COUNT(*) = 0 THEN NULL ELSE CAST(COUNT(*) AS DOUBLE) / COUNT(*) END AS fraction FROM september_orders AS s JOIN all_purchasing_customers AS p ON s.customer_id = p.customer_id) AS guarded_result LIMIT 201",
+        "explanation": "This query identifies customers who placed at least two completed orders in September 2011 by filtering sales_lines for the month and grouping by customer_id. It then joins these customers with the set of all distinct purchasing customers observed in the dataset (between 2009-12-01 and 2011-12-01) to calculate the fraction. The result is returned as a decimal fraction, not a percentage. A CASE statement handles potential division by zero if no customers meet the criteria.",
+        "result": {
+          "columns": [
+            "fraction"
+          ],
+          "rows": [
+            [
+              null
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": [
+          {
+            "sql": "WITH september_orders AS (\n    SELECT customer_id\n    FROM sales_lines\n    WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01'\n      AND transaction_type = 'completed'\n    GROUP BY customer_id\n    HAVING COUNT(*) >= 2\n),\nall_purchasing_customers AS (\n    SELECT DISTINCT customer_id\n    FROM sales_lines\n    WHERE invoice_ts >= '2009-12-01' AND invoice_ts < '2011-12-01'\n)\nSELECT CAST(COUNT(*) AS DOUBLE) / COUNT(*) AS fraction\nFROM september_orders\nWHERE EXISTS (\n    SELECT 1 FROM all_purchasing_customers p \n    WHERE p.customer_id = september_orders.customer_id\n)",
+            "error": "Function is not allowed: EXISTS"
+          },
+          {
+            "sql": "WITH september_orders AS (\n    SELECT customer_id\n    FROM sales_lines\n    WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01'\n      AND transaction_type = 'completed'\n    GROUP BY customer_id\n    HAVING COUNT(*) >= 2\n),\nall_purchasing_customers AS (\n    SELECT DISTINCT customer_id\n    FROM sales_lines\n    WHERE invoice_ts >= '2009-12-01' AND invoice_ts < '2011-12-01'\n)\nSELECT CAST(COUNT(*) AS DOUBLE) / COUNT(*) AS fraction\nFROM september_orders s\nJOIN all_purchasing_customers p ON s.customer_id = p.customer_id",
+            "error": "[DIVIDE_BY_ZERO] Division by zero. Use `try_divide` to tolerate divisor being 0 and return NULL instead. If necessary set \"spark.sql.ansi.enabled\" to \"false\" to bypass this error. SQLSTATE: 22012\n== SQL (line 1, position 365) ==\n...voice_ts < '2011-12-01') SELECT CAST(COUNT(*) AS DOUBLE) / COUNT(*) AS fraction FROM september_orde...\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
+          }
+        ]
+      },
+      "gold": {
+        "columns": [
+          "(sum(CASE WHEN (n >= 2) THEN 1 ELSE 0 END) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            0.21406003159557663
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test07",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.2582192489999215,
+      "result": {
+        "status": "clarification",
+        "message": "The schema provided does not include a field to identify 'anonymous' customers (e.g., an 'is_anonymous' flag or null customer_id). Additionally, the 'orders' table has a 'customer_id' field but no explicit status for 'completed' vs other statuses. Without knowing how anonymous orders are represented in the data and which orders are considered completed, this question cannot be answered accurately.",
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            82
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test07",
+      "rag": true,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.2428059900003063,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS anonymous_completed_orders FROM sales_lines WHERE invoice_ts >= TIMESTAMP '2011-09-01 00:00:00' AND invoice_ts < TIMESTAMP '2011-10-01 00:00:00' AND transaction_type = 'sale' AND customer_id IS NULL",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS anonymous_completed_orders FROM sales_lines WHERE invoice_ts >= CAST('2011-09-01 00:00:00' AS TIMESTAMP) AND invoice_ts < CAST('2011-10-01 00:00:00' AS TIMESTAMP) AND transaction_type = 'sale' AND customer_id IS NULL) AS guarded_result LIMIT 201",
+        "explanation": "The query counts completed sales (transaction_type = 'sale') in the sales_lines table for September 2011 where customer_id is NULL, indicating anonymous orders. The time range strictly follows the observed data constraints and excludes the end of the period.",
+        "result": {
+          "columns": [
+            "anonymous_completed_orders"
+          ],
+          "rows": [
+            [
+              9233
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 1.1683668733483015
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.6404735474230442
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 0.6145490429938282
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 0.4171478141741581
+          },
+          {
+            "id": "schema.md:5",
+            "text": "Join orders to customer_summary on customer_id only after selecting the intended as_of_date.\nJoining invoice lines to orders repeats order_amount per line: do not sum the repeated amount.\nDo not use the December snapshot to answer historical RFM questions.",
+            "sha256": "dd0f176f4032238aac0d27c6100587362e6200a21f2ad231b4cee57283b27480",
+            "score": 0.38120845157661654
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            82
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test08",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 3.6224373069999274,
+      "result": {
+        "status": "executed",
+        "sql": "WITH monthly_sales AS (\n    SELECT \n        DATE_TRUNC('MONTH', invoice_ts) AS month,\n        SUM(CASE WHEN transaction_type = 'sale' THEN line_amount ELSE 0 END) AS completed_sales\n    FROM sales_lines\n    WHERE invoice_ts >= TIMESTAMP '2011-01-01 00:00:00'\n      AND invoice_ts < TIMESTAMP '2011-04-01 00:00:00'\n    GROUP BY DATE_TRUNC('MONTH', invoice_ts)\n)\nSELECT month, completed_sales\nFROM monthly_sales\nORDER BY month ASC;",
+        "executed_sql": "SELECT * FROM (WITH monthly_sales AS (SELECT DATE_TRUNC('MONTH', invoice_ts) AS month, SUM(CASE WHEN transaction_type = 'sale' THEN line_amount ELSE 0 END) AS completed_sales FROM sales_lines WHERE invoice_ts >= CAST('2011-01-01 00:00:00' AS TIMESTAMP) AND invoice_ts < CAST('2011-04-01 00:00:00' AS TIMESTAMP) GROUP BY DATE_TRUNC('MONTH', invoice_ts)) SELECT month, completed_sales FROM monthly_sales ORDER BY month ASC) AS guarded_result LIMIT 201",
+        "explanation": "The query calculates completed sales for each month from January to March 2011 by filtering sales_lines for the specified period and summing line_amount where transaction_type is 'sale'. It uses DATE_TRUNC to group by month and orders results ascendingly. The dataset metadata indicates observation ends on 2011-12-09, so this period is fully covered.",
+        "result": {
+          "columns": [
+            "month",
+            "completed_sales"
+          ],
+          "rows": [
+            [
+              "2011-01-01 00:00:00",
+              "691364.5600"
+            ],
+            [
+              "2011-02-01 00:00:00",
+              "523631.8900"
+            ],
+            [
+              "2011-03-01 00:00:00",
+              "717639.3600"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "spark_sql.md:3",
+            "text": "Conditional aggregation: sum(CASE WHEN condition THEN 1 ELSE 0 END).\nSafe division: numerator / nullif(denominator, 0).\nMonthly grouping: date_trunc('MONTH', order_ts).\nRanking: row_number() OVER (ORDER BY metric DESC, customer_id ASC).\nComparison: lag(metric) OVER (ORDER BY month).\nCTEs: WITH filtered AS (SELECT ... FROM orders WHERE ...) SELECT ... FROM filtered.",
+            "sha256": "f6067abbca41b295751ea275117e810b70c9b69dba3a5cb2ac4d93bf59e709c1",
+            "score": 1.8085746981697912
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 1.5810959389823867
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 1.4849544988473549
+          },
+          {
+            "id": "spark_sql.md:4",
+            "text": "Use an explicit ORDER BY for top N and deterministic ID tie breaking.\nPrefer orders for invoice-level measures, sales_lines for product-level analysis.\nNever sum order_amount after joining it to multiple product lines.\nInspect schema and metric definitions before composing unfamiliar queries.\nRetry failed queries only within the configured retry budget; do not invent results.",
+            "sha256": "d026b82661773ccf5180e36f3df8a9d26c828942a7800f79a42b55806eab8f36",
+            "score": 1.3063232953504211
+          },
+          {
+            "id": "metrics.md:6",
+            "text": "No cost, margin, campaign outcomes, or data after the observed maximum date is provided.\nDo not infer campaign uplift, profit, or future sales as measured facts.\nFor an unspecified period or ambiguous 'best customer', ask for clarification.\nAlways label incomplete observation periods and absent data; absence is not automatically zero.",
+            "sha256": "6436a8c70b56f246436f807d5eb15625ebf5243ece26fa2f1e1ca5a865edc29c",
+            "score": 1.050152805169819
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.8817919061761498
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "month",
+          "sum(order_amount)"
+        ],
+        "rows": [
+          [
+            "2011-01-01 00:00:00",
+            "691364.5600"
+          ],
+          [
+            "2011-02-01 00:00:00",
+            "523631.8900"
+          ],
+          [
+            "2011-03-01 00:00:00",
+            "717639.3600"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test08",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.375722413999938,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT DATE_TRUNC('month', o.order_ts) AS month, SUM(o.order_amount) AS completed_sales FROM orders o WHERE o.order_ts >= '2011-01-01' AND o.order_ts < '2011-04-01' GROUP BY DATE_TRUNC('month', o.order_ts) ORDER BY month ASC",
+        "executed_sql": "SELECT * FROM (SELECT DATE_TRUNC('MONTH', o.order_ts) AS month, SUM(o.order_amount) AS completed_sales FROM orders AS o WHERE o.order_ts >= '2011-01-01' AND o.order_ts < '2011-04-01' GROUP BY DATE_TRUNC('MONTH', o.order_ts) ORDER BY month ASC) AS guarded_result LIMIT 201",
+        "explanation": "The query aggregates order amounts by month for the period January through March 2011. It uses DATE_TRUNC to group orders into months and sums the order_amount. The dataset metadata indicates observations range from 2009-12-01 to 2011-12-09, so the requested period is fully within observed data.",
+        "result": {
+          "columns": [
+            "month",
+            "completed_sales"
+          ],
+          "rows": [
+            [
+              "2011-01-01 00:00:00",
+              "691364.5600"
+            ],
+            [
+              "2011-02-01 00:00:00",
+              "523631.8900"
+            ],
+            [
+              "2011-03-01 00:00:00",
+              "717639.3600"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "month",
+          "sum(order_amount)"
+        ],
+        "rows": [
+          [
+            "2011-01-01 00:00:00",
+            "691364.5600"
+          ],
+          [
+            "2011-02-01 00:00:00",
+            "523631.8900"
+          ],
+          [
+            "2011-03-01 00:00:00",
+            "717639.3600"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test09",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.255698210999981,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT sl.product_id, SUM(sl.line_amount) AS revenue\nFROM sales_lines sl\nWHERE sl.invoice_ts >= '2011-09-01' AND sl.invoice_ts < '2011-10-01'\nGROUP BY sl.product_id\nORDER BY revenue DESC, sl.product_id ASC\nLIMIT 3",
+        "executed_sql": "SELECT * FROM (SELECT sl.product_id, SUM(sl.line_amount) AS revenue FROM sales_lines AS sl WHERE sl.invoice_ts >= '2011-09-01' AND sl.invoice_ts < '2011-10-01' GROUP BY sl.product_id ORDER BY revenue DESC, sl.product_id ASC LIMIT 3) AS guarded_result LIMIT 201",
+        "explanation": "The query selects product_id and sums line_amount for sales occurring in September 2011 (between 2011-09-01 and 2011-10-01). Results are grouped by product, ordered by revenue descending then product ID ascending to break ties, and limited to the top three.",
+        "result": {
+          "columns": [
+            "product_id",
+            "revenue"
+          ],
+          "rows": [
+            [
+              "DOT",
+              "15177.4000"
+            ],
+            [
+              "23243",
+              "9971.5100"
+            ],
+            [
+              "22423",
+              "9315.0300"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "product_id",
+          "revenue"
+        ],
+        "rows": [
+          [
+            "DOT",
+            "15177.4000"
+          ],
+          [
+            "23243",
+            "9981.4100"
+          ],
+          [
+            "22423",
+            "9619.5300"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test09",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.3940208789999815,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT product_id, SUM(line_amount) AS revenue\nFROM sales_lines\nWHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01'\n  AND transaction_type = 'sale'\nGROUP BY product_id\nORDER BY revenue DESC, product_id ASC\nLIMIT 3",
+        "executed_sql": "SELECT * FROM (SELECT product_id, SUM(line_amount) AS revenue FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'sale' GROUP BY product_id ORDER BY revenue DESC, product_id ASC LIMIT 3) AS guarded_result LIMIT 201",
+        "explanation": "The query selects product_id and sums line_amount for completed sales (transaction_type='sale') within September 2011. It groups by product_id, orders by revenue descending then product_id ascending to break ties, and limits to the top three.",
+        "result": {
+          "columns": [
+            "product_id",
+            "revenue"
+          ],
+          "rows": [
+            [
+              "DOT",
+              "15177.4000"
+            ],
+            [
+              "23243",
+              "9981.4100"
+            ],
+            [
+              "22423",
+              "9619.5300"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "spark_sql.md:4",
+            "text": "Use an explicit ORDER BY for top N and deterministic ID tie breaking.\nPrefer orders for invoice-level measures, sales_lines for product-level analysis.\nNever sum order_amount after joining it to multiple product lines.\nInspect schema and metric definitions before composing unfamiliar queries.\nRetry failed queries only within the configured retry budget; do not invent results.",
+            "sha256": "d026b82661773ccf5180e36f3df8a9d26c828942a7800f79a42b55806eab8f36",
+            "score": 3.5621769230801705
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 2.042943957601781
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 1.8598485203985708
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 1.855519989847519
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 1.2682644723504115
+          },
+          {
+            "id": "metrics.md:2",
+            "text": "Data source: UCI Online Retail II, DOI 10.24432/C5CG6D, CC BY 4.0.\nAn original row is an invoice line, not an order. Duplicate source lines are retained;\nthe build report counts exact duplicate extra rows. Results describe this policy.",
+            "sha256": "b32f55fe4b97cdc4d495c226c51707ff85fba2db1abdc4aafc3255b56e3bb836",
+            "score": 1.1712734896640242
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "product_id",
+          "revenue"
+        ],
+        "rows": [
+          [
+            "DOT",
+            "15177.4000"
+          ],
+          [
+            "23243",
+            "9981.4100"
+          ],
+          [
+            "22423",
+            "9619.5300"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test10",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.5355381849999503,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS cancellation_count FROM sales_lines WHERE invoice_ts >= TIMESTAMP '2011-09-01 00:00:00' AND invoice_ts < TIMESTAMP '2011-10-01 00:00:00' AND transaction_type = 'cancellation'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS cancellation_count FROM sales_lines WHERE invoice_ts >= CAST('2011-09-01 00:00:00' AS TIMESTAMP) AND invoice_ts < CAST('2011-10-01 00:00:00' AS TIMESTAMP) AND transaction_type = 'cancellation') AS guarded_result LIMIT 201",
+        "explanation": "The query counts rows in the sales_lines table where the transaction_type is 'cancellation' and the invoice_ts falls within September 2011 (from 2011-09-01 00:00:00 up to, but not including, 2011-10-01 00:00:00).",
+        "result": {
+          "columns": [
+            "cancellation_count"
+          ],
+          "rows": [
+            [
+              805
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 0.7251107116039325
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 0.65776047875168
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.6031450380162291
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 0.4667368109101687
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.4359909165088962
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            805
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test10",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.790459054999701,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS cancellation_count FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'cancellation'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS cancellation_count FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'cancellation') AS guarded_result LIMIT 201",
+        "explanation": "The query counts rows in the sales_lines table where the transaction_type is 'cancellation' and the invoice_ts falls within September 2011. The dataset metadata indicates the observed period ends on 2011-12-09, so September 2011 data is available.",
+        "result": {
+          "columns": [
+            "cancellation_count"
+          ],
+          "rows": [
+            [
+              805
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            805
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test11",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.7290978959999848,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS return_line_count FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'return'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS return_line_count FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' AND transaction_type = 'return') AS guarded_result LIMIT 201",
+        "explanation": "The query counts lines in the sales_lines table where the transaction type is 'return' and the timestamp falls within September 2011. The dataset metadata indicates the observed period ends on 2011-12-09, so September 2011 data is available.",
+        "result": {
+          "columns": [
+            "return_line_count"
+          ],
+          "rows": [
+            [
+              0
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            0
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test11",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.904157110000142,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS return_line_count FROM sales_lines WHERE invoice_ts >= TIMESTAMP '2011-09-01 00:00:00' AND invoice_ts < TIMESTAMP '2011-10-01 00:00:00' AND transaction_type = 'return'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS return_line_count FROM sales_lines WHERE invoice_ts >= CAST('2011-09-01 00:00:00' AS TIMESTAMP) AND invoice_ts < CAST('2011-10-01 00:00:00' AS TIMESTAMP) AND transaction_type = 'return') AS guarded_result LIMIT 201",
+        "explanation": "Counts rows in sales_lines where transaction_type is 'return' and the timestamp falls within September 2011 (inclusive start, exclusive end).",
+        "result": {
+          "columns": [
+            "return_line_count"
+          ],
+          "rows": [
+            [
+              0
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 0.7251107116039325
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 0.65776047875168
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.6031450380162291
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 0.4667368109101687
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.4359909165088962
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            0
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test12",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.0062739309996687,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT customer_id, sales_180d FROM customer_summary WHERE as_of_date = DATE '2011-12-01' ORDER BY sales_180d DESC, customer_id ASC LIMIT 5",
+        "executed_sql": "SELECT * FROM (SELECT customer_id, sales_180d FROM customer_summary WHERE as_of_date = CAST('2011-12-01' AS DATE) ORDER BY sales_180d DESC, customer_id ASC LIMIT 5) AS guarded_result LIMIT 201",
+        "explanation": "This query selects the top 5 customers by 180-day sales from the customer_summary table for the snapshot date 2011-12-01. It orders results by sales descending and customer ID ascending to handle ties deterministically.",
+        "result": {
+          "columns": [
+            "customer_id",
+            "sales_180d"
+          ],
+          "rows": [
+            [
+              "18102",
+              "183529.6500"
+            ],
+            [
+              "14646",
+              "152342.0800"
+            ],
+            [
+              "17450",
+              "137228.1300"
+            ],
+            [
+              "14911",
+              "98046.3600"
+            ],
+            [
+              "12415",
+              "74030.6300"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 3.9198182590983643
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 3.198521774902588
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 2.465869871364251
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 1.7835480229895577
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 1.6928247976009512
+          },
+          {
+            "id": "metrics.md:6",
+            "text": "No cost, margin, campaign outcomes, or data after the observed maximum date is provided.\nDo not infer campaign uplift, profit, or future sales as measured facts.\nFor an unspecified period or ambiguous 'best customer', ask for clarification.\nAlways label incomplete observation periods and absent data; absence is not automatically zero.",
+            "sha256": "6436a8c70b56f246436f807d5eb15625ebf5243ece26fa2f1e1ca5a865edc29c",
+            "score": 1.6538358209309434
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "customer_id",
+          "sales_180d"
+        ],
+        "rows": [
+          [
+            "18102",
+            "183529.6500"
+          ],
+          [
+            "14646",
+            "152342.0800"
+          ],
+          [
+            "17450",
+            "137228.1300"
+          ],
+          [
+            "14911",
+            "98046.3600"
+          ],
+          [
+            "12415",
+            "74030.6300"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test12",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.679030862000218,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT customer_id, sales_180d FROM customer_summary WHERE as_of_date = '2011-12-01' ORDER BY sales_180d DESC, customer_id ASC LIMIT 5",
+        "executed_sql": "SELECT * FROM (SELECT customer_id, sales_180d FROM customer_summary WHERE as_of_date = '2011-12-01' ORDER BY sales_180d DESC, customer_id ASC LIMIT 5) AS guarded_result LIMIT 201",
+        "explanation": "This query selects the top 5 customers based on their 180-day sales (sales_180d) as of the snapshot date 2011-12-01. The results are sorted by sales descending and then by customer ID ascending to ensure deterministic ordering.",
+        "result": {
+          "columns": [
+            "customer_id",
+            "sales_180d"
+          ],
+          "rows": [
+            [
+              "18102",
+              "183529.6500"
+            ],
+            [
+              "14646",
+              "152342.0800"
+            ],
+            [
+              "17450",
+              "137228.1300"
+            ],
+            [
+              "14911",
+              "98046.3600"
+            ],
+            [
+              "12415",
+              "74030.6300"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "customer_id",
+          "sales_180d"
+        ],
+        "rows": [
+          [
+            "18102",
+            "183529.6500"
+          ],
+          [
+            "14646",
+            "152342.0800"
+          ],
+          [
+            "17450",
+            "137228.1300"
+          ],
+          [
+            "14911",
+            "98046.3600"
+          ],
+          [
+            "12415",
+            "74030.6300"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test13",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.2146632569997564,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS champion_count FROM customer_summary WHERE as_of_date = '2011-12-01' AND is_high_value = true",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS champion_count FROM customer_summary WHERE as_of_date = '2011-12-01' AND is_high_value = TRUE) AS guarded_result LIMIT 201",
+        "explanation": "The query counts customers marked as high value (Champions) in the customer_summary table at the specific snapshot date of 2011-12-01.",
+        "result": {
+          "columns": [
+            "champion_count"
+          ],
+          "rows": [
+            [
+              690
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            937
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test13",
+      "rag": true,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.8189978570003404,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) AS champion_count FROM customer_summary WHERE as_of_date = '2011-12-01' AND is_high_value = true",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS champion_count FROM customer_summary WHERE as_of_date = '2011-12-01' AND is_high_value = TRUE) AS guarded_result LIMIT 201",
+        "explanation": "The query counts customers marked as high value (is_high_value = true) in the customer_summary table for the snapshot date 2011-12-01. According to the Thai glossary, 'high value' corresponds to the top 20% of customers by monetary_rank.",
+        "result": {
+          "columns": [
+            "champion_count"
+          ],
+          "rows": [
+            [
+              690
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 1.888875534558374
+          },
+          {
+            "id": "thai_glossary.md:4",
+            "text": "ลูกค้ามูลค่าสูง high value คือลูกค้า 20% แรกตาม monetary_rank ใน customer_summary\nกลุ่มลูกค้า RFM ใช้ recency_days, orders_180d, sales_180d ณ as_of_date 2011-12-01\nใช้เฉพาะรายการก่อนวัน snapshot และย้อนหลัง 180 วัน ลูกค้าไม่ระบุตัวตนไม่อยู่ใน summary",
+            "sha256": "2188a305497acf3d75d4bb5cc39f8267efde96625dcf0f0d6fbc7ed8be48459a",
+            "score": 1.0229883218807538
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.9575655980616257
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.7863980243111826
+          },
+          {
+            "id": "metrics.md:2",
+            "text": "Data source: UCI Online Retail II, DOI 10.24432/C5CG6D, CC BY 4.0.\nAn original row is an invoice line, not an order. Duplicate source lines are retained;\nthe build report counts exact duplicate extra rows. Results describe this policy.",
+            "sha256": "b32f55fe4b97cdc4d495c226c51707ff85fba2db1abdc4aafc3255b56e3bb836",
+            "score": 0.7637477544644397
+          },
+          {
+            "id": "schema.md:5",
+            "text": "Join orders to customer_summary on customer_id only after selecting the intended as_of_date.\nJoining invoice lines to orders repeats order_amount per line: do not sum the repeated amount.\nDo not use the December snapshot to answer historical RFM questions.",
+            "sha256": "dd0f176f4032238aac0d27c6100587362e6200a21f2ad231b4cee57283b27480",
+            "score": 0.7216483194468394
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            937
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test14",
+      "rag": true,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.6812702130000616,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) as inactive_count FROM customer_summary WHERE is_high_value = false AND recency_days > 90",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS inactive_count FROM customer_summary WHERE is_high_value = FALSE AND recency_days > 90) AS guarded_result LIMIT 201",
+        "explanation": "The query counts customers in the `customer_summary` table who are not high value and have a `recency_days` greater than 90, matching the definition of 'Inactive' provided in the reference documents. The data is from the snapshot as_of_date 2011-12-01.",
+        "result": {
+          "columns": [
+            "inactive_count"
+          ],
+          "rows": [
+            [
+              586
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 3.401338933453831
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 2.2527569049605956
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 2.2392121570298937
+          },
+          {
+            "id": "thai_glossary.md:4",
+            "text": "ลูกค้ามูลค่าสูง high value คือลูกค้า 20% แรกตาม monetary_rank ใน customer_summary\nกลุ่มลูกค้า RFM ใช้ recency_days, orders_180d, sales_180d ณ as_of_date 2011-12-01\nใช้เฉพาะรายการก่อนวัน snapshot และย้อนหลัง 180 วัน ลูกค้าไม่ระบุตัวตนไม่อยู่ใน summary",
+            "sha256": "2188a305497acf3d75d4bb5cc39f8267efde96625dcf0f0d6fbc7ed8be48459a",
+            "score": 1.2833212347313125
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 1.2129739648203834
+          },
+          {
+            "id": "schema.md:5",
+            "text": "Join orders to customer_summary on customer_id only after selecting the intended as_of_date.\nJoining invoice lines to orders repeats order_amount per line: do not sum the repeated amount.\nDo not use the December snapshot to answer historical RFM questions.",
+            "sha256": "dd0f176f4032238aac0d27c6100587362e6200a21f2ad231b4cee57283b27480",
+            "score": 1.0620881873170622
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            610
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test14",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.1541328660000545,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT COUNT(*) as inactive_count FROM customer_summary WHERE is_high_value = false AND as_of_date = '2011-12-01'",
+        "executed_sql": "SELECT * FROM (SELECT COUNT(*) AS inactive_count FROM customer_summary WHERE is_high_value = FALSE AND as_of_date = '2011-12-01') AS guarded_result LIMIT 201",
+        "explanation": "The query counts customers where is_high_value is false in the customer_summary table, filtered by the snapshot date 2011-12-01. The term 'eligible 180-day population' implies customers with data within the last 180 days relative to the snapshot; however, the schema does not provide a direct flag for 'inactive' status other than is_high_value=false. Assuming 'Inactive' refers to those not classified as high value (is_high_value=false) and present in the dataset at the snapshot date.",
+        "result": {
+          "columns": [
+            "inactive_count"
+          ],
+          "rows": [
+            [
+              2760
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "count(1)"
+        ],
+        "rows": [
+          [
+            610
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test15",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 0.9307830180000565,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT MIN(invoice_ts) as min_timestamp, MAX(invoice_ts) as max_timestamp FROM sales_lines",
+        "executed_sql": "SELECT * FROM (SELECT MIN(invoice_ts) AS min_timestamp, MAX(invoice_ts) AS max_timestamp FROM sales_lines) AS guarded_result LIMIT 201",
+        "explanation": "This query calculates the earliest and latest transaction timestamps recorded in the sales_lines table.",
+        "result": {
+          "columns": [
+            "min_timestamp",
+            "max_timestamp"
+          ],
+          "rows": [
+            [
+              "2009-12-01 07:45:00",
+              "2011-12-09 12:50:00"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "min(invoice_ts)",
+          "max(invoice_ts)"
+        ],
+        "rows": [
+          [
+            "2009-12-01 07:45:00",
+            "2011-12-09 12:50:00"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test15",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.472062919000109,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT MIN(invoice_ts) as min_timestamp, MAX(invoice_ts) as max_timestamp FROM sales_lines WHERE transaction_type = 'sale'",
+        "executed_sql": "SELECT * FROM (SELECT MIN(invoice_ts) AS min_timestamp, MAX(invoice_ts) AS max_timestamp FROM sales_lines WHERE transaction_type = 'sale') AS guarded_result LIMIT 201",
+        "explanation": "This query calculates the minimum and maximum timestamps from the sales_lines table, filtering only for completed sales transactions to align with the definition of observed activity.",
+        "result": {
+          "columns": [
+            "min_timestamp",
+            "max_timestamp"
+          ],
+          "rows": [
+            [
+              "2009-12-01 07:45:00",
+              "2011-12-09 12:50:00"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 1.2624654379838536
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 1.2130995309252934
+          },
+          {
+            "id": "metrics.md:6",
+            "text": "No cost, margin, campaign outcomes, or data after the observed maximum date is provided.\nDo not infer campaign uplift, profit, or future sales as measured facts.\nFor an unspecified period or ambiguous 'best customer', ask for clarification.\nAlways label incomplete observation periods and absent data; absence is not automatically zero.",
+            "sha256": "6436a8c70b56f246436f807d5eb15625ebf5243ece26fa2f1e1ca5a865edc29c",
+            "score": 1.207679191627289
+          },
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 1.0868604649957854
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 0.8838846250843269
+          },
+          {
+            "id": "spark_sql.md:4",
+            "text": "Use an explicit ORDER BY for top N and deterministic ID tie breaking.\nPrefer orders for invoice-level measures, sales_lines for product-level analysis.\nNever sum order_amount after joining it to multiple product lines.\nInspect schema and metric definitions before composing unfamiliar queries.\nRetry failed queries only within the configured retry budget; do not invent results.",
+            "sha256": "d026b82661773ccf5180e36f3df8a9d26c828942a7800f79a42b55806eab8f36",
+            "score": 0.7198425840980813
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "min(invoice_ts)",
+          "max(invoice_ts)"
+        ],
+        "rows": [
+          [
+            "2009-12-01 07:45:00",
+            "2011-12-09 12:50:00"
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test16",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 5.727681645999837,
+      "result": {
+        "status": "executed",
+        "sql": "WITH september_orders AS (\n    SELECT \n        country,\n        COUNT(*) AS order_count\n    FROM orders\n    WHERE order_ts >= '2011-09-01 00:00:00' AND order_ts < '2011-10-01 00:00:00'\n    GROUP BY country\n)\nSELECT \n    country,\n    order_count\nFROM september_orders\nORDER BY order_count DESC, country ASC\nLIMIT 5;",
+        "executed_sql": "SELECT * FROM (WITH september_orders AS (SELECT country, COUNT(*) AS order_count FROM orders WHERE order_ts >= '2011-09-01 00:00:00' AND order_ts < '2011-10-01 00:00:00' GROUP BY country) SELECT country, order_count FROM september_orders ORDER BY order_count DESC, country ASC LIMIT 5) AS guarded_result LIMIT 201",
+        "explanation": "The query filters the `orders` table for completed sales within September 2011. It groups by country to count orders, then orders results by count descending and country ascending to handle ties, limiting to the top 5. The previous error occurred because `transaction_type` is a column in `sales_lines`, not `orders`. Since `orders` represents completed invoices, we filter only on the date range without needing to check for returns/cancellations at the invoice level using that specific column.",
+        "result": {
+          "columns": [
+            "country",
+            "order_count"
+          ],
+          "rows": [
+            [
+              "United Kingdom",
+              1645
+            ],
+            [
+              "France",
+              45
+            ],
+            [
+              "Germany",
+              41
+            ],
+            [
+              "EIRE",
+              38
+            ],
+            [
+              "Australia",
+              8
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "schema.md:3",
+            "text": "orders: one consistent completed-sale invoice. invoice_id/customer_id/country strings;\norder_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint.\nInvoices with mixed customer or country values are excluded and counted in the quality report.\nAnonymous orders are retained. Sum(order_amount) can differ from all sale lines due to excluded invoices.",
+            "sha256": "762054eef5a7a157d54696866923e4fc9f317afef51c3087f97748cacab58e4a",
+            "score": 2.977397948848016
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 2.1409137145020436
+          },
+          {
+            "id": "spark_sql.md:4",
+            "text": "Use an explicit ORDER BY for top N and deterministic ID tie breaking.\nPrefer orders for invoice-level measures, sales_lines for product-level analysis.\nNever sum order_amount after joining it to multiple product lines.\nInspect schema and metric definitions before composing unfamiliar queries.\nRetry failed queries only within the configured retry budget; do not invent results.",
+            "sha256": "d026b82661773ccf5180e36f3df8a9d26c828942a7800f79a42b55806eab8f36",
+            "score": 1.9354629672167292
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 1.7790299126538027
+          },
+          {
+            "id": "schema.md:2",
+            "text": "sales_lines: one original source line. invoice_id/customer_id/product_id strings;\ndescription string; invoice_ts timestamp; country string; quantity bigint;\nunit_price decimal(18,4); line_amount decimal(28,4); transaction_type string;\nsource_sheet string; source_row bigint.\nTypes: sale, cancellation, return, adjustment, invalid. Filter sale for completed sales.\nNever treat all line_amount values as net sales without investigating adjustments.",
+            "sha256": "5a66a084024178d16703a04c0d3176631d63e7299aed6ec89e0e4d5fce842175",
+            "score": 1.659466302499523
+          },
+          {
+            "id": "spark_sql.md:3",
+            "text": "Conditional aggregation: sum(CASE WHEN condition THEN 1 ELSE 0 END).\nSafe division: numerator / nullif(denominator, 0).\nMonthly grouping: date_trunc('MONTH', order_ts).\nRanking: row_number() OVER (ORDER BY metric DESC, customer_id ASC).\nComparison: lag(metric) OVER (ORDER BY month).\nCTEs: WITH filtered AS (SELECT ... FROM orders WHERE ...) SELECT ... FROM filtered.",
+            "sha256": "f6067abbca41b295751ea275117e810b70c9b69dba3a5cb2ac4d93bf59e709c1",
+            "score": 1.4131483952814246
+          }
+        ],
+        "attempts": [
+          {
+            "sql": "WITH september_orders AS (\n    SELECT \n        country,\n        COUNT(*) AS order_count\n    FROM orders\n    WHERE order_ts >= '2011-09-01 00:00:00' AND order_ts < '2011-10-01 00:00:00'\n      AND transaction_type = 'sale'\n    GROUP BY country\n)\nSELECT \n    country,\n    order_count\nFROM september_orders\nORDER BY order_count DESC, country ASC\nLIMIT 5;",
+            "error": "[UNRESOLVED_COLUMN.WITH_SUGGESTION] A column, variable, or function parameter with name `transaction_type` cannot be resolved. Did you mean one of the following? [`country`, `invoice_id`, `total_units`, `customer_id`, `order_amount`]. SQLSTATE: 42703; line 1 pos 174;\n'GlobalLimit 201\n+- 'LocalLimit 201\n   +- 'Project [*]\n      +- 'SubqueryAlias guarded_result\n         +- 'GlobalLimit 5\n            +- 'LocalLimit 5\n               +- 'Sort ['order_count DESC NULLS LAST, 'country ASC NULLS FIRST], true\n                  +- 'Project ['country, 'order_count]\n                     +- 'SubqueryAlias september_orders\n                        +- 'SubqueryAlias september_orders\n                           +- 'Aggregate ['country], ['country, count(1) AS order_count#429L]\n                              +- 'Filter (((order_ts#14 >= cast(2011-09-01 00:00:00 as timestamp)) AND (order_ts#14 < cast(2011-10-01 00:00:00 as timestamp))) AND ('transaction_type = sale))\n                                 +- SubqueryAlias orders\n                                    +- View (`orders`, [invoice_id#12, customer_id#13, order_ts#14, country#15, order_amount#16, total_units#17L, distinct_products#18L])\n                                       +- Relation [invoice_id#12,customer_id#13,order_ts#14,country#15,order_amount#16,total_units#17L,distinct_products#18L] parquet\n"
+          }
+        ]
+      },
+      "gold": {
+        "columns": [
+          "country",
+          "n"
+        ],
+        "rows": [
+          [
+            "United Kingdom",
+            1645
+          ],
+          [
+            "France",
+            45
+          ],
+          [
+            "Germany",
+            41
+          ],
+          [
+            "EIRE",
+            38
+          ],
+          [
+            "Australia",
+            8
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test16",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.8390343350001785,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT country, COUNT(*) AS order_count FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' GROUP BY country ORDER BY order_count DESC, country ASC LIMIT 5",
+        "executed_sql": "SELECT * FROM (SELECT country, COUNT(*) AS order_count FROM sales_lines WHERE invoice_ts >= '2011-09-01' AND invoice_ts < '2011-10-01' GROUP BY country ORDER BY order_count DESC, country ASC LIMIT 5) AS guarded_result LIMIT 201",
+        "explanation": "The query counts completed orders (represented by line items in sales_lines) for each country during September 2011. It groups by country, orders the results by count descending and then by country name ascending to handle ties, and limits the output to the top five countries.",
+        "result": {
+          "columns": [
+            "country",
+            "order_count"
+          ],
+          "rows": [
+            [
+              "United Kingdom",
+              45533
+            ],
+            [
+              "EIRE",
+              1215
+            ],
+            [
+              "France",
+              1055
+            ],
+            [
+              "Germany",
+              807
+            ],
+            [
+              "Spain",
+              244
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "country",
+          "n"
+        ],
+        "rows": [
+          [
+            "United Kingdom",
+            1645
+          ],
+          [
+            "France",
+            45
+          ],
+          [
+            "Germany",
+            41
+          ],
+          [
+            "EIRE",
+            38
+          ],
+          [
+            "Australia",
+            8
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test17",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 1.7153414269996574,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT CAST(SUM(CASE WHEN is_high_value THEN 1 ELSE 0 END) AS DOUBLE) / COUNT(*) AS fraction_of_high_value_customers FROM customer_summary WHERE as_of_date = '2011-12-01'",
+        "executed_sql": "SELECT * FROM (SELECT CAST(SUM(CASE WHEN is_high_value THEN 1 ELSE 0 END) AS DOUBLE) / COUNT(*) AS fraction_of_high_value_customers FROM customer_summary WHERE as_of_date = '2011-12-01') AS guarded_result LIMIT 201",
+        "explanation": "This query calculates the fraction of high-value customers at the specified snapshot date (2011-12-01) by summing the count of customers where is_high_value is true and dividing by the total number of customers in the customer_summary table for that date.",
+        "result": {
+          "columns": [
+            "fraction_of_high_value_customers"
+          ],
+          "rows": [
+            [
+              0.2
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "(sum(CASE WHEN is_high_value THEN 1 ELSE 0 END) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            0.2
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test17",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": false,
+      "elapsed_seconds": 2.570959634999781,
+      "result": {
+        "status": "executed",
+        "sql": "WITH metrics AS (\n  SELECT \n    SUM(CASE WHEN is_high_value THEN 1 ELSE 0 END) AS high_value_count,\n    COUNT(*) AS total_eligible_count\n  FROM customer_summary\n)\nSELECT \n  CAST(high_value_count AS DOUBLE) / CAST(total_eligible_count AS DOUBLE) AS fraction_of_high_value_customers\nFROM metrics",
+        "executed_sql": "SELECT * FROM (WITH metrics AS (SELECT SUM(CASE WHEN is_high_value THEN 1 ELSE 0 END) AS high_value_count, COUNT(*) AS total_eligible_count FROM customer_summary) SELECT CAST(high_value_count AS DOUBLE) / CAST(total_eligible_count AS DOUBLE) AS fraction_of_high_value_customers FROM metrics) AS guarded_result LIMIT 201",
+        "explanation": "This query calculates the fraction of high-value customers at the 2011-12-01 snapshot. It sums the count of customers where is_high_value is true and divides by the total count of eligible customers in customer_summary. The definition of 'high value' (top 20% by monetary_rank) is derived from the dataset metadata.",
+        "result": {
+          "columns": [
+            "fraction_of_high_value_customers"
+          ],
+          "rows": [
+            [
+              0.2
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 3.122513230544066
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 2.1569295790957805
+          },
+          {
+            "id": "thai_glossary.md:4",
+            "text": "ลูกค้ามูลค่าสูง high value คือลูกค้า 20% แรกตาม monetary_rank ใน customer_summary\nกลุ่มลูกค้า RFM ใช้ recency_days, orders_180d, sales_180d ณ as_of_date 2011-12-01\nใช้เฉพาะรายการก่อนวัน snapshot และย้อนหลัง 180 วัน ลูกค้าไม่ระบุตัวตนไม่อยู่ใน summary",
+            "sha256": "2188a305497acf3d75d4bb5cc39f8267efde96625dcf0f0d6fbc7ed8be48459a",
+            "score": 1.58936972172656
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 1.2129739648203832
+          },
+          {
+            "id": "schema.md:5",
+            "text": "Join orders to customer_summary on customer_id only after selecting the intended as_of_date.\nJoining invoice lines to orders repeats order_amount per line: do not sum the repeated amount.\nDo not use the December snapshot to answer historical RFM questions.",
+            "sha256": "dd0f176f4032238aac0d27c6100587362e6200a21f2ad231b4cee57283b27480",
+            "score": 1.0620881873170622
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.9575655980616257
+          }
+        ],
+        "attempts": []
+      },
+      "gold": {
+        "columns": [
+          "(sum(CASE WHEN is_high_value THEN 1 ELSE 0 END) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            0.2
+          ]
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "id": "test18",
+      "rag": true,
+      "correct": false,
+      "clarification_reason_needs_review": true,
+      "elapsed_seconds": 1.4031709200003206,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT SUM(order_amount) AS total_sales FROM orders",
+        "executed_sql": "SELECT * FROM (SELECT SUM(order_amount) AS total_sales FROM orders) AS guarded_result LIMIT 201",
+        "explanation": "Calculates the total sales in GBP by summing the 'order_amount' column from the 'orders' table. This aligns with the definition of sales as the sum of order amounts before returns.",
+        "result": {
+          "columns": [
+            "total_sales"
+          ],
+          "rows": [
+            [
+              "20972594.5680"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "thai_glossary.md:2",
+            "text": "ยอดขาย sales คือ sum(order_amount) จาก orders หน่วย GBP ก่อนหักคืนสินค้า\nจำนวนคำสั่งซื้อ orders คือ count(*) ของตาราง orders ไม่ใช่จำนวนรายการสินค้า\nยอดเฉลี่ยต่อคำสั่งซื้อ AOV คือยอดขายรวมหารจำนวนใบสั่งซื้อ รวมลูกค้าไม่ระบุตัวตน",
+            "sha256": "71b66f957a71320f19ace507995fa23da35cafd3c4b6a348971f0a434d61c4ce",
+            "score": 1.9292399000239817
+          },
+          {
+            "id": "metrics.md:1",
+            "text": "# Customer analytics definitions — version 1",
+            "sha256": "506096c4123bb32ede3455b0db93497c6a24a4b537f40c32e92289be4e242dd8",
+            "score": 0.0
+          },
+          {
+            "id": "metrics.md:2",
+            "text": "Data source: UCI Online Retail II, DOI 10.24432/C5CG6D, CC BY 4.0.\nAn original row is an invoice line, not an order. Duplicate source lines are retained;\nthe build report counts exact duplicate extra rows. Results describe this policy.",
+            "sha256": "b32f55fe4b97cdc4d495c226c51707ff85fba2db1abdc4aafc3255b56e3bb836",
+            "score": 0.0
+          },
+          {
+            "id": "metrics.md:3",
+            "text": "Sales = sum(order_amount) from orders, before returns. Currency GBP, not profit.\nOrders = count(*) from orders, one invoice per row.\nPurchasing customers = count(distinct customer_id); NULL IDs are excluded.\nAOV = sum(order_amount) / count(*), including anonymous orders.\nRepeat customer rate = identified customers with >=2 orders in the selected period /\nidentified customers with >=1 order in that same period. It is not cohort retention.\nDo not average customer AOVs to compute overall AOV.",
+            "sha256": "89639dd5250ce642faffc8310ed34d9ae0af6c22df120de1fb62e99d9af125d3",
+            "score": 0.0
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.0
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 0.0
+          }
+        ],
+        "attempts": []
+      },
+      "gold": null
+    },
+    {
+      "id": "test18",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": true,
+      "elapsed_seconds": 1.3044947049997972,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT SUM(line_amount) AS total_sales FROM sales_lines",
+        "executed_sql": "SELECT * FROM (SELECT SUM(line_amount) AS total_sales FROM sales_lines) AS guarded_result LIMIT 201",
+        "explanation": "This query calculates the total sales amount by summing the 'line_amount' column from the 'sales_lines' table. The result will be in GBP as per the dataset's currency standard.",
+        "result": {
+          "columns": [
+            "total_sales"
+          ],
+          "rows": [
+            [
+              "19287250.5680"
+            ]
+          ],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": null
+    },
+    {
+      "id": "test19",
+      "rag": false,
+      "correct": true,
+      "clarification_reason_needs_review": true,
+      "elapsed_seconds": 0.4447931439999593,
+      "result": {
+        "status": "clarification",
+        "message": "No data on campaigns or uplift is available in the provided schema.",
+        "references": [],
+        "attempts": []
+      },
+      "gold": null
+    },
+    {
+      "id": "test19",
+      "rag": true,
+      "correct": true,
+      "clarification_reason_needs_review": true,
+      "elapsed_seconds": 0.9442817620001733,
+      "result": {
+        "status": "clarification",
+        "message": "No cost, margin, campaign outcomes, or data after the observed maximum date is provided. Do not infer campaign uplift, profit, or future sales as measured facts.",
+        "references": [
+          {
+            "id": "metrics.md:6",
+            "text": "No cost, margin, campaign outcomes, or data after the observed maximum date is provided.\nDo not infer campaign uplift, profit, or future sales as measured facts.\nFor an unspecified period or ambiguous 'best customer', ask for clarification.\nAlways label incomplete observation periods and absent data; absence is not automatically zero.",
+            "sha256": "6436a8c70b56f246436f807d5eb15625ebf5243ece26fa2f1e1ca5a865edc29c",
+            "score": 1.9221398313259532
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 0.3202367737115221
+          },
+          {
+            "id": "thai_glossary.md:4",
+            "text": "ลูกค้ามูลค่าสูง high value คือลูกค้า 20% แรกตาม monetary_rank ใน customer_summary\nกลุ่มลูกค้า RFM ใช้ recency_days, orders_180d, sales_180d ณ as_of_date 2011-12-01\nใช้เฉพาะรายการก่อนวัน snapshot และย้อนหลัง 180 วัน ลูกค้าไม่ระบุตัวตนไม่อยู่ใน summary",
+            "sha256": "2188a305497acf3d75d4bb5cc39f8267efde96625dcf0f0d6fbc7ed8be48459a",
+            "score": 0.26033291285055876
+          },
+          {
+            "id": "metrics.md:1",
+            "text": "# Customer analytics definitions — version 1",
+            "sha256": "506096c4123bb32ede3455b0db93497c6a24a4b537f40c32e92289be4e242dd8",
+            "score": 0.0
+          },
+          {
+            "id": "metrics.md:2",
+            "text": "Data source: UCI Online Retail II, DOI 10.24432/C5CG6D, CC BY 4.0.\nAn original row is an invoice line, not an order. Duplicate source lines are retained;\nthe build report counts exact duplicate extra rows. Results describe this policy.",
+            "sha256": "b32f55fe4b97cdc4d495c226c51707ff85fba2db1abdc4aafc3255b56e3bb836",
+            "score": 0.0
+          }
+        ],
+        "attempts": []
+      },
+      "gold": null
+    },
+    {
+      "id": "test20",
+      "rag": true,
+      "correct": false,
+      "clarification_reason_needs_review": true,
+      "elapsed_seconds": 3.137305821999689,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT rfm_segment, COUNT(*) as count, CAST(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER () AS DECIMAL(5,2)) as percentage FROM customer_summary WHERE as_of_date = DATE '2010-06-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+        "executed_sql": "SELECT * FROM (SELECT rfm_segment, COUNT(*) AS count, CAST(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER () AS DECIMAL(5, 2)) AS percentage FROM customer_summary WHERE as_of_date = CAST('2010-06-01' AS DATE) GROUP BY rfm_segment ORDER BY rfm_segment) AS guarded_result LIMIT 201",
+        "explanation": "The query selects the RFM segment distribution from the customer_summary table for the specific snapshot date of 2010-06-01. It groups by rfm_segment, counts the occurrences, and calculates the percentage of each segment relative to the total count at that snapshot. The metadata indicates the available snapshots are around 2011-12-01; however, the schema allows querying any as_of_date present in the data. If no rows exist for 2010-06-01, the result will be empty, which is handled by returning the SQL that would produce that result.",
+        "result": {
+          "columns": [
+            "rfm_segment",
+            "count",
+            "percentage"
+          ],
+          "rows": [],
+          "truncated": false
+        },
+        "references": [
+          {
+            "id": "schema.md:5",
+            "text": "Join orders to customer_summary on customer_id only after selecting the intended as_of_date.\nJoining invoice lines to orders repeats order_amount per line: do not sum the repeated amount.\nDo not use the December snapshot to answer historical RFM questions.",
+            "sha256": "dd0f176f4032238aac0d27c6100587362e6200a21f2ad231b4cee57283b27480",
+            "score": 1.5547354893636773
+          },
+          {
+            "id": "metrics.md:4",
+            "text": "Time ranges include start and exclude end. Source timestamps have no supplied timezone;\nUTC session is a reproducible processing convention, not a claim of source timezone.\nSnapshot 2011-12-01 uses only events strictly before 2011-12-01 00:00:00.\n180-day window includes the start at as_of - 180 days, excludes as_of.\nfirst_purchase_date is first OBSERVED purchase, not necessarily first-ever purchase.\nCustomer summary excludes anonymous customers and those with no purchase in the window.",
+            "sha256": "13fcf7dc685790f799f97527a40a730958e4ff1a829101a826bfd7d323ba61b7",
+            "score": 1.46101185199372
+          },
+          {
+            "id": "schema.md:4",
+            "text": "customer_summary: one identified customer in the 180-day window for one snapshot.\ncustomer_id string; first_purchase_date/last_purchase_date/as_of_date dates;\nrecency_days int; orders_180d bigint; sales_180d/aov_180d decimal;\nmonetary_rank/population_size bigint; is_high_value boolean; rfm_segment string.",
+            "sha256": "2d0e6f0c1ef61a027fbcb4df469767a987fa89d01aba75cde6bdc343a2a32ecd",
+            "score": 0.7863980243111826
+          },
+          {
+            "id": "thai_glossary.md:4",
+            "text": "ลูกค้ามูลค่าสูง high value คือลูกค้า 20% แรกตาม monetary_rank ใน customer_summary\nกลุ่มลูกค้า RFM ใช้ recency_days, orders_180d, sales_180d ณ as_of_date 2011-12-01\nใช้เฉพาะรายการก่อนวัน snapshot และย้อนหลัง 180 วัน ลูกค้าไม่ระบุตัวตนไม่อยู่ใน summary",
+            "sha256": "2188a305497acf3d75d4bb5cc39f8267efde96625dcf0f0d6fbc7ed8be48459a",
+            "score": 0.762655409030195
+          },
+          {
+            "id": "spark_sql.md:2",
+            "text": "Use SELECT or WITH queries over allowed views only. Examples illustrate syntax, not mandatory formulas.\nTime interval: order_ts >= TIMESTAMP '2011-10-01 00:00:00'\nAND order_ts < TIMESTAMP '2011-11-01 00:00:00'.",
+            "sha256": "2dc3c4076fb51420ebc39947bd4fb84aafaa5345e50d9121057b467a8cd3de27",
+            "score": 0.47878279903081283
+          },
+          {
+            "id": "metrics.md:5",
+            "text": "Recency is calendar days since last observed purchase. Frequency counts invoices.\nMonetary is sales in the window. Champions: recency<=30 and frequency>=3;\nRecent repeat: recency<=30 and frequency=2; Recent single-order: recency<=30 and frequency=1;\nNeeds attention: recency 31..90; Inactive: recency>90 within the eligible population.\nHigh value: first ceil(20% * population) customers ordered by Monetary descending,\nthen customer_id ascending to break ties. This is a project definition, not a validated business label.",
+            "sha256": "9135844bf63da04a406d5bb91daf7c7d69806735683164c5c4a5fe8352cc42c9",
+            "score": 0.47831813236379583
+          }
+        ],
+        "attempts": []
+      },
+      "gold": null
+    },
+    {
+      "id": "test20",
+      "rag": false,
+      "correct": false,
+      "clarification_reason_needs_review": true,
+      "elapsed_seconds": 1.7428088659999048,
+      "result": {
+        "status": "executed",
+        "sql": "SELECT rfm_segment, COUNT(*) as count, SUM(population_size) as population_size FROM customer_summary WHERE as_of_date = '2010-06-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+        "executed_sql": "SELECT * FROM (SELECT rfm_segment, COUNT(*) AS count, SUM(population_size) AS population_size FROM customer_summary WHERE as_of_date = '2010-06-01' GROUP BY rfm_segment ORDER BY rfm_segment) AS guarded_result LIMIT 201",
+        "explanation": "This query retrieves the distribution of RFM segments for customers as of the snapshot date 2010-06-01. It counts the number of customers and sums their population_size for each segment found in the customer_summary table where the as_of_date matches the requested snapshot.",
+        "result": {
+          "columns": [
+            "rfm_segment",
+            "count",
+            "population_size"
+          ],
+          "rows": [],
+          "truncated": false
+        },
+        "references": [],
+        "attempts": []
+      },
+      "gold": null
+    }
+  ],
+  "started_at_utc": "2026-10-26T04:38:15.041638+00:00",
+  "spark_version": "4.1.3",
+  "spark_master": "spark://spark-master:7077",
+  "provenance": {
+    "files_sha256": {
+      "jobs/agent.py": "04559d6026bcec27209ee691b412fd094c642a8426aa0050bc206213f22dae18",
+      "jobs/build_tables.py": "4ad0a4d6946602f57a6fd3dd69a29e24f4aa04c0670bcc366356076c21ab206d",
+      "jobs/check_model.py": "0e51bf11f30dcbd529e107f65231e2f5c44b81e9fcf3e5ce0832551b3e606e40",
+      "jobs/evaluate.py": "303079b9450e952d9a6cb56be1bf2c66f375cdd0cdfb910149da395188ae87aa",
+      "jobs/prepare_data.py": "c744c6dd460628eb978dc6a4a651da27006a90b5d52846fe99edadd6695126ff",
+      "jobs/provenance.py": "77510abcbf79e6e06494ec5a5068c0399364c143915e3289d6d2fdaac4b9f009",
+      "jobs/query_runtime.py": "6140b7286dde4164d3eed119e3bf1fd029934114d3b8affc6675a84d5e5f7291",
+      "jobs/retrieval.py": "b90da4964eb8605b4c578bb037e7819a57fb34cb083b0b5902f47f571403e93e",
+      "jobs/smoke_hdfs.py": "bd9989548d198b947e39c2a0ea40ee2c846491308a09a330db59b01befc5ee29",
+      "jobs/sql_guard.py": "0628b69f52c18a34a8eeb829adf070ea3f25eed2d197608acf88dd0c2e904846",
+      "jobs/test_agent_spark.py": "9894cf71bb5a7ca7c5fafe974cf2edaa1714be777a604b78ab4f3eaeba092ed9",
+      "jobs/test_model_spark.py": "0f8524346a414d17697ac47d7d414e79fd0a428b12f8061a24b37545ee10f0ec",
+      "jobs/test_pipeline.py": "c4a1828b8d5a1046448d6d61837d6378ccae2d88cea553a03fcceafa2db267b0",
+      "knowledge/metrics.md": "2b51ac1d506559ce2b2f0a68e8513777c630ad8dbf11397e50802b7231f82c65",
+      "knowledge/schema.md": "e182a6969e4bc3b80c2dd7ed485ac10d080e799b78127e3cfdc43e3752359dc9",
+      "knowledge/spark_sql.md": "44d248a18fd5bd5bcbf59c823fe4a3d5307637058159f87d2e4c1d117644b894",
+      "knowledge/thai_glossary.md": "e1ee8275da67259c51c48b276ee293d662ecae31d368a3c6da784dfb78a9f1c4",
+      "sql/customer_summary.sql": "3b71dfcea27ec4dae8e92316ec2ab8033a14b880dec3722dd25acdc7c1c41d4b",
+      "sql/orders.sql": "76583aeaf72c09d3c03918f226fe8bd905392ee889641287db680b56b0564f9e",
+      "sql/sales_lines.sql": "b82aa6abca8594c7d45f5a45e111daadda0021e7b598a2aaaa57f59d1877d593",
+      "evaluation/dev.json": "434f0731e0d92811e090d2a6b890c4e8bca4a2bd52d03663ee2507f4f1824069",
+      "evaluation/test.json": "02b63f980ea8719dd46ffc8b17e5510197296e8a607dd4f0d4a52756666ab87c",
+      "infra/spark/Dockerfile": "85ab051b46c9153b3aeb403270f81b5eca31da594a92a2036c17ac0663146079",
+      "infra/spark/spark-defaults.conf": "c611e9ea51932f085d6cf6c7a13fdd8b9a12e96ff3ff81831d0d3c02686c808b",
+      "infra/hadoop/config/core-site.xml": "c00026c28bf1ce49d53e8ef4ca86174b5ef740734a43af4ddd29816f98462d9e",
+      "infra/hadoop/config/hdfs-site.xml": "a9e52c53f38ddfa76985772c60ad12412ea07e30280e1c91a4a6e1671b3c18fc",
+      "infra/hadoop/config/log4j.properties": "e98cd7090e3eab0f2c6baafd1ddceac2563ff55c43ba733c71c74c8654f618c8",
+      "compose.yaml": "2e8474c722add91ade335b851a4bf612029f74a909fabcfe7df2139a52e86263",
+      "requirements-agent.txt": "81845b8768d704d4a9c6bfa7307d4e9fdf273f80a1ec141081fbc9b97f92b1ef"
+    },
+    "model": {
+      "name": "qwen3.5:9b",
+      "model": "qwen3.5:9b",
+      "modified_at": "2026-10-26T11:03:02.5902654+07:00",
+      "size": 6550825550,
+      "digest": "56671c2ab9385f9cfcb404638e32cd62d88e3501d44822208363c010179a3c90",
+      "details": {
+        "parent_model": "model.gguf",
+        "format": "gguf",
+        "family": "qwen35",
+        "families": [
+          "qwen35"
+        ],
+        "parameter_size": "9.0B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 262144,
+        "embedding_length": 4096,
+        "runner": "llamacpp"
+      },
+      "capabilities": [
+        "completion",
+        "vision",
+        "tools",
+        "thinking"
+      ]
+    }
+  },
+  "build_run_id": "c81fa72c3c174a96bf8c03195b9e6f5e",
+  "summary": {
+    "False": {
+      "correct": 8,
+      "total": 20
+    },
+    "True": {
+      "correct": 13,
+      "total": 20
+    }
+  }
+}
