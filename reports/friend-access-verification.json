@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "checks": {
+    "unauthenticated_/": true,
+    "unauthenticated_/api/status": true,
+    "unauthenticated_/app.js": true,
+    "unauthenticated_/api/query": true,
+    "wrong_password_rejected": true,
+    "authenticated_status_ready": true,
+    "authenticated_page": true,
+    "private_files_not_served": true,
+    "bad_origin_foreign": true,
+    "bad_origin_missing": true,
+    "authenticated_clarification": true,
+    "actual_spark_result": true,
+    "opa_pre_post_allowed": true
+  },
+  "transport": "actual public HTTPS through password-protected gateway",
+  "credentials_included": false,
+  "public_url_included": false
+}

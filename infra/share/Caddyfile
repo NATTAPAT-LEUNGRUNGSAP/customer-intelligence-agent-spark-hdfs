@@ -1,0 +1,31 @@
+{
+    admin off
+    auto_https off
+    persist_config off
+}
+
+:8081 {
+    header X-Robots-Tag "noindex, nofollow, noarchive"
+    header Cache-Control "no-store"
+    route {
+        # Required file generated locally; contains bcrypt hash, never plaintext.
+        import /secrets/auth.caddy
+
+        # Validate original browser origin BEFORE rewriting it for the local API.
+        @foreignOrigin {
+            method POST
+            expression `{http.request.header.Origin} != "https://" + {http.request.host}`
+        }
+        respond @foreignOrigin "Same-origin HTTPS request required" 403
+
+        reverse_proxy web:8090 {
+            header_up -Authorization
+            header_up -Cookie
+            header_up Origin http://localhost:8090
+            header_up Host localhost:8090
+            transport http {
+                response_header_timeout 5m
+            }
+        }
+    }
+}

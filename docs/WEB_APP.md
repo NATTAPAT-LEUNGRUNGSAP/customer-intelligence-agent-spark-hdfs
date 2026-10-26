@@ -58,3 +58,5 @@ separate controlled context experiment and its limits.
 Current ontology/policy integration and expanded question results are documented in reports/GOVERNANCE_REPORT.md. The domain ontology is described in docs/GOVERNANCE.md.
 
 The updated ontology/OPA path was verified through the actual HTTP API: reports/governance-web-verification.json records 2,040 October 2011 invoices with pre/post OPA allow decisions and a missing-period clarification with zero model calls.
+
+Optional temporary HTTPS friend access is documented in [FRIEND_ACCESS.md](FRIEND_ACCESS.md). It adds a password gateway and outbound tunnel; the existing local backend and one-query lock remain unchanged. Actual gateway verification is in reports/friend-access-verification.json.

@@ -143,6 +143,19 @@ powershell -ExecutionPolicy Bypass -File ./scripts/start-web.ps1
 
 คำถามแต่ละข้อประมวลผลแยกกัน รายละเอียดการตั้งค่า การเรียกผ่าน CLI และการหยุดระบบอยู่ใน [Web application guide](docs/WEB_APP.md) และ [scripts/](scripts/)
 
+## ให้เพื่อนทดลองผ่าน HTTPS
+
+มีโหมดแชร์ชั่วคราวผ่าน Cloudflare Tunnel และ Caddy ที่บังคับชื่อผู้ใช้/รหัสผ่านแล้ว เพื่อนเปิดลิงก์ในเบราว์เซอร์ได้โดยไม่ต้องติดตั้งระบบเอง อ่าน [วิธีเปิด ปิด และเปลี่ยนรหัส](docs/FRIEND_ACCESS.md)
+
+```powershell
+python scripts/friend_access.py start
+python scripts/friend_access.py stop
+```
+
+ลิงก์และรหัสอยู่ใน `.private/friend-access.txt` ซึ่งไม่ถูกส่งขึ้น GitHub ต้องเปิดเครื่อง Docker โมเดล และแอปไว้ ระบบยังรับคำถามทีละงาน นี่เป็นการแชร์เพื่อทดลอง ไม่ใช่บริการ production ที่มีบัญชีแยกรายผู้ใช้
+
+ทดสอบผ่าน HTTPS จริง 13 เงื่อนไข รวมการบล็อกรหัสผิด ตรวจ Origin และผล Spark 2,040 invoices ดู [รายงานที่ไม่ใส่ข้อมูลลับ](reports/friend-access-verification.json) ผลนี้เป็นการตรวจ gateway แยกจาก benchmark analytics เดิม
+
 ## การทดสอบ
 
 ```powershell
@@ -153,7 +166,7 @@ docker compose run --rm --no-deps --entrypoint python3 spark-job -m unittest dis
 
 ## ข้อจำกัด
 
-- เป็น local application บนเครื่องเดียว ยังไม่มี authentication สำหรับให้บริการสาธารณะ
+- เป็น local application บนเครื่องเดียว โหมดแชร์มี password gateway แต่ยังไม่มีบัญชีหรือสิทธิ์แยกรายผู้ใช้สำหรับ production
 - ข้อมูลเป็นประวัติศาสตร์และมี snapshot ที่เตรียมไว้เท่านั้น
 - การตรวจ SQL และผลลัพธ์ครอบคลุมบางเงื่อนไข ผู้ใช้ยังควรตรวจวิธีคำนวณก่อนนำผลไปใช้
 - จำกัดผลลัพธ์ 200 แถว และส่งคำสั่งยกเลิก Spark job เมื่อเกิน 45 วินาที การยกเลิกเป็น best effort
