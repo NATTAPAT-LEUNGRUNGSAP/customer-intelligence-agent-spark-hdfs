@@ -32,7 +32,8 @@ correct answers or entailment. Failed answers always count wrong in accuracy.
 - Date-trunc syntax validation with corrective feedback; bounded three-attempt repair.
 - Retrieval separates imperative return from refund lines and recognizes repeat phrasing.
 - Context selection, latest repair state, heuristic budget and actual Ollama token telemetry.
-- Git source and CI configuration prepared. GitHub creation/push still awaits user sign-in.
+- Public GitHub source published: https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs .
+- Actual GitHub CI unit job passed: actions/runs/40284829764. Local distributed checks are separate.
 
 ## Actual checks and retained failures
 
@@ -61,15 +62,9 @@ Context input size is a heuristic, not exact tokenization; post-generation count
 guarantee detection of server-side truncation. No general context-rot solution is claimed.
 OPA, formal ontology/cross-organization schema matching remain unimplemented.
 MongoDB Policy Storage and Churn/Campaign are excluded from this delivery.
-Fresh-checkout end-to-end build and actual GitHub CI execution remain to verify.
-
-Fresh local Git checkout was verified separately: all host source files match its
-checkout, all covered frozen core hashes match, and25 checkout unit tests passed.
-See git-checkout-verification.json and checkout-unit-tests.txt. The pre-run Spark-job
-freeze covers paths mounted into that container; web static assets and PowerShell
-launchers are captured in a supplemental post-verification host inventory, not falsely
-described as pre-run frozen UI files.
-
-Actual browser demo after final freeze also passed: trace600f1d5f170a49b1a04e4673f1342375,
-correct top identified-customer ranking,12.05 seconds for that UI request. This single
-sample is not p95. Its core source/model match the freeze; see web-v2.4-demo-summary.json.
+Fresh local Git checkout matched the complete host source inventory and covered frozen core;
+25 unit tests passed from that checkout. See git-checkout-verification.json.
+Web assets/PowerShell launchers are supplemental post-verification host inventory entries,
+because they are not mounted into the Spark-job pre-run freeze. See checkout-unit-tests.txt.
+Actual final browser demo: web-v2.4-demo-summary.json, correct identified ranking,12.05s sample.
+A fresh full data acquisition/build on a separate machine remains unverified.

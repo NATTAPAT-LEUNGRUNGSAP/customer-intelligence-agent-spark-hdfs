@@ -2,18 +2,21 @@
 
 รุ่น v2.4: มี local web application ที่ http://localhost:8090
 เริ่มด้วย scripts/start-web.ps1 หลัง cluster/Ollama/data พร้อม ดู docs/WEB_APP.md
+
 รันทดสอบจริงล่าสุด: unit 25 ข้อผ่าน; exposed regression 20/20; ชุดใหม่ v6 หลัง freeze 20/20 ถูก
 RAG Recall@6 100%, MRR@6 0.892, nDCG@6 0.893; warm-query p95 5.43 วินาที
 ผ่านเกณฑ์โครงการบนชุดเล็กที่ผู้พัฒนาสร้าง ไม่ใช่การรับรองว่าถูกทุกคำถามทั่วไป
+
 รายละเอียด ผลรอบที่ไม่ผ่าน และข้อจำกัด: reports/DELIVERY_REPORT.md
-Presentation: presentation/customer-intelligence-v2.4.pptx (14 slides)
-GitHub public repo ที่ร้องขอ: customer-intelligence-agent-spark-hdfs (ยังรอสร้าง/เผยแพร่)
+Presentation: [PowerPoint 14 slides](presentation/customer-intelligence-v2.4-release.pptx)
+
+GitHub Public: [customer-intelligence-agent-spark-hdfs](https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs)
+GitHub Actions unit tests รันผ่านจริงแล้ว; Spark/HDFS/Ollama ทดสอบบนเครื่องพัฒนาแยกจาก CI
 
 ระบบ Spark + HDFS + RAG + Agent สร้าง SQL เอง กำหนดส่งภายใน 9 พฤศจิกายน 2026
 RAG เป็นส่วนบังคับ ไม่มีโหมดปิด RAG และไม่ใช้การเปรียบเทียบมี/ไม่มี RAG เป็นเกณฑ์ส่งงาน
 อ่าน reports/STATUS.md, reports/DELIVERY_REPORT.md และ evaluation/README.md สำหรับผลปัจจุบันและวิธีวัด
-ผล frozen v2.1 ก่อนแก้รอบปัจจุบัน: Recall@6 97.5%, MRR@6 0.879, nDCG@6 0.841, คำตอบตรง Spark 19/20
-ผ่านเกณฑ์โครงการที่ประกาศก่อนทดสอบ ยังมีคำตอบผิด 1 ข้อ ไม่ถือว่าถูกทุกคำถาม
+ผล v2.1 เป็นประวัติใน reports/FINAL_REPORT.md; ไม่ใช้แทนผลโค้ดปัจจุบัน
 
 ## เริ่มคลัสเตอร์
 
@@ -116,7 +119,7 @@ freeze ปัจจุบันคือ reports/freeze-rag-v2.4.json ผลร�
 5. Dev/regression และ holdout ใหม่ของระบบ RAG เทียบเกณฑ์ที่ประกาศไว้
 
 ต้องส่ง local web application สำหรับเรียก Agent, presentation และโค้ดบน GitHub ด้วย
-ข้อกำหนดและโครงนำเสนออยู่ใน reports/PRESENTATION_BRIEF.md; UI ใช้งานได้แล้ว GitHub ยังรอเผยแพร่
+ข้อกำหนดและโครงนำเสนออยู่ใน reports/PRESENTATION_BRIEF.md; UI ใช้งานได้และ source เผยแพร่ GitHub แล้ว
 มี heuristic context budget และ context stress เบื้องต้น ยังไม่อ้างว่าแก้ context rot ได้ทั่วไป
 ตัด MongoDB Policy Storage และ Churn Prediction/Campaign Recommendation ออกจากขอบเขต
 ไม่รวม CLV, multiple agents หรือ production deployment

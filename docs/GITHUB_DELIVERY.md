@@ -4,14 +4,17 @@ Project: Customer Intelligence Agent with Spark & HDFS
 Repository name requested: customer-intelligence-agent-spark-hdfs
 Owner: NATTAPAT-LEUNGRUNGSAP. Visibility authorized by user: Public.
 
-Local Git initialized on main. Remote creation/publication still requires the
-user's GitHub browser sign-in; the connector can read the account but cannot create
-a repository. Do not treat this document as proof that a remote exists.
+Public source is published on main:
+https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs .
+Git push and remote SHA were verified; the browser showed Public and source files.
+Actual GitHub CI unit job succeeded: actions/runs/40284829764, initial published
+commit98b4c21119e3057fb30deead85ecf5ed391406f8. See reports/github-publication.json.
 
 Actual fresh local clone verification: all host source files and covered frozen
 core hashes match;25 unit tests passed from that clone. Evidence is in
 reports/git-checkout-verification.json. A full new data acquisition/build and
-actual remote GitHub CI run have not been repeated on this checkout.
+full new data build has not been repeated on a separate clean machine. GitHub CI
+did run and pass its unit-test step; it does not include Spark/HDFS/Ollama execution.
 
 Publish source, knowledge, SQL, tests, Docker configuration, documentation and
 selected reproducibility reports. Exclude downloaded datasets, model weights,

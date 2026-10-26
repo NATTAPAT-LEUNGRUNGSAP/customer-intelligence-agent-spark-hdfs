@@ -3,8 +3,8 @@
 Scope: Spark + HDFS + Online Retail II + mandatory RAG + one SQL-generating agent.
 Current checkpoint: v2.4 web application implemented; 25 unit tests passed;
 new v6 combinations 20/20 correct and both retrieval/end-to-end gates passed.
-14-slide presentation exported. Source prepared in local Git; remote publication
-awaits user browser sign-in. See DELIVERY_REPORT.md; do not use older pending-state
+14-slide presentation exported. Public GitHub source published and actual CI unit
+job passed. See DELIVERY_REPORT.md; do not use older pending-state
 sentences below as the current status.
 Revised required deliverables: local web application, presentation and GitHub
 repository. Include context engineering assessment, token budgeting and context

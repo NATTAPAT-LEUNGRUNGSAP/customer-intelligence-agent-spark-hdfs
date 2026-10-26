@@ -244,11 +244,11 @@
       "l": [
         "Source + Docker setup + data acquisition + evaluation evidence",
         "เริ่ม cluster → build data → เปิด web UI → ถามและตรวจ trace",
-        "GitHub: customer-intelligence-agent-spark-hdfs (Public ที่ร้องขอ)",
-        "ก่อนส่ง: fresh evaluation, clean checkout, ตรวจสไลด์และซ้อม demo"
+        "GitHub Public: NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs",
+        "Before submission: fresh data build on another machine and live demo rehearsal"
       ],
-      "f": "กำหนดส่ง 9 พฤศจิกายน 2026 · GitHub ยังรอลงชื่อเข้าใช้",
-      "src": "scripts/start.ps1; scripts/start-web.ps1; reports/DELIVERY_PLAN.md"
+      "f": "Deadline 9 November 2026; GitHub published; actual CI unit tests passed",
+      "src": "https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs ; https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs/actions/runs/40284829764"
     }
   ]
 }

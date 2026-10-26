@@ -57,5 +57,24 @@
     "retrieval-v2.3-holdout-526ff78dfbf241c4a6856140962f8152.json",
     "rag-v2.3-holdout-f3efa4011cdf461697b7dbabee6d6c54.json"
   ],
-  "github_publication": "pending user browser sign-in; local Git initialized"
+  "github_publication": {
+    "status": "published",
+    "visibility": "public",
+    "repository": "NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs",
+    "url": "https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs",
+    "branch": "main",
+    "verified_initial_published_sha": "98b4c21119e3057fb30deead85ecf5ed391406f8",
+    "verification": "git push succeeded, git ls-remote matched, browser showed Public and source files",
+    "ci": {
+      "run_id": 40284829764,
+      "url": "https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs/actions/runs/40284829764",
+      "commit": "98b4c21119e3057fb30deead85ecf5ed391406f8",
+      "job": "unit",
+      "job_id": 121445922502,
+      "status": "completed",
+      "conclusion": "success",
+      "unit_test_step": "success",
+      "scope": "Python unit tests only; distributed Spark/HDFS/Ollama checks were local"
+    }
+  }
 }

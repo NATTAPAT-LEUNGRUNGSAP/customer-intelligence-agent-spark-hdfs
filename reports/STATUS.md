@@ -31,10 +31,11 @@ See DELIVERY_REPORT.md and delivery-quality-summary.json.
   post-tool invariants; date-trunc validation; up to three correction attempts.
 - Retrieval separates imperative return from refund lines and understands repeat
   phrasing. Core logic remains custom Python, not OPA or a formal ontology.
-- Presentation: presentation/customer-intelligence-v2.4.pptx, 14 slides with actual
+- Presentation: presentation/customer-intelligence-v2.4-release.pptx, 14 slides with actual
   architecture/workflow, harness components, context engineering and measured results.
 - Git initialized on main; public repo name customer-intelligence-agent-spark-hdfs
-  authorized for NATTAPAT-LEUNGRUNGSAP. Creation/push awaits user browser sign-in.
+  published for NATTAPAT-LEUNGRUNGSAP. Remote push verified; GitHub CI unit job
+  succeeded (run40284829764). See github-publication.json for the URL and evidence.
 
 ## Actual development verification
 
@@ -60,7 +61,8 @@ See DELIVERY_REPORT.md and delivery-quality-summary.json.
 - Single physical host, no authentication, best-effort cancellation; local demo only.
 - OPA, formal ontology and cross-organization schema matching are not implemented.
 - MongoDB Policy Storage and Churn/Campaign are excluded from delivery.
-- GitHub CI execution and fresh-checkout full data build are not yet verified.
+- Actual GitHub CI unit step passed. A fresh-checkout full data acquisition/build
+  on a separate machine is not yet verified.
 - Fresh local Git checkout source inventory matches the host and covered frozen core;
   its own unit suite passed25 tests. Evidence: git-checkout-verification.json and
   checkout-unit-tests.txt. Static web files/PowerShell launchers are recorded in a

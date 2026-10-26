@@ -29,6 +29,7 @@ def main():
     failures=[{'id':c['id'],'question':c['question'],'status':c['result']['status'],
                'sql':c['result'].get('sql'),'actual':c['result'].get('result'),'gold':c.get('gold'),
                'attempts':c['result'].get('attempts',[])} for c in evaluation['cases'] if not c['correct']]
+    publication=read(REPORTS/'github-publication.json') if (REPORTS/'github-publication.json').exists() else {'status':'pending'}
     summary={'version':'v2.4','status':'completed','quality_passed':passed,
              'source_reports':{'evaluation':evaluation_path.name,'retrieval':retrieval_path.name,
                                'freeze':'freeze-rag-v2.4.json'},
@@ -38,7 +39,7 @@ def main():
                  'rag-v2.2-holdout-c348d44e7954423bbb96cf06274833af.json',
                  'retrieval-v2.3-holdout-526ff78dfbf241c4a6856140962f8152.json',
                  'rag-v2.3-holdout-f3efa4011cdf461697b7dbabee6d6c54.json'],
-             'github_publication':'pending user browser sign-in; local Git initialized'}
+             'github_publication':publication}
     (REPORTS/'delivery-quality-summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
     lines=['# Customer Intelligence Agent with Spark & HDFS — v2.4',
            '', 'Date: 26 October 2026 (Asia/Bangkok). Deadline: 9 November 2026.', '',
@@ -67,7 +68,8 @@ def main():
            '- Date-trunc syntax validation with corrective feedback; bounded three-attempt repair.',
            '- Retrieval separates imperative return from refund lines and recognizes repeat phrasing.',
            '- Context selection, latest repair state, heuristic budget and actual Ollama token telemetry.',
-           '- Git source and CI configuration prepared. GitHub creation/push still awaits user sign-in.', '',
+           '- Public GitHub source published: https://github.com/NATTAPAT-LEUNGRUNGSAP/customer-intelligence-agent-spark-hdfs .',
+           '- Actual GitHub CI unit job passed: actions/runs/40284829764. Local distributed checks are separate.', '',
            '## Actual checks and retained failures', '',
            '- Smoke fcde70a71325433185dbaace442f66c9: 2 workers, 3-row HDFS roundtrip, totals 1500/2500.',
            '- Unit suite: 25 passed in Docker (candidate-v2.4-unit-tests-complete.log).',
@@ -91,7 +93,12 @@ def main():
            'guarantee detection of server-side truncation. No general context-rot solution is claimed.',
            'OPA, formal ontology/cross-organization schema matching remain unimplemented.',
            'MongoDB Policy Storage and Churn/Campaign are excluded from this delivery.',
-           'Fresh-checkout end-to-end build and actual GitHub CI execution remain to verify.', '']
+           'Fresh local Git checkout matched the complete host source inventory and covered frozen core;',
+           '25 unit tests passed from that checkout. See git-checkout-verification.json.',
+           'Web assets/PowerShell launchers are supplemental post-verification host inventory entries,',
+           'because they are not mounted into the Spark-job pre-run freeze. See checkout-unit-tests.txt.',
+           'Actual final browser demo: web-v2.4-demo-summary.json, correct identified ranking,12.05s sample.',
+           'A fresh full data acquisition/build on a separate machine remains unverified.', '']
     (REPORTS/'DELIVERY_REPORT.md').write_text('\n'.join(lines),encoding='utf-8')
     print(json.dumps({'quality_passed':passed,'correct':e['correct'],'total':e['total'],'failures':len(failures)}))
 
