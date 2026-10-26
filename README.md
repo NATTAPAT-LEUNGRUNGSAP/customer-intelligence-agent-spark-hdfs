@@ -4,7 +4,7 @@
 
 ผลลัพธ์แสดงเป็นตาราง พร้อม SQL และหลักฐานที่ใช้ เพื่อให้ผู้ใช้ตรวจสอบวิธีคำนวณและที่มาของคำตอบได้
 
-[Presentation](presentation/customer-intelligence-context-v2.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/DELIVERY_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
+[Presentation](presentation/customer-intelligence-visual-guide.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/DELIVERY_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
 
 ## ใช้ทำอะไรได้บ้าง
 
