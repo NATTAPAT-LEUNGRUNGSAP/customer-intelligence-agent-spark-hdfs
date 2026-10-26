@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "transport": "actual authenticated public HTTPS",
+  "checks": {
+    "information": {
+      "http_status": 200,
+      "status": "information",
+      "message": "มีข้อมูลสำหรับวิเคราะห์ยอดขาย คำสั่งซื้อ สินค้า และพฤติกรรมลูกค้า ดังตารางด้านล่าง\nช่วงข้อมูลที่มีจริง: 2009-12-01 07:45:00 ถึง 2011-12-09 12:50:00\nข้อมูลสรุปลูกค้าใช้ snapshot วันที่ 2011-12-01\nลองถาม: “เดือนตุลาคม 2011 มีคำสั่งซื้อสำเร็จกี่ใบ” หรือ “ยอดขายรวมเดือนมกราคม 2011 เท่าไร”",
+      "model_calls": 0,
+      "tables": [
+        "sales_lines",
+        "orders",
+        "customer_summary"
+      ],
+      "citations": [
+        "schema.customer_summary",
+        "schema.orders",
+        "schema.sales_lines"
+      ]
+    },
+    "clarification": {
+      "http_status": 200,
+      "status": "clarification",
+      "message": "ต้องการวิเคราะห์ช่วงเวลาใดครับ? ระบุเดือนและปี หรือวันที่เริ่มต้นและสิ้นสุด เช่น “ตุลาคม 2011”",
+      "model_calls": 0,
+      "tables": [],
+      "citations": [
+        "policy.period"
+      ]
+    }
+  }
+}

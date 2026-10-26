@@ -1,5 +1,11 @@
 # Local web application
 
+Ask “มีข้อมูลอะไรบ้าง” to see the tables and columns loaded by the running app,
+the observed date range and the available customer snapshot. This overview uses
+loaded schema/manifest metadata and cites the schema knowledge sections; it does
+not generate SQL or call the model. Analytical questions still require a period
+or snapshot. Deterministic clarification messages follow Thai questions in Thai.
+
 Start the cluster with scripts/start.ps1 and ensure Ollama serves qwen3.5:9b at
 host.docker.internal:11434 from the container. Build data with scripts/build-data.ps1
 if this is a new checkout. The build emits a NEW passed manifest. Edit the manifest

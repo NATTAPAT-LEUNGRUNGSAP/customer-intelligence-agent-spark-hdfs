@@ -1,5 +1,12 @@
 # Current verification status
 
+Dataset discovery fix: “มีข้อมูลอะไรบ้าง” now returns the three loaded tables,
+actual columns and manifest dates instead of requesting an analysis period.
+Thai policy clarifications are localized. Actual authenticated public HTTPS
+checks are recorded in dataset-discovery-web-verification.json; 57 unit tests
+passed in dataset-discovery-unit-tests.txt. The acceptance benchmark below
+predates this routing/localization change and is not a fresh run of this source.
+
 Current source: RDF/OWL domain ontology + SHACL, mandatory OPA/Rego pre/post
 Spark decisions, bounded SQL semantics and stronger post-tool contracts.
 

@@ -15,6 +15,7 @@ from result_contracts import validate_result, validate_semantics
 from result_contracts import result_violations
 from semantic_contracts import validate_business_sql
 from policy_engine import authorize, policy_facts, PolicyUnavailable
+from dataset_info import is_dataset_discovery, overview, localize_policy
 
 
 def generate(messages, model, endpoint, timeout=90, max_tokens=768):
@@ -80,9 +81,20 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
            context_strategy='managed', background='', evidence_position='middle'):
     context, retrieval = retrieve_context(question,knowledge)
     base = {'rag':True,'references':context,'retrieval':retrieval}
+    if is_dataset_discovery(question):
+        from retrieval import index
+        ids={'schema.'+table for table in ('orders','sales_lines','customer_summary') if table in schema}
+        known={c['id']:c for c in index(knowledge)[0]}
+        for ident in sorted(ids):
+            if ident not in known:raise ValueError('Dataset overview requires knowledge section: '+ident)
+            if ident not in {c['id'] for c in context}:context.append(known[ident])
+        retrieval['context_ids']=[c['id'] for c in context]
+        retrieval['context_characters']=sum(len(c['text']) for c in context)
+        return dict(base,**overview(schema),citations=sorted(ids),intent='dataset_discovery')
     decision = policy_check(question,schema.get('_dataset_metadata',{}))
     if decision:
         message, citation = decision
+        message=localize_policy(message,citation,question,schema.get('_dataset_metadata',{}))
         return dict(base,status='clarification',message=message,citations=[citation],attempts=[],
                     policy_enforced=True,model_calls=0)
     evidence,context_plan=assemble_evidence(context,background,context_strategy,evidence_position)
