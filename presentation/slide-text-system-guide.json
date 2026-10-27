@@ -718,23 +718,5 @@
       "เช่น นับ invoice จากตาราง invoice และใช้ช่วงเวลาที่ผู้ใช้ขอ",
       "ผล benchmark บอกความสามารถในชุดที่วัด • การรับรองคำถามทุกแบบต้องใช้หลักฐานเพิ่ม"
     ]
-  },
-  {
-    "slide": 32,
-    "text": [
-      "การสาธิตและการนำไปพัฒนาต่อ",
-      "Source code และหลักฐานการวัดผลอยู่บน GitHub public",
-      "32",
-      "เปิด Docker stack",
-      "สร้างข้อมูลบน HDFS",
-      "เปิด Web app",
-      "ถามพร้อมช่วงเวลา",
-      "ตรวจผล",
-      "SQL / evidence / trace",
-      "customer-intelligence-agent-spark-hdfs",
-      "github.com/NATTAPAT-LEUNGRUNGSAP/",
-      "customer-intelligence-agent-spark-hdfs",
-      "Repository เก็บ source, setup, tests และรายงาน • Web app รันบนเครื่องที่เปิด stack"
-    ]
   }
 ]

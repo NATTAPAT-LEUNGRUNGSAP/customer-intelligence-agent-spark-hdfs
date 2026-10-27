@@ -1,6 +1,6 @@
 # Presentation
 
-Current deck: [customer-intelligence-system-guide.pptx](customer-intelligence-system-guide.pptx), 32 slides in Thai/English.
+Current deck: [customer-intelligence-system-guide.pptx](customer-intelligence-system-guide.pptx), 31 slides in Thai/English.
 
 The deck explains business terms in short on-slide notes and uses editable native
 process diagrams, connectors, text and tables. It includes the implemented
@@ -15,7 +15,7 @@ or delivery time-box framing appear on the slides.
 
 Text, including table cells, is in slide-text-system-guide.json. Live object IDs and
 source notes are in outline-system-guide.ndjson. Earlier decks remain historical.
-User-supplied reference images are not embedded or published. All 32 slides were
+User-supplied reference images are not embedded or published. The original 32 slides were
 rendered and reviewed. The file was not opened in Microsoft PowerPoint.
 
 The live deck and exported PowerPoint are the same presentation, not alternative
@@ -26,3 +26,5 @@ Added a benefit/evidence summary and seven topic examples for RAG, ontology, SQL
 Docker pages 5-7 explain all configured service roles, long-running versus job containers, named volumes versus host bind mounts, temporary Spark data, host-side Ollama and the driver/master/executor distinction. These three pages were rendered and visually checked. Contents were verified against Compose and HDFS configuration; no new runtime test is claimed for this slide-only change.
 
 Page 5 adds the unified data/question architecture and page 16 explains SHACL with actual sourceTable cardinality/class constraints. README and architecture Mermaid diagrams were reconciled against current code. SHACL and governance checks were actually rerun: 22 passed (architecture-shacl-check.txt). Source-grain agreement is explicitly a separate Python check; SHACL does not prove SQL answer correctness. The two added pages were rendered and inspected.
+
+Removed the final demonstration/future-development slide at the user’s request. The current deck has 31 slides. Verified the remaining 31 slide XML parts are byte-identical and all retained internal package relationships resolve. No layout changes were made.
