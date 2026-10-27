@@ -1,0 +1,453 @@
+{
+  "status": "completed",
+  "source_unchanged": true,
+  "bank_unchanged": true,
+  "summary": {
+    "th": {
+      "total": 100,
+      "retrieval": {
+        "recall_at_6": 0.99,
+        "precision_at_6": 0.2900000000000001,
+        "mrr_at_6": 0.7483333333333332,
+        "ndcg_at_6": 0.8058521829859228,
+        "context_coverage": 0.99
+      },
+      "correct": 97,
+      "by_family": {
+        "basket": {
+          "correct": 5,
+          "total": 5
+        },
+        "clarification": {
+          "correct": 8,
+          "total": 8
+        },
+        "country": {
+          "correct": 5,
+          "total": 5
+        },
+        "country_share": {
+          "correct": 1,
+          "total": 1
+        },
+        "customer_ranking": {
+          "correct": 5,
+          "total": 5
+        },
+        "formula": {
+          "correct": 12,
+          "total": 12
+        },
+        "having": {
+          "correct": 1,
+          "total": 1
+        },
+        "high_value_fraction": {
+          "correct": 0,
+          "total": 1
+        },
+        "line_quality": {
+          "correct": 1,
+          "total": 1
+        },
+        "monthly": {
+          "correct": 5,
+          "total": 5
+        },
+        "monthly_max": {
+          "correct": 1,
+          "total": 1
+        },
+        "product_ranking": {
+          "correct": 5,
+          "total": 5
+        },
+        "ratios": {
+          "correct": 4,
+          "total": 5
+        },
+        "repeat_rate": {
+          "correct": 5,
+          "total": 5
+        },
+        "scalar": {
+          "correct": 5,
+          "total": 5
+        },
+        "segment_statistics": {
+          "correct": 5,
+          "total": 5
+        },
+        "snapshot_activity": {
+          "correct": 5,
+          "total": 5
+        },
+        "snapshot_counts": {
+          "correct": 5,
+          "total": 5
+        },
+        "statistics": {
+          "correct": 5,
+          "total": 5
+        },
+        "time_buckets": {
+          "correct": 4,
+          "total": 5
+        },
+        "transaction_types": {
+          "correct": 5,
+          "total": 5
+        },
+        "windows": {
+          "correct": 5,
+          "total": 5
+        }
+      },
+      "statuses": {
+        "executed": 77,
+        "failed": 3,
+        "information": 12,
+        "clarification": 8
+      },
+      "latency_p95_seconds": 7.757267965999972
+    },
+    "en": {
+      "total": 100,
+      "retrieval": {
+        "recall_at_6": 0.98,
+        "precision_at_6": 0.28666666666666674,
+        "mrr_at_6": 0.6983333333333331,
+        "ndcg_at_6": 0.7826954175278067,
+        "context_coverage": 0.985
+      },
+      "correct": 99,
+      "by_family": {
+        "basket": {
+          "correct": 5,
+          "total": 5
+        },
+        "clarification": {
+          "correct": 8,
+          "total": 8
+        },
+        "country": {
+          "correct": 5,
+          "total": 5
+        },
+        "country_share": {
+          "correct": 1,
+          "total": 1
+        },
+        "customer_ranking": {
+          "correct": 5,
+          "total": 5
+        },
+        "formula": {
+          "correct": 12,
+          "total": 12
+        },
+        "having": {
+          "correct": 1,
+          "total": 1
+        },
+        "high_value_fraction": {
+          "correct": 1,
+          "total": 1
+        },
+        "line_quality": {
+          "correct": 1,
+          "total": 1
+        },
+        "monthly": {
+          "correct": 5,
+          "total": 5
+        },
+        "monthly_max": {
+          "correct": 1,
+          "total": 1
+        },
+        "product_ranking": {
+          "correct": 5,
+          "total": 5
+        },
+        "ratios": {
+          "correct": 5,
+          "total": 5
+        },
+        "repeat_rate": {
+          "correct": 5,
+          "total": 5
+        },
+        "scalar": {
+          "correct": 5,
+          "total": 5
+        },
+        "segment_statistics": {
+          "correct": 5,
+          "total": 5
+        },
+        "snapshot_activity": {
+          "correct": 4,
+          "total": 5
+        },
+        "snapshot_counts": {
+          "correct": 5,
+          "total": 5
+        },
+        "statistics": {
+          "correct": 5,
+          "total": 5
+        },
+        "time_buckets": {
+          "correct": 5,
+          "total": 5
+        },
+        "transaction_types": {
+          "correct": 5,
+          "total": 5
+        },
+        "windows": {
+          "correct": 5,
+          "total": 5
+        }
+      },
+      "statuses": {
+        "executed": 79,
+        "failed": 1,
+        "information": 12,
+        "clarification": 8
+      },
+      "latency_p95_seconds": 5.273162741999954
+    },
+    "all": {
+      "total": 200,
+      "retrieval": {
+        "recall_at_6": 0.985,
+        "precision_at_6": 0.28833333333333316,
+        "mrr_at_6": 0.7233333333333337,
+        "ndcg_at_6": 0.7942738002568636,
+        "context_coverage": 0.9875
+      },
+      "correct": 196,
+      "by_family": {
+        "basket": {
+          "correct": 10,
+          "total": 10
+        },
+        "clarification": {
+          "correct": 16,
+          "total": 16
+        },
+        "country": {
+          "correct": 10,
+          "total": 10
+        },
+        "country_share": {
+          "correct": 2,
+          "total": 2
+        },
+        "customer_ranking": {
+          "correct": 10,
+          "total": 10
+        },
+        "formula": {
+          "correct": 24,
+          "total": 24
+        },
+        "having": {
+          "correct": 2,
+          "total": 2
+        },
+        "high_value_fraction": {
+          "correct": 1,
+          "total": 2
+        },
+        "line_quality": {
+          "correct": 2,
+          "total": 2
+        },
+        "monthly": {
+          "correct": 10,
+          "total": 10
+        },
+        "monthly_max": {
+          "correct": 2,
+          "total": 2
+        },
+        "product_ranking": {
+          "correct": 10,
+          "total": 10
+        },
+        "ratios": {
+          "correct": 9,
+          "total": 10
+        },
+        "repeat_rate": {
+          "correct": 10,
+          "total": 10
+        },
+        "scalar": {
+          "correct": 10,
+          "total": 10
+        },
+        "segment_statistics": {
+          "correct": 10,
+          "total": 10
+        },
+        "snapshot_activity": {
+          "correct": 9,
+          "total": 10
+        },
+        "snapshot_counts": {
+          "correct": 10,
+          "total": 10
+        },
+        "statistics": {
+          "correct": 10,
+          "total": 10
+        },
+        "time_buckets": {
+          "correct": 9,
+          "total": 10
+        },
+        "transaction_types": {
+          "correct": 10,
+          "total": 10
+        },
+        "windows": {
+          "correct": 10,
+          "total": 10
+        }
+      },
+      "statuses": {
+        "executed": 156,
+        "failed": 4,
+        "information": 24,
+        "clarification": 16
+      },
+      "latency_p95_seconds": 6.269551445000047
+    }
+  },
+  "failures": [
+    {
+      "id": "pair057-th",
+      "question": "เดือนมกราคม 2011 คำนวณสัดส่วนยอดขายจากคำสั่งซื้อที่ไม่มีรหัสลูกค้า แสดงเป็นสัดส่วนไม่คูณ 100",
+      "status": "failed"
+    },
+    {
+      "id": "pair067-th",
+      "question": "ปี 2011 แสดงจำนวนคำสั่งซื้อรายชั่วโมงของวันที่ 5 มกราคม เรียงเวลา",
+      "status": "failed"
+    },
+    {
+      "id": "pair074-en",
+      "question": "At snapshot 2011-12-01 find the number of customers with at least 10 invoices in 180 days.",
+      "status": "failed"
+    },
+    {
+      "id": "pair080-th",
+      "question": "ณ snapshot 2011-12-01 ลูกค้า high-value เป็นสัดส่วนเท่าไรของลูกค้าทั้งหมด",
+      "status": "failed"
+    }
+  ],
+  "retrieval_before": {
+    "th": {
+      "total": 100,
+      "retrieval": {
+        "recall_at_6": 0.615,
+        "precision_at_6": 0.18500000000000008,
+        "mrr_at_6": 0.5633333333333336,
+        "ndcg_at_6": 0.5012821731524388,
+        "context_coverage": 0.62
+      }
+    },
+    "en": {
+      "total": 100,
+      "retrieval": {
+        "recall_at_6": 0.675,
+        "precision_at_6": 0.205,
+        "mrr_at_6": 0.5491666666666668,
+        "ndcg_at_6": 0.5266670466847333,
+        "context_coverage": 0.675
+      }
+    },
+    "all": {
+      "total": 200,
+      "retrieval": {
+        "recall_at_6": 0.645,
+        "precision_at_6": 0.1949999999999999,
+        "mrr_at_6": 0.5562499999999997,
+        "ndcg_at_6": 0.5139746099185863,
+        "context_coverage": 0.6475
+      }
+    }
+  },
+  "retrieval_after": {
+    "th": {
+      "total": 100,
+      "retrieval": {
+        "recall_at_6": 0.99,
+        "precision_at_6": 0.2900000000000001,
+        "mrr_at_6": 0.7483333333333332,
+        "ndcg_at_6": 0.8058521829859228,
+        "context_coverage": 0.99
+      }
+    },
+    "en": {
+      "total": 100,
+      "retrieval": {
+        "recall_at_6": 0.98,
+        "precision_at_6": 0.28666666666666674,
+        "mrr_at_6": 0.6983333333333331,
+        "ndcg_at_6": 0.7826954175278067,
+        "context_coverage": 0.985
+      }
+    },
+    "all": {
+      "total": 200,
+      "retrieval": {
+        "recall_at_6": 0.985,
+        "precision_at_6": 0.28833333333333316,
+        "mrr_at_6": 0.7233333333333337,
+        "ndcg_at_6": 0.7942738002568636,
+        "context_coverage": 0.9875
+      }
+    }
+  },
+  "context_packet_audit": {
+    "scope": "paired serialization audit on identical selected references; evidence bytes, not a tokenizer or general context-rot benchmark",
+    "cases": 160,
+    "all_complete_id_text_hashes_match": true,
+    "old_metadata_packet_bytes_total": 1014410,
+    "id_text_packet_bytes_total": 800798,
+    "evidence_byte_reduction_fraction": 0.21057757711379033
+  },
+  "unit_tests": {
+    "passed": 93,
+    "total": 93
+  },
+  "formula_numeric_integration": {
+    "status": "passed",
+    "correct": 16,
+    "total": 16,
+    "method": "actual Spark SQL on controlled numerical fixtures; no model calls"
+  },
+  "release_guard_replay": {
+    "status": "passed",
+    "changed_source_files": [],
+    "executed_sql_checked": 156,
+    "same_source_as_full_run": true,
+    "same_model_as_full_run": true,
+    "method": "publication fingerprint verification and deterministic final SQL replay; no additional model calls",
+    "monthly_semantic_checks": [
+      {
+        "id": "pair076-th",
+        "highest_month_contract_passed": true
+      },
+      {
+        "id": "pair076-en",
+        "highest_month_contract_passed": true
+      }
+    ]
+  }
+}

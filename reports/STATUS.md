@@ -1,5 +1,46 @@
 # Current verification status
 
+Latest live-model development run: bilingual-development-final.json.
+Thai 97/100; English 99/100; total 196/200.
+SQL results 156/160; grounded formula lookup 24/24; clarification 16/16.
+This is an exposed development bank, not an independent holdout.
+Source/model fingerprints and bank fingerprints match before/after the complete run.
+
+- Unit tests: 93 passed (bilingual-unit-tests.txt).
+- Actual OPA integration: 3 passed (bilingual-opa-integration.txt).
+- Numeric RAG formula fixtures on actual Spark: 16/16 (bilingual-formula-integration.json).
+- Public authenticated HTTPS feature checks: 5/5 (bilingual-web-verification.json).
+- Password/Origin/public Spark smoke checks: 13/13 (friend-access-verification.json).
+- Retrieval Recall@6 before/after on the same corrected bank: 0.6450 → 0.9850.
+- Evidence packet byte reduction on identical selected references: 0.2106; all ID/text hashes match.
+
+4 development questions still do not match the oracle. See BILINGUAL_ANALYTICS_REPORT.md
+and bilingual-quality-summary.json for the actual results and limitations.
+The web app is restored; the temporary HTTPS link uses the existing credentials.
+The records below are historical and do not describe current-source measurements.
+
+<!-- preserved-history -->
+# Work resumed
+
+Resumed on 27 October 2026 (Asia/Bangkok). Docker cluster is running.
+Fresh Spark/HDFS smoke passed (resumed-smoke.log); 93 unit tests and 3 actual
+OPA integration checks passed. A new complete bilingual evaluation is running
+into bilingual-development-final.json. No completed score is claimed yet.
+The preserved 67/200 report remains partial. Web is stopped during evaluation.
+Changes are not yet committed or pushed.
+# Work paused at the user's request
+
+Current-source bilingual evaluation was stopped at **67/200** cases, all 67
+correct so far. This is PARTIAL, not a completed 200-case result.
+See [RESUME.md](RESUME.md) and bilingual-development-paused.json.
+The web container was restored. This task's changes are not yet committed/pushed.
+Latest unit tests: 93 passed. Formula fixtures: 16/16 actual Spark checks.
+Continue only when the user explicitly resumes.
+
+The records below are historical and do not describe the latest source.
+
+# Earlier verification status
+
 Monthly comparison fix: the exact reported question “เดือนไหนออเดอร์เยอะสุด”
 executed through authenticated public HTTPS with Qwen/OPA/Spark and returned
 November 2011, 2,769 completed invoices. Full trace, including rejected/failed
@@ -36,7 +77,7 @@ current source. Do not relabel old holdouts as unseen current-source measurement
 
 ---
 
-# Current verification status - v2.4
+# Earlier verification status - v2.4
 
 Current extension: Context v2, measured in context-v2-fc31fe03f55a442ba0c39f9969c72d7b.json.
 31 unit tests passed; exposed v6 regression20/20; managed stress21/21 trials on3

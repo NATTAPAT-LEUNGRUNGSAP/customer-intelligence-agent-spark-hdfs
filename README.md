@@ -4,7 +4,7 @@
 
 ผลลัพธ์แสดงเป็นตาราง พร้อม SQL และหลักฐานที่ใช้ เพื่อให้ผู้ใช้ตรวจสอบวิธีคำนวณและที่มาของคำตอบได้
 
-[Presentation](presentation/customer-intelligence-system-guide.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/GOVERNANCE_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
+[Presentation](presentation/customer-intelligence-system-guide.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/BILINGUAL_ANALYTICS_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
 
 ## ใช้ทำอะไรได้บ้าง
 
@@ -16,6 +16,11 @@
 | กลุ่มลูกค้า | วิเคราะห์ RFM segments และ high-value customers ณ snapshot ที่มีข้อมูล |
 
 ระบบช่วยให้ผู้ใช้สำรวจข้อมูลโดยไม่ต้องเริ่มจากการเขียน SQL เอง หากคำถามขาดช่วงเวลาหรือขอข้อมูลที่ไม่มี ระบบจะถามกลับหรือแจ้งข้อจำกัด
+
+มี [ชุดคำถามไทย 100 ข้อและอังกฤษ 100 ข้อ](docs/QUESTION_BANK.md) สำหรับพัฒนาระบบ
+พร้อม [นิยามสูตรและรูปแบบ SQL สำหรับ RAG](docs/ANALYTICS_RAG.md) เช่น AOV,
+สัดส่วนลูกค้าซื้อซ้ำ สถิติ และ window functions. ขอสูตรได้โดยไม่รันคำนวณ เช่น
+`ขอสูตรAOV ไม่ต้องรัน SQL`; การถามตัวเลขยังผ่านการสร้างและตรวจ SQL ตามปกติ.
 
 ## Architecture
 
@@ -35,9 +40,14 @@ flowchart TD
     UI[Web UI: question] --> RAG[RAG selects definitions and schema]
     KB[Knowledge corpus] --> RAG
     Ont[OWL ontology validated by SHACL] --> RAG
-    RAG --> Policy[Period and data availability check]
+    RAG --> Route[Overview, formula definition, or analysis]
+    Route -->|overview| Info[Loaded schema and manifest summary]
+    Route -->|formula| Formula[Grounded formula and SQL expression]
+    Route -->|analysis| Policy[Period and data availability check]
+    Info --> Output
+    Formula --> Output
     Policy -->|insufficient or unavailable| Clarify[Clarification to user]
-    Policy -->|sufficient| Context[Assemble evidence and latest repair state]
+    Policy -->|sufficient| Context[Complete evidence text, request constraints and latest repair state]
     Context --> LLM[LLM generates SQL and citations]
     LLM --> Pre[Citations, SQL AST, semantic contracts, OPA pre-check]
     Pre --> Review[Same-model evidence consistency review]
@@ -92,21 +102,36 @@ Pipeline เก็บ source hashes, จำนวนแถว และผล re
 
 ## ผลประเมิน
 
-ระบบปัจจุบันผ่านคำถามใหม่ **60/60** (52 คำตอบ SQL และ 8 การถามกลับ) และโจทย์เดิม **80/80** โดยบันทึกโค้ด โมเดล knowledge, ontology และ Rego ก่อนรัน และตรวจว่าตรงกันหลังรัน
+รันชุดพัฒนาไทย 100 ข้อและอังกฤษ 100 ข้อจริง ได้ **196/200**
+(ไทย 97/100; อังกฤษ 99/100).
+เป็นคำถามสองภาษาของ 100 เจตนา และถูกใช้ปรับระบบแล้ว จึงไม่ใช่ independent holdout.
 
 | สิ่งที่วัด | ผลจริง |
 |---|---:|
-| คำถามใหม่ เทียบผล Spark กับ SQL อ้างอิง | 60/60 |
-| โจทย์เดิมหลังแก้ระบบ | 80/80 |
-| Retrieval Recall@6 / MRR@6 / nDCG@6 | 100% / 0.931 / 0.928 |
-| เวลาตอบ p95 ของชุดใหม่ | 4.87 วินาที |
-| Unit tests / OPA integration tests | 53 ผ่าน / 3 ผ่าน |
+| โจทย์ SQL เทียบผลกับ SQL อ้างอิงที่รันบนข้อมูลจริง | 156/160 |
+| เลือกสูตรที่มีหลักฐาน โดยไม่รันคำนวณ | 24/24 |
+| ถามกลับ/แจ้งข้อมูลไม่รองรับ | 16/16 |
+| สูตร 12 สูตรกับตัวเลขควบคุมและ edge cases บน Spark | 16/16 |
+| Retrieval Recall@6 บนคำถามต้นฉบับชุดเดียวกัน ก่อน → หลัง | 64.5% → 98.50% |
+| เวลาตอบ p95 ในรอบ 200 คำถาม | 6.27 วินาที |
+| Unit tests / OPA integration | 93 ผ่าน / 3 ผ่าน |
 
-คำถามใหม่เป็นกรณีที่ผู้พัฒนาสร้างในกลุ่มงานที่รองรับ จึงยังไม่แทนคำถามทุกประเภท เวลาไม่รวมเปิด Spark และ SQL อ้างอิงรันก่อน query ของ Agent ดู [ผลดิบ เกณฑ์ และรอบที่ล้มเหลว](reports/GOVERNANCE_REPORT.md)
+ยังมี **4 ข้อไม่ผ่าน**; รายงานแยกกรณีหยุดตรวจออกจากผลที่รันแล้วไม่ตรงอ้างอิง
+รวมทั้งกรณีคอลัมน์หรือช่วงเวลาไม่ตรง ไม่ได้อ้างว่ารองรับทุกคำถามแล้ว.
+RAG ก่อนปรับยังไม่มีสูตร/syntax ใหม่บางหัวข้อ ผลก่อน–หลังจึงรวมการเพิ่ม knowledge coverage.
 
-Context experiment ใช้ 12 คำถาม × 3 เงื่อนไข รวม 36 รอบ ทุกเงื่อนไขใช้ RAG: ไม่มีข้อความรบกวนได้ 12/12, ตัดเฉพาะข้อความประกอบได้ 12/12, เก็บข้อความทั้งหมดได้ 10/12 อีกสองข้อหยุดเพราะงบ input ไม่ได้ส่งคำตอบผิด ผลนี้ยังไม่พิสูจน์ว่าแก้ context rot ภายในโมเดลได้ทั่วไป
+Context ส่ง ID และข้อความหลักฐานเต็ม โดยเก็บ metadata ไว้ใน trace แทน.
+ตรวจ packet ของ 160 โจทย์ SQL พบว่าขนาด evidence ลด **21.06%**
+เมื่อเทียบกับ references ชุดเดียวกันที่แนบ metadata และ hash ของ ID/ข้อความตรงครบ.
+นี่เป็นการวัด bytes ของ evidence ไม่ใช่หลักฐานว่าแก้ context rot ทั่วไปแล้ว.
 
-มี domain ontology แบบ RDF/OWL พร้อม SHACL และ OPA/Rego ก่อนและหลัง Spark แล้ว อ่าน [การออกแบบและคำอธิบายศัพท์](docs/GOVERNANCE.md)
+ดู [วิธีวัด ผลดิบ และรายการที่ไม่ผ่าน](reports/BILINGUAL_ANALYTICS_REPORT.md).
+ผลชุดก่อนขยาย 60/60 และ regression 80/80 เก็บเป็น
+[ผลประเมินก่อนหน้า](reports/GOVERNANCE_REPORT.md) และไม่ถูกนำมาปะปนกับชุดนี้.
+
+มี domain ontology แบบ RDF/OWL พร้อม SHACL และ OPA/Rego ก่อนและหลัง Spark.
+สูตรเชิงประกอบและ metric ใหม่เก็บเป็นนิยาม RAG; ไม่ได้อ้างว่าทั้งหมดถูกเพิ่มเป็น OWL metrics.
+อ่าน [การออกแบบและคำอธิบายศัพท์](docs/GOVERNANCE.md).
 
 ## เริ่มใช้งาน
 

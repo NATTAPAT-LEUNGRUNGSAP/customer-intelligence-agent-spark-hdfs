@@ -4,12 +4,15 @@ import math
 from decimal import Decimal
 from sqlglot import parse_one, exp
 from sqlglot.optimizer.scope import traverse_scope
+from metric_contracts import has_breakdown, invoice_share_target
 
 
 def validate_semantics(question, sql):
     """Require explicit identified population where orders feed a customer metric."""
     text=question.lower()
     tree=parse_one(sql,read='spark')
+    grouped_request=has_breakdown(text)
+    scalar_request=re.search(r'total|count|average|mean|median|standard deviation|percentile|minimum|maximum|how many|ยอดขายรวม|จำนวน|เท่าไร|เฉลี่ย|มัธยฐาน|เปอร์เซ็นไทล์|ส่วนเบี่ยงเบน',text)
     scalar_pair=(re.search(r'total.*sales|sales.*total',text)
                  and re.search(r'invoice count|count.*invoice',text)
                  and not re.search(r'\bby\b|\bper\b|monthly|\beach\b|\bevery\b|distribution|\btop\b|rank',
@@ -17,7 +20,9 @@ def validate_semantics(question, sql):
     if scalar_pair and (len(tree.expressions)!=2 or tree.args.get('group')):
         raise ValueError('This question requests exactly two scalar outputs: total sales and invoice count. '
                          'Remove the extra month/date column and GROUP BY; retain the requested period filter.')
-    if not re.search(r'identified|ระบุตัวตน|มี.*(?:รหัส|customer.?id)',text):
+    if tree.args.get('group') and scalar_request and not grouped_request:
+        raise ValueError('Question asks for an overall statistic, not a breakdown: remove unrequested GROUP BY and month/date columns')
+    if not re.search(r'\bidentified\b|ระบุตัวตน|(?<!ไม่)มี\s*(?:รหัส|customer.?id)',text):
         return
     scopes=list(traverse_scope(tree))
     def excludes_null(node):
@@ -75,9 +80,12 @@ def result_violations(question, result, sql=None, max_rows=200):
         tree = parse_one(sql, read='spark')
         expressions = tree.expressions
         scalar = (not tree.args.get('group') and any(isinstance(n,exp.AggFunc)
-                  for e in expressions for n in e.walk()))
+                  for e in expressions if not any(e.find_all(exp.Window)) for n in e.walk()))
         if scalar and len(rows) != 1:
             errors.append('scalar_aggregate_requires_one_row')
+        overall_fraction=re.search(r'\bfraction\b|สัดส่วน',question.lower()) and not has_breakdown(question.lower())
+        if overall_fraction and (len(rows)!=1 or len(columns)!=1):
+            errors.append('overall_fraction_requires_one_value')
         for i, expr in enumerate(expressions):
             expr = expr.this if isinstance(expr, exp.Alias) else expr
             if i < len(columns) and isinstance(expr,exp.Count):
@@ -94,6 +102,9 @@ def result_violations(question, result, sql=None, max_rows=200):
                 if len(keys) != len(set(keys)):
                     errors.append('duplicate_group_keys')
     text = question.lower()
+    if invoice_share_target(text) and len(columns)==1:
+        if any(row[0] is not None and (not isinstance(row[0],(int,float,Decimal)) or not 0<=row[0]<=1) for row in rows):
+            errors.append('invoice_fraction_out_of_range')
     if re.search(r'identified|ระบุตัวตน',text):
         if any(row[i] is None for i,c in enumerate(columns) if c.lower() == 'customer_id' for row in rows):
             errors.append('identified_customer_id_null')
@@ -112,7 +123,7 @@ def validate_result(question, result, sql=None):
     text = question.lower()
     columns = result.get('columns', [])
     rows = result.get('rows', [])
-    identified = re.search(r'identified|ระบุตัวตน|มี.*(?:รหัส|customer.?id)', text)
+    identified = re.search(r'\bidentified\b|ระบุตัวตน|(?<!ไม่)มี\s*(?:รหัส|customer.?id)', text)
     if identified:
         ids = [i for i, name in enumerate(columns) if name.lower() == 'customer_id']
         if any(row[i] is None for row in rows for i in ids):

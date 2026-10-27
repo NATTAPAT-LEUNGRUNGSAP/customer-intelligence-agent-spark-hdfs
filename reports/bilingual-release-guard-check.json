@@ -1,0 +1,713 @@
+{
+  "status": "passed",
+  "method": "publication fingerprint verification and deterministic final SQL replay; no additional model calls",
+  "same_source_as_full_run": true,
+  "same_model_as_full_run": true,
+  "changed_source_files": [],
+  "sql_proposals_recorded": 185,
+  "executed_sql_checked": 156,
+  "monthly_semantic_checks": [
+    {
+      "id": "pair076-th",
+      "highest_month_contract_passed": true
+    },
+    {
+      "id": "pair076-en",
+      "highest_month_contract_passed": true
+    }
+  ],
+  "current_files_sha256": {
+    "jobs/agent.py": "702c53210f8b35ea76af24fa50c23103ca410638904ad283ec4cd25676dcdec8",
+    "jobs/build_tables.py": "4ad0a4d6946602f57a6fd3dd69a29e24f4aa04c0670bcc366356076c21ab206d",
+    "jobs/check_model.py": "0e51bf11f30dcbd529e107f65231e2f5c44b81e9fcf3e5ce0832551b3e606e40",
+    "jobs/context_budget.py": "fa200557737a973ca69f1f1f436e33d7250fe79abc63ea9b1370301c52240c80",
+    "jobs/context_engine.py": "175bcd6cffe2ea09fafcd613b073e0eb905c7aeb208a0c330fa25dc253e80953",
+    "jobs/dataset_info.py": "a95cf2115aebcee0b4aa6f9726f16e9469eac8e812ab0011d4d76b618240672c",
+    "jobs/evaluate.py": "2b463ce4ed818ec099850800d6a4144c64d7d012d0b4e0ec9220eb46e4258c6a",
+    "jobs/evaluate_acceptance.py": "190dffd2463c933ec6b9a2e402b1fce8438117f70ad124c5032fd1c4821c1cbf",
+    "jobs/evaluate_bilingual.py": "50000c5ad1aa0bb1d3aa3cd6e15178c0d9080131f804d201502a2f2422aa7368",
+    "jobs/evaluate_context.py": "703f08bc28b844812ac4a6be66c8ff1989b9fdecfbe7190b9e47ace2c01d7661",
+    "jobs/evaluate_retrieval.py": "95ea40f19adb0d06c9afa8c26c880f234bb4ba866a2c1f4493008b6f05401177",
+    "jobs/formula_intent.py": "44a21155dad24bbc0fc3d761b4ecad3afbd1d13773ba153f6dca1e19dec52ae6",
+    "jobs/freeze_candidate.py": "b8d6ee99369602478fe029f74d2143c3c1ebe9b04951d3221f96e0f9c9a71aa7",
+    "jobs/metric_contracts.py": "58cfcae5b8882137bb2d91f69db40d155ee0ef55504dd15e7d77fed9f8ece0e4",
+    "jobs/ontology.py": "763fead0b0de851c7149ebb4cd5ead95560d059079c22a02e4772cd9c5632786",
+    "jobs/policy_engine.py": "4f8f8422238504ed99b160f3c2273a7b7f4abfa6e69163d938ad46bd642fc81f",
+    "jobs/prepare_data.py": "c744c6dd460628eb978dc6a4a651da27006a90b5d52846fe99edadd6695126ff",
+    "jobs/provenance.py": "aa1b780639b7e66fdf301c0ecd2eb2a0d468761a2ba47b22c912452c628dbda4",
+    "jobs/query_runtime.py": "6140b7286dde4164d3eed119e3bf1fd029934114d3b8affc6675a84d5e5f7291",
+    "jobs/question_scope.py": "17699b07e071e7b0c957692ce259e75e60dbd8a5be2b5da9e2881d3816d79332",
+    "jobs/rag_metrics.py": "672f3dc2e436b747577c1daf6edf9c1c073a7f31f9425067de1f6ef61a4aee0a",
+    "jobs/result_contracts.py": "c27ee7d7feb1eec37df0f1e19f79df5d33bfe9d67004797a63ee93c59df57d20",
+    "jobs/retrieval.py": "a3d716f87dfdf62deb8c35df0407f708a03895e513c038cbc11c48e056131725",
+    "jobs/semantic_contracts.py": "8c0eafbe5d1d77384b731dc0b4028bdf42ba9f2c5a5f0de39c363c0357fab439",
+    "jobs/smoke_hdfs.py": "bd9989548d198b947e39c2a0ea40ee2c846491308a09a330db59b01befc5ee29",
+    "jobs/sql_guard.py": "22e4dd9161985eb84b66a1b9f1264b1765759540f1eafaa3a6586be321abb038",
+    "jobs/test_agent_spark.py": "9894cf71bb5a7ca7c5fafe974cf2edaa1714be777a604b78ab4f3eaeba092ed9",
+    "jobs/test_model_spark.py": "0f8524346a414d17697ac47d7d414e79fd0a428b12f8061a24b37545ee10f0ec",
+    "jobs/test_pipeline.py": "c4a1828b8d5a1046448d6d61837d6378ccae2d88cea553a03fcceafa2db267b0",
+    "jobs/verify_iteration.py": "2bd804910191d9f2ef25add38ef5926ad374b338746910ffd91db9a1d4652e5d",
+    "jobs/web_app.py": "a55dec4c9e1adf82a5dc41f737112f05f19027dbe6330aa610fce6e06339ddfd",
+    "knowledge/analytics_patterns.md": "0d86726b787549f7329e91a97e327157eccb6b611bab42489e2a9a17bec72eb2",
+    "knowledge/formulas.md": "dd1fba9ae02b92063454094a19cbde5b642c7320fad6d28ef682dbb76f2fde38",
+    "knowledge/metrics.md": "297010f76b23d3104ab01b1eac67d8b0862a9dd51e964038de645d295208e0ac",
+    "knowledge/schema.md": "0bd54abd4b184c786aa51837aa11164958b6f3c45775d051cff0bd53470e175f",
+    "knowledge/spark_sql.md": "a04334698317a21a24da317fd2228223217a03d8d4c455204043c838b3ac9990",
+    "knowledge/thai_glossary.md": "4a1192f7d01202ebc4dd66dd1d334880ad696e81cfd4775b92f4c1a6f0e4b49b",
+    "sql/customer_summary.sql": "3b71dfcea27ec4dae8e92316ec2ab8033a14b880dec3722dd25acdc7c1c41d4b",
+    "sql/orders.sql": "76583aeaf72c09d3c03918f226fe8bd905392ee889641287db680b56b0564f9e",
+    "sql/sales_lines.sql": "b82aa6abca8594c7d45f5a45e111daadda0021e7b598a2aaaa57f59d1877d593",
+    "evaluation/acceptance.json": "2c5652da88a5c582abd18dd58860da72317c3be186c62a74ba3b8e30e4457900",
+    "evaluation/acceptance_exposed.json": "35eddff8c9e91d697d73d65976f8ad9e54f068d9b0f9e4afc81b9fade61ddf18",
+    "evaluation/acceptance_pilot_exposed.json": "a26fcd7764d67c6c2c69c43f6fabee33a30af2d2661e7b1931b91eeba0c2bcde",
+    "evaluation/bilingual_200.json": "72401e62d6a2aff30bfb1d6deae7208cebcebd9b852bd1a793122bb5fd9bf0fa",
+    "evaluation/bilingual_200_initial.json": "39fe14f85cbc9476e7e2240fa680622f233ba8ecf24eaf9db2bd9aa13ce2dcb7",
+    "evaluation/context_protocol_v1.json": "adfa6d47e69d00427b2294143a4b964d7a0b3dd4ec622b163a1758874400dcbe",
+    "evaluation/context_protocol_v2.json": "d05206a6db81da64de5311edaa38a263d192155917cd92b3a25d561372e1e025",
+    "evaluation/dev.json": "434f0731e0d92811e090d2a6b890c4e8bca4a2bd52d03663ee2507f4f1824069",
+    "evaluation/quality_gates_v2.json": "3f5a35420eeb913981390aa7edb846a16b4a5423c1dd53fafdb34369e6a4db0c",
+    "evaluation/rag_holdout_v2.json": "b0ab85123b8910c7497c8ba05ecc599c40b68d14d27a12f74a98655737a427b2",
+    "evaluation/rag_holdout_v3.json": "df12a3b2f01fa5ab16f35e3ac40c982aee3ae0f71ee473d5f8cedb3f151f09bf",
+    "evaluation/rag_holdout_v4.json": "179578d9db77effcf8d40632fb119f60febbbd756d4d38a443ae018206bea91d",
+    "evaluation/rag_holdout_v5.json": "8d904cc22913819ae8c03bd355a3e7b04c5d86cba50e6dcb86ba61e02c4c5d36",
+    "evaluation/rag_holdout_v6.json": "59c430375d9f5ed8c0b3051473b1a1aa2e5b728f78b8b6b6d923a6ff97895ada",
+    "evaluation/retrieval_dev_v2.json": "094e5418718288687dbc023d14dbb107a3401954487e1a3695fa623df44e73d3",
+    "evaluation/test.json": "02b63f980ea8719dd46ffc8b17e5510197296e8a607dd4f0d4a52756666ab87c",
+    "ontology/customer-intelligence.ttl": "1247e5c9e8d96c42e7dea82d8ff5c96025861a461890dcd7702fb5e91b8271bf",
+    "ontology/shapes.ttl": "aee0882aca823682f008da2ae4354e619b407bd1f26a91e58474538f826983c4",
+    "policies/analytics.rego": "505b31f6bd87dbf963b59c7b88ae81663d1f883e83f141243e519f938fbba003",
+    "infra/spark/Dockerfile": "09e7fd5328839849cc13f806a7aa11229c178970edf63228c1299ce977db2d33",
+    "infra/spark/spark-defaults.conf": "c611e9ea51932f085d6cf6c7a13fdd8b9a12e96ff3ff81831d0d3c02686c808b",
+    "infra/hadoop/config/core-site.xml": "c00026c28bf1ce49d53e8ef4ca86174b5ef740734a43af4ddd29816f98462d9e",
+    "infra/hadoop/config/hdfs-site.xml": "a9e52c53f38ddfa76985772c60ad12412ea07e30280e1c91a4a6e1671b3c18fc",
+    "infra/hadoop/config/log4j.properties": "e98cd7090e3eab0f2c6baafd1ddceac2563ff55c43ba733c71c74c8654f618c8",
+    "compose.yaml": "7239366369415d5accaa5c1eed2271292f087b51963d210d382928aaceb6553e",
+    "requirements-agent.txt": "658fa87967de7a0ce01a1066b2a04463202a3282da9c407735c15c8291e8e0bb"
+  },
+  "checks": [
+    {
+      "id": "pair001-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair001-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair002-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair002-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair003-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair003-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair004-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair004-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair005-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair005-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair006-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair006-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair007-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair007-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair008-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair008-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair009-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair009-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair010-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair010-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair011-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair011-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair012-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair012-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair013-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair013-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair014-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair014-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair015-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair015-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair016-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair016-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair017-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair017-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair018-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair018-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair019-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair019-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair020-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair020-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair021-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair021-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair022-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair022-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair023-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair023-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair024-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair024-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair025-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair025-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair026-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair026-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair027-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair027-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair028-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair028-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair029-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair029-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair030-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair030-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair031-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair031-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair032-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair032-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair033-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair033-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair034-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair034-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair035-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair035-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair036-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair036-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair037-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair037-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair038-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair038-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair039-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair039-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair040-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair040-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair041-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair041-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair042-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair042-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair043-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair043-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair044-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair044-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair045-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair045-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair046-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair046-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair047-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair047-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair048-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair048-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair049-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair049-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair050-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair050-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair051-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair051-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair052-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair052-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair053-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair053-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair054-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair054-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair055-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair055-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair056-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair056-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair057-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair058-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair058-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair059-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair059-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair060-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair060-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair061-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair061-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair062-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair062-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair063-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair063-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair064-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair064-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair065-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair065-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair066-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair066-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair067-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair068-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair068-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair069-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair069-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair070-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair070-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair071-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair071-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair072-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair072-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair073-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair073-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair074-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair075-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair075-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair076-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair076-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair077-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair077-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair078-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair078-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair079-th",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair079-en",
+      "final_sql_allowed": true
+    },
+    {
+      "id": "pair080-en",
+      "final_sql_allowed": true
+    }
+  ]
+}

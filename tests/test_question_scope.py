@@ -9,6 +9,12 @@ META={'observed_min_timestamp':'2009-12-01 07:45:00','observed_max_timestamp':'2
 
 
 class ScopeTests(unittest.TestCase):
+    def test_rank_and_dense_rank_preserve_only_the_top_ties(self):
+        for function in ('RANK','DENSE_RANK'):
+            validate_month_comparison("WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,COUNT(*) AS n FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts)), r AS (SELECT month,n,"+function+"() OVER (ORDER BY n DESC) AS pos FROM m) SELECT month,n FROM r WHERE pos=1 ORDER BY month")
+    def test_sorted_all_months_is_not_a_highest_month_answer(self):
+        with self.assertRaises(ValueError):validate_month_comparison("SELECT DATE_TRUNC('MONTH',order_ts) AS month,COUNT(*) AS n FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY n DESC")
+        validate_month_comparison("SELECT DATE_TRUNC('MONTH',order_ts) AS month,COUNT(*) AS n FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts) HAVING COUNT(*)=(SELECT MAX(cnt) FROM (SELECT COUNT(*) AS cnt FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts)) x) ORDER BY month")
     def test_month_guard_preserves_year_ties_and_maximum_timestamp(self):
         good="WITH m AS (SELECT DATE_TRUNC('MONTH', order_ts) AS month, COUNT(*) AS n FROM orders GROUP BY DATE_TRUNC('MONTH', order_ts)) SELECT month,n FROM m WHERE n=(SELECT MAX(n) FROM m) ORDER BY month"
         validate_month_comparison(good)

@@ -8,9 +8,9 @@ from functools import lru_cache
 from pathlib import Path
 
 CONCEPTS = {
- 'sales': r'sales|revenue|ยอดขาย', 'orders': r'orders?|invoices?|คำสั่งซื้อ|ใบสั่งซื้อ|กี่ใบ',
+ 'sales': r'sales|revenue|ยอดขาย', 'orders': r'orders?|invoices?|ออเดอร์|คำสั่งซื้อ|ใบสั่งซื้อ|กี่ใบ',
  'customers': r'customers?|ลูกค้า', 'repeat': r'repeat|at least two|two or more|ซื้อซ้ำ',
- 'aov': r'\baov\b|average order value|average basket|เฉลี่ยต่อคำสั่งซื้อ',
+ 'aov': r'\baov\b|average order value|average invoice value|average basket|มูลค่าเฉลี่ย(?:ต่อ)?คำสั่งซื้อ|เฉลี่ยต่อคำสั่งซื้อ',
  'anonymous': r'anonymous|unidentified|missing.?id|ไม่ระบุตัวตน|ไม่ทราบรหัส',
  'high_value': r'high[ -]value|มูลค่าสูง', 'champions': r'champions?|แชมเปี้ยน',
  'inactive': r'inactive|ไม่เคลื่อนไหว', 'segment': r'segments?|\brfm\b|กลุ่มลูกค้า',
@@ -19,6 +19,17 @@ CONCEPTS = {
  'availability': r'profit|margin|cost|uplift|campaign|กำไร|ต้นทุน|แคมเปญ',
  'period': r'period|time range|ช่วงเวลา|january|february|march|april|may|june|july|august|september|october|november|december|มกราคม|กุมภาพันธ์|มีนาคม|เมษายน|พฤษภาคม|มิถุนายน|กรกฎาคม|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกายน|ธันวาคม|\b(?:19|20)\d{2}\b',
  'joins': r'join|fanout|repeated.invoice|ซ้ำยอด',
+ 'statistics':r'stddev|standard deviation|median|percentile|(?:maximum|minimum) invoice value|มูลค่าคำสั่งซื้อ(?:สูงสุด|ต่ำสุด)|มัธยฐาน|เปอร์เซ็นไทล์|ส่วนเบี่ยงเบน',
+ 'basket':r'basket|units per|units.*invoice|invoices with.*(?:units|products)|single.product invoices|distinct products|ตะกร้า|หน่วย.*คำสั่งซื้อ|ชนิด.*คำสั่งซื้อ|คำสั่งซื้อ.*(?:หน่วย|ชนิด)',
+ 'ratios':r'fraction|share|ratio|สัดส่วน|ต่อผู้ซื้อ',
+ 'windows':r'cumulative|moving average|previous.*month|month.over.month|growth|สะสม|เคลื่อนที่|เติบโต|เดือนก่อน',
+ 'having':r'at least.*(?:invoices|orders)|อย่างน้อย.*(?:คำสั่งซื้อ|ใบ)',
+ 'transactions':r'product.lines.*(?:classified|type)|transaction_type|adjustment|invalid|ประเภทธุรกรรม|ประเภท.*(?:sale|return|cancellation)',
+ 'monthly_extrema':r'which month.*most|เดือนไหน.*(?:เยอะ|มาก).*สุด',
+ 'units':r'total units|units sold|units purchased|จำนวนสินค้าที่ขาย|จำนวนสินค้าที่ซื้อ|จำนวนหน่วยเฉลี่ยต่อคำสั่งซื้อ|mean units per invoice',
+ 'frequency':r'invoice frequency per identified purchasing customer|จำนวนคำสั่งซื้อเฉลี่ยต่อผู้ซื้อที่มีรหัส',
+ 'spend_per_customer':r'sales per identified purchasing customer|ยอดขายต่อผู้ซื้อที่มีรหัส',
+ 'invoice_share':r'anonymous invoice fraction|fraction of invoices|single.product invoice fraction|สัดส่วนคำสั่งซื้อ',
 }
 STOP = set('a an the in at of to for from what how were was is are be with and or by '
            'return show give many there our all that this then as on per'.split())
@@ -36,6 +47,14 @@ TOPICS = {
  'syntax.ranking':(), 'syntax.aggregation':('repeat',),
  'policy.period':('period',), 'policy.availability':('availability',),
  'policy.snapshot':('snapshot',),
+ 'syntax.statistics':('statistics',), 'syntax.basket':('basket',),
+ 'syntax.ratios':('ratios',), 'syntax.windows':('windows',),
+ 'syntax.having':('having',), 'syntax.transactions':('transactions',),
+ 'syntax.monthly_extrema':('monthly_extrema',),
+ 'syntax.snapshot_statistics':('snapshot','statistics'),
+ 'metric.units':('units',), 'metric.purchase_frequency':('frequency',),
+ 'metric.spend_per_customer':('spend_per_customer',),
+ 'metric.invoice_share':('invoice_share',),
 }
 
 
@@ -81,9 +100,14 @@ def retrieve(question, directory, k=6):
     if not 1 <= k <= 12:
         raise ValueError('Retrieval k must be 1..12')
     chunks, counts, df, average = index(directory)
+    from formula_intent import requested_formula
+    formula=requested_formula(question,chunks)
     ranked = []
     query = Counter(tokens(question))
     for chunk, count in zip(chunks, counts):
+        # Definition cards are retrieved on explicit formula requests. Numerical
+        # analysis uses metric + operation guides, avoiding misleading cards.
+        if chunk['id'].startswith('formula.') and chunk['id']!=formula:continue
         score, length = 0.0, sum(count.values())
         for term, qf in query.items():
             tf = count[term]
@@ -111,18 +135,34 @@ def retrieve(question, directory, k=6):
         elif ident.startswith('metric.'):
             add('schema.orders','schema_dependency')
             add('policy.period','policy_dependency')
+    if formula and formula!='unknown':
+        add(formula,'requested_formula')
+        table=re.search(r'^Source table: (\w+)$',by_id[formula]['text'],re.M)
+        if table:add('schema.'+table[1],'schema_dependency')
     # Retrieve the rule and its table definition together, rather than hoping
     # general schema wording independently ranks above six lexical distractors.
     # Resolve explicit metric language before generic mentions of "customers".
     # This chooses evidence, never SQL or a query template.
     primary=None
     if not any('concept_'+topic in query for topic in ('snapshot','segment','champions','inactive','high_value')):
-        for topic,ident in [('repeat','metric.repeat_rate'),('aov','metric.aov'),('sales','metric.sales'),('orders','metric.orders')]:
+        for topic,ident in [('frequency','metric.purchase_frequency'),('spend_per_customer','metric.spend_per_customer'),('invoice_share','metric.invoice_share'),('units','metric.units'),('repeat','metric.repeat_rate'),('aov','metric.aov'),('sales','metric.sales'),('orders','metric.orders')]:
             if 'concept_'+topic in query:
                 primary=ident
                 break
     if primary:
         add(primary,'explicit_metric')
+    if 'concept_repeat' in query:
+        add('syntax.aggregation','operation_dependency')
+    if re.search(r'\btop\b|rank|อันดับ',question.lower()):
+        add('syntax.ranking','operation_dependency')
+        if 'concept_products' in query:add('syntax.product_metrics','operation_dependency')
+    if re.search(r'\bby country\b|แยกประเทศ',question.lower()):
+        add('syntax.aggregation','operation_dependency')
+    # Keep the metric first; select an operation before lexical fillers consume k.
+    for topic in ('monthly_extrema','windows','statistics','having','transactions','basket','ratios'):
+        if 'concept_'+topic in query:
+            add('syntax.'+topic,'operation_dependency')
+            break
     add(ranked[0]['id'],'lexical_head')
     if any('concept_'+topic in query for topic in ('products','cancellation','returns')):
         add('schema.sales_lines','grain_dependency')

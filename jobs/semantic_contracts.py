@@ -8,14 +8,23 @@ from sqlglot.optimizer.scope import traverse_scope
 
 def requested_period(question):
     text = question.lower()
+    for month,name in enumerate(('มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'),1):
+        text=text.replace(name,' '+calendar.month_name[month].lower()+' ')
     # Explicit half-open periods must say before / exclusive / to (exclusive).
     dates = re.findall(r'\b\d{4}-\d{2}-\d{2}\b', text)
     if len(dates) == 2 and re.search(r'before|exclusive', text):
         return dates
     names='|'.join(calendar.month_name[1:]).lower()
+    months={calendar.month_name[m].lower():m for m in range(1,13)}
+    if not re.search(r'\bbefore\b|\bafter\b|\bthrough\b|\bto\b|ถึง|ก่อน|หลัง',text):
+        thai_day=re.search(r'วันที่\s*(\d{1,2})\s+('+names+r')\s+((?:19|20)\d{2})',text)
+        english_day=re.search(r'\b('+names+r')\s+(\d{1,2})(?:st|nd|rd|th)?(?:,\s*|\s+)((?:19|20)\d{2})\b',text)
+        if thai_day or english_day:
+            day,month,year=(int(thai_day[1]),months[thai_day[2]],int(thai_day[3])) if thai_day else (int(english_day[2]),months[english_day[1]],int(english_day[3]))
+            start=dt.date(year,month,day)
+            return [start.isoformat(),(start+dt.timedelta(days=1)).isoformat()]
     span=re.search(r'\b('+names+r')\s+(?:through|to)\s+('+names+r')\s+((?:19|20)\d{2})\b',text)
     if span:
-        months={calendar.month_name[m].lower():m for m in range(1,13)}
         first,last,year=months[span[1]],months[span[2]],int(span[3])
         if last<first:
             raise ValueError('Cross-year month range requires explicit years/dates')
@@ -57,7 +66,10 @@ def time_is_bounded(where, column, period):
                 upper = True
         if isinstance(node, exp.EQ) and isinstance(node.this, exp.TimestampTrunc):
             col = node.this.this
-            if (isinstance(col, exp.Column) and col.name.lower() == column
+            first=dt.date.fromisoformat(period[0])
+            next_month=dt.date(first.year+(first.month==12),first.month%12+1,1)
+            one_whole_month=first.day==1 and period[1]==next_month.isoformat()
+            if (one_whole_month and isinstance(col, exp.Column) and col.name.lower() == column
                     and str(node.this.args.get('unit')).upper() == 'MONTH'
                     and literal_value(node.expression) == period[0]):
                 lower = upper = True
@@ -72,8 +84,18 @@ def validate_business_sql(question, sql):
                if isinstance(source, exp.Table)]
     tables = {source.name.lower() for _, source in sources}
     checks = []
+    # Check named invoice-value statistics, rather than trusting lexical overlap
+    # or an LLM review to distinguish maximum, minimum and approximate median.
+    for pattern,kind in [(r'maximum invoice value|มูลค่าคำสั่งซื้อสูงสุด',exp.Max),
+                         (r'minimum invoice value|มูลค่าคำสั่งซื้อต่ำสุด',exp.Min),
+                         (r'approximate median invoice value|มัธยฐาน.*มูลค่าคำสั่งซื้อ',exp.ApproxQuantile)]:
+        if re.search(pattern,text) and not any(isinstance(n.this,exp.Column) and n.this.name.lower()=='order_amount' for n in tree.find_all(kind)):
+            raise ValueError('Requested invoice-value statistic requires '+kind.__name__+' over order_amount; do not substitute another statistic')
     invoice_count = bool(re.search(r'count.*(?:invoice|order)|how many.*(?:invoice|order)|จำนวนคำสั่งซื้อ|กี่ใบ', text))
     snapshot = bool(re.search(r'snapshot|\brfm\b|champions|inactive|high.value', text))
+    customer_snapshot=re.search(r'customer|ลูกค้า|rfm|recency|first.purchase|last.purchase|วันซื้อ|180.day|180 วัน|high.value|champions|inactive|มูลค่าสูง',text)
+    if re.search(r'snapshot\s+\d{4}-\d{2}-\d{2}',text) and customer_snapshot and 'customer_summary' not in tables:
+        raise ValueError('Explicit customer snapshot analytics must read customer_summary for that as_of_date, not all historical orders or an invented rolling window')
     line_metric = bool(re.search(r'product|sku|cancellation|return.*lines', text))
     if invoice_count and not snapshot and not line_metric and 'orders' not in tables:
         raise ValueError('Invoice count must read orders (one invoice per row), not sales_lines/customer_summary')
@@ -97,8 +119,16 @@ def validate_business_sql(question, sql):
                 raise ValueError('customer_summary requires requested as_of_date equality in WHERE')
             checks.append('snapshot_filter')
         if name == 'sales_lines' and line_metric:
-            required = ('cancellation' if 'cancellation' in text else 'return' if
+            breakdown=bool(re.search(r'by transaction_type|แยก transaction_type',text))
+            explicit=re.search(r'(?:classified as|ประเภท)\s+(sale|cancellation|return|adjustment|invalid)\b',text)
+            required = (explicit[1] if explicit else 'cancellation' if 'cancellation' in text else 'return' if
                         re.search(r'return.*(?:product )?lines', text) else 'sale')
+            if breakdown:
+                # An all-type breakdown must not silently discard non-sale rows.
+                if any(c.name.lower()=='transaction_type' for c in where.find_all(exp.Column)) if where else False:
+                    raise ValueError('All-type breakdown must retain every transaction_type; do not filter to sale')
+                checks.append('all_transaction_types_retained')
+                continue
             if not any(isinstance(n, exp.EQ) and isinstance(n.this, exp.Column)
                        and n.this.name.lower() == 'transaction_type' and literal_value(n.expression) == required
                        for n in (conjuncts(where.this) if where else [])):
@@ -110,4 +140,4 @@ def validate_business_sql(question, sql):
                                          for c in n.find_all(exp.Column)) for n in tree.walk()):
         raise ValueError('SUM(order_amount) across orders and sales_lines risks invoice fan-out; aggregate separately')
     return {'status': 'passed', 'checks': sorted(set(checks)),
-            'scope': 'supported source grain, explicit English monthly/date bounds, snapshot and transaction type'}
+            'scope': 'supported source grain, Thai/English monthly/date bounds, snapshot and transaction type'}

@@ -1,0 +1,380 @@
+{
+  "status": "passed",
+  "method": "actual Spark SQL on controlled numerical fixtures; no model calls",
+  "cases": [
+    {
+      "id": "aov",
+      "sql": "SELECT SUM(order_amount) / NULLIF(COUNT(*),0) AS value FROM orders",
+      "expected_rows": [
+        [
+          25
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            "25.00000000000000"
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "repeat_rate",
+      "sql": "WITH f AS (SELECT customer_id,COUNT(*) AS invoice_frequency FROM orders WHERE customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN invoice_frequency>=2 THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0) AS value FROM f",
+      "expected_rows": [
+        [
+          0.5
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            0.5
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "anonymous_share",
+      "sql": "SELECT SUM(CASE WHEN customer_id IS NULL THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0) AS value FROM orders",
+      "expected_rows": [
+        [
+          0.25
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            0.25
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "units_per_order",
+      "sql": "SELECT AVG(total_units) AS value FROM orders",
+      "expected_rows": [
+        [
+          5
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            5.0
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "product_revenue",
+      "sql": "SELECT SUM(line_amount) AS value FROM sales_lines WHERE transaction_type='sale'",
+      "expected_rows": [
+        [
+          40
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            "40.0000"
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "mom_growth",
+      "sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT (sales-LAG(sales) OVER (ORDER BY month)) / NULLIF(LAG(sales) OVER (ORDER BY month),0) AS value FROM m ORDER BY month",
+      "expected_rows": [
+        [
+          null
+        ],
+        [
+          0.5
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            null
+          ],
+          [
+            "0.500000000"
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "country_share",
+      "sql": "WITH c AS (SELECT country,SUM(order_amount) AS sales FROM orders GROUP BY country) SELECT sales / NULLIF(SUM(sales) OVER (),0) AS value FROM c ORDER BY country",
+      "expected_rows": [
+        [
+          0.8
+        ],
+        [
+          0.2
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            "0.8000000000"
+          ],
+          [
+            "0.2000000000"
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "cumulative_sales",
+      "sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT SUM(sales) OVER (ORDER BY month ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS value FROM m ORDER BY month",
+      "expected_rows": [
+        [
+          40
+        ],
+        [
+          100
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            "40.0000"
+          ],
+          [
+            "100.0000"
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "moving_average",
+      "sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT AVG(sales) OVER (ORDER BY month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS value FROM m ORDER BY month",
+      "expected_rows": [
+        [
+          40
+        ],
+        [
+          50
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            "40.00000000"
+          ],
+          [
+            "50.00000000"
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "median_order",
+      "sql": "SELECT PERCENTILE_APPROX(order_amount,0.5,10000) AS value FROM orders",
+      "expected_rows": [
+        [
+          20
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            "20.0000"
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "high_value_share",
+      "sql": "SELECT SUM(CASE WHEN is_high_value THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+      "expected_rows": [
+        [
+          0.5
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            0.5
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "cancellation_share",
+      "sql": "SELECT SUM(CASE WHEN transaction_type='cancellation' THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0) AS value FROM sales_lines",
+      "expected_rows": [
+        [
+          0.25
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "value"
+        ],
+        "rows": [
+          [
+            0.25
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "empty_aov",
+      "sql": "SELECT SUM(order_amount) / NULLIF(COUNT(*),0) FROM orders WHERE 1=0",
+      "expected_rows": [
+        [
+          null
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "(sum(order_amount) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            null
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "empty_repeat",
+      "sql": "WITH f AS (SELECT customer_id,COUNT(*) AS invoice_frequency FROM orders WHERE customer_id IS NOT NULL AND 1=0 GROUP BY customer_id) SELECT SUM(CASE WHEN invoice_frequency>=2 THEN 1 ELSE 0 END) / NULLIF(COUNT(*),0) FROM f",
+      "expected_rows": [
+        [
+          null
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "(sum(CASE WHEN (invoice_frequency >= 2) THEN 1 ELSE 0 END) / nullif(count(1), 0))"
+        ],
+        "rows": [
+          [
+            null
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "zero_growth_base",
+      "sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(CASE WHEN MONTH(order_ts)=1 THEN 0 ELSE order_amount END) AS sales FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT (sales-LAG(sales) OVER (ORDER BY month)) / NULLIF(LAG(sales) OVER (ORDER BY month),0) FROM m ORDER BY month",
+      "expected_rows": [
+        [
+          null
+        ],
+        [
+          null
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "((sales - lag(sales, 1, NULL) OVER (ORDER BY month ASC NULLS FIRST ROWS BETWEEN -1 FOLLOWING AND -1 FOLLOWING)) / nullif(lag(sales, 1, NULL) OVER (ORDER BY month ASC NULLS FIRST ROWS BETWEEN -1 FOLLOWING AND -1 FOLLOWING), 0))"
+        ],
+        "rows": [
+          [
+            null
+          ],
+          [
+            null
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    },
+    {
+      "id": "negative_growth",
+      "sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(CASE WHEN MONTH(order_ts)=1 THEN order_amount*2 ELSE order_amount/3 END) AS sales FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT (sales-LAG(sales) OVER (ORDER BY month)) / NULLIF(LAG(sales) OVER (ORDER BY month),0) FROM m ORDER BY month",
+      "expected_rows": [
+        [
+          null
+        ],
+        [
+          -0.75
+        ]
+      ],
+      "actual": {
+        "columns": [
+          "((sales - lag(sales, 1, NULL) OVER (ORDER BY month ASC NULLS FIRST ROWS BETWEEN -1 FOLLOWING AND -1 FOLLOWING)) / nullif(lag(sales, 1, NULL) OVER (ORDER BY month ASC NULLS FIRST ROWS BETWEEN -1 FOLLOWING AND -1 FOLLOWING), 0))"
+        ],
+        "rows": [
+          [
+            null
+          ],
+          [
+            "-0.750000"
+          ]
+        ],
+        "truncated": false
+      },
+      "correct": true
+    }
+  ],
+  "correct": 16,
+  "total": 16
+}

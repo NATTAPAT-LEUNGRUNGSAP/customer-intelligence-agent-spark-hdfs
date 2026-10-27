@@ -16,12 +16,13 @@ class ContextTests(unittest.TestCase):
                     {'id':'policy.snapshot','text':'Only snapshot 2011-12-01 is available.'}]
         packet,trace=assemble_evidence(references,'irrelevant '*10000)
         data=json.loads(packet)
-        self.assertEqual(data,references)
-        self.assertEqual(packet,json.dumps(references,ensure_ascii=False))
+        self.assertEqual(data,[{'id':r['id'],'text':r['text']} for r in references])
+        self.assertNotIn('score',data[0])
         self.assertTrue(trace['all_selected_evidence_retained'])
         self.assertEqual(trace['background_supplied_characters'],0)
         self.assertGreater(trace['background_omitted_characters'],0)
-        self.assertEqual(trace['wire_format'],'legacy-evidence-json-preserved')
+        self.assertEqual(trace['wire_format'],'complete-evidence-id-text-json')
+        self.assertTrue(trace['retrieval_metadata_omitted'])
 
     def test_duplicate_conflicts_fail_closed(self):
         one={'id':'metric.sales','text':'Gross sales'}

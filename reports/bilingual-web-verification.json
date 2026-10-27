@@ -1,0 +1,170 @@
+{
+  "status": "passed",
+  "transport": "actual authenticated public HTTPS",
+  "checks": [
+    {
+      "kind": "formula",
+      "question": "ขอสูตรAOV ไม่ต้องรัน SQL",
+      "http_status": 200,
+      "passed": true,
+      "status": "information",
+      "intent": "formula",
+      "formula_id": "aov",
+      "model_calls": 0,
+      "result": {
+        "columns": [
+          "สูตร",
+          "นิยาม",
+          "Spark SQL expression",
+          "ตารางต้นทาง"
+        ],
+        "rows": [
+          [
+            "AOV / มูลค่าเฉลี่ยต่อคำสั่งซื้อ",
+            "ยอดขายคำสั่งซื้อสำเร็จ ÷ จำนวนคำสั่งซื้อสำเร็จ",
+            "SUM(order_amount) / NULLIF(COUNT(*),0)",
+            "orders"
+          ]
+        ],
+        "truncated": false
+      },
+      "attempts": []
+    },
+    {
+      "kind": "formula",
+      "question": "Explain the formula for month-over-month sales growth; do not execute SQL.",
+      "http_status": 200,
+      "passed": true,
+      "status": "information",
+      "intent": "formula",
+      "formula_id": "mom_growth",
+      "model_calls": 0,
+      "result": {
+        "columns": [
+          "สูตร",
+          "นิยาม",
+          "Spark SQL expression",
+          "ตารางต้นทาง"
+        ],
+        "rows": [
+          [
+            "month-over-month sales growth / อัตราเติบโตยอดขายรายเดือน",
+            "(ยอดขายเดือนปัจจุบัน − ยอดขายเดือนก่อน) ÷ ยอดขายเดือนก่อน",
+            "(sales-LAG(sales) OVER (ORDER BY month)) / NULLIF(LAG(sales) OVER (ORDER BY month),0)",
+            "orders"
+          ]
+        ],
+        "truncated": false
+      },
+      "attempts": []
+    },
+    {
+      "kind": "discovery",
+      "question": "มีข้อมูลอะไรบ้าง",
+      "http_status": 200,
+      "passed": true,
+      "status": "information",
+      "intent": "dataset_discovery",
+      "formula_id": null,
+      "model_calls": 0,
+      "result": {
+        "columns": [
+          "ตาราง",
+          "มีข้อมูลอะไร",
+          "หนึ่งแถวแทนอะไร",
+          "คอลัมน์ที่โหลดจริง"
+        ],
+        "rows": [
+          [
+            "sales_lines",
+            "รายการสินค้าและประเภทธุรกรรม",
+            "หนึ่งรายการสินค้าในข้อมูลต้นทาง",
+            "invoice_id, customer_id, product_id, description, invoice_ts, country, quantity, unit_price, line_amount, transaction_type, source_sheet, source_row"
+          ],
+          [
+            "orders",
+            "ใบสั่งซื้อที่เป็นรายการขายสำเร็จ",
+            "หนึ่งใบสั่งซื้อ",
+            "invoice_id, customer_id, order_ts, country, order_amount, total_units, distinct_products"
+          ],
+          [
+            "customer_summary",
+            "ข้อมูลสรุปพฤติกรรมและกลุ่มลูกค้า",
+            "หนึ่งลูกค้า ณ วัน snapshot",
+            "customer_id, first_purchase_date, last_purchase_date, as_of_date, recency_days, orders_180d, sales_180d, aov_180d, monetary_rank, population_size, is_high_value, rfm_segment"
+          ]
+        ],
+        "truncated": false
+      },
+      "attempts": []
+    },
+    {
+      "kind": "monthly_max",
+      "question": "เดือนไหนออเดอร์เยอะสุด",
+      "http_status": 200,
+      "passed": true,
+      "status": "executed",
+      "intent": null,
+      "formula_id": null,
+      "model_calls": 3,
+      "result": {
+        "columns": [
+          "month",
+          "invoice_count"
+        ],
+        "rows": [
+          [
+            "2011-11-01 00:00:00",
+            2769
+          ]
+        ],
+        "truncated": false
+      },
+      "attempts": [
+        {
+          "sql": "SELECT DATE_TRUNC('MONTH', order_ts) AS month, COUNT(*) AS invoice_count FROM orders GROUP BY DATE_TRUNC('MONTH', order_ts) ORDER BY invoice_count DESC, month ASC",
+          "error": "Select only tied highest months: filter monthly counts equal to their MAX, or RANK/DENSE_RANK=1. Returning all months sorted by count is not the requested answer",
+          "validated_citations": [
+            "metric.orders",
+            "syntax.monthly_extrema"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "monthly_max",
+      "question": "Which month had the most orders?",
+      "http_status": 200,
+      "passed": true,
+      "status": "executed",
+      "intent": null,
+      "formula_id": null,
+      "model_calls": 3,
+      "result": {
+        "columns": [
+          "month",
+          "invoice_count"
+        ],
+        "rows": [
+          [
+            "2011-11-01 00:00:00",
+            2769
+          ]
+        ],
+        "truncated": false
+      },
+      "attempts": [
+        {
+          "sql": "SELECT DATE_TRUNC('MONTH', order_ts) AS month, COUNT(*) AS invoice_count FROM orders GROUP BY DATE_TRUNC('MONTH', order_ts) ORDER BY invoice_count DESC, month ASC",
+          "error": "Select only tied highest months: filter monthly counts equal to their MAX, or RANK/DENSE_RANK=1. Returning all months sorted by count is not the requested answer",
+          "validated_citations": [
+            "metric.orders",
+            "syntax.monthly_extrema",
+            "schema.orders"
+          ]
+        }
+      ]
+    }
+  ],
+  "monthly_assertion": "one top month only, year-month 2011-11, invoice count 2769; not all months sorted by count"
+}

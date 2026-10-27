@@ -1,0 +1,970 @@
+{
+  "scope": "paired serialization audit on identical selected references; evidence bytes, not a tokenizer or general context-rot benchmark",
+  "cases": 160,
+  "all_complete_id_text_hashes_match": true,
+  "old_metadata_packet_bytes_total": 1014410,
+  "id_text_packet_bytes_total": 800798,
+  "details": [
+    {
+      "id": "pair001-th",
+      "old_metadata_packet_bytes": 5127,
+      "id_text_packet_bytes": 3964,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair001-en",
+      "old_metadata_packet_bytes": 5133,
+      "id_text_packet_bytes": 3964,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair002-th",
+      "old_metadata_packet_bytes": 6388,
+      "id_text_packet_bytes": 5064,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair002-en",
+      "old_metadata_packet_bytes": 6014,
+      "id_text_packet_bytes": 4698,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair003-th",
+      "old_metadata_packet_bytes": 6385,
+      "id_text_packet_bytes": 5064,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair003-en",
+      "old_metadata_packet_bytes": 6304,
+      "id_text_packet_bytes": 4980,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair004-th",
+      "old_metadata_packet_bytes": 7096,
+      "id_text_packet_bytes": 5778,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair004-en",
+      "old_metadata_packet_bytes": 6494,
+      "id_text_packet_bytes": 5173,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair005-th",
+      "old_metadata_packet_bytes": 6326,
+      "id_text_packet_bytes": 4997,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair005-en",
+      "old_metadata_packet_bytes": 7213,
+      "id_text_packet_bytes": 5709,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair006-th",
+      "old_metadata_packet_bytes": 5924,
+      "id_text_packet_bytes": 4578,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair006-en",
+      "old_metadata_packet_bytes": 6465,
+      "id_text_packet_bytes": 5121,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair007-th",
+      "old_metadata_packet_bytes": 6179,
+      "id_text_packet_bytes": 4838,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair007-en",
+      "old_metadata_packet_bytes": 6465,
+      "id_text_packet_bytes": 5121,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair008-th",
+      "old_metadata_packet_bytes": 6184,
+      "id_text_packet_bytes": 4838,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair008-en",
+      "old_metadata_packet_bytes": 6467,
+      "id_text_packet_bytes": 5121,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair009-th",
+      "old_metadata_packet_bytes": 6184,
+      "id_text_packet_bytes": 4838,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair009-en",
+      "old_metadata_packet_bytes": 6466,
+      "id_text_packet_bytes": 5121,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair010-th",
+      "old_metadata_packet_bytes": 6184,
+      "id_text_packet_bytes": 4838,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair010-en",
+      "old_metadata_packet_bytes": 6465,
+      "id_text_packet_bytes": 5121,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair011-th",
+      "old_metadata_packet_bytes": 5673,
+      "id_text_packet_bytes": 4350,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair011-en",
+      "old_metadata_packet_bytes": 5770,
+      "id_text_packet_bytes": 4434,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair012-th",
+      "old_metadata_packet_bytes": 5951,
+      "id_text_packet_bytes": 4613,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair012-en",
+      "old_metadata_packet_bytes": 6423,
+      "id_text_packet_bytes": 5089,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair013-th",
+      "old_metadata_packet_bytes": 6126,
+      "id_text_packet_bytes": 4812,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair013-en",
+      "old_metadata_packet_bytes": 6149,
+      "id_text_packet_bytes": 4812,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair014-th",
+      "old_metadata_packet_bytes": 6806,
+      "id_text_packet_bytes": 5473,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair014-en",
+      "old_metadata_packet_bytes": 6426,
+      "id_text_packet_bytes": 5089,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair015-th",
+      "old_metadata_packet_bytes": 6166,
+      "id_text_packet_bytes": 4828,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair015-en",
+      "old_metadata_packet_bytes": 6226,
+      "id_text_packet_bytes": 4896,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair016-th",
+      "old_metadata_packet_bytes": 5579,
+      "id_text_packet_bytes": 4258,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair016-en",
+      "old_metadata_packet_bytes": 6152,
+      "id_text_packet_bytes": 4817,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair017-th",
+      "old_metadata_packet_bytes": 5856,
+      "id_text_packet_bytes": 4521,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair017-en",
+      "old_metadata_packet_bytes": 6335,
+      "id_text_packet_bytes": 4997,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair018-th",
+      "old_metadata_packet_bytes": 6137,
+      "id_text_packet_bytes": 4803,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair018-en",
+      "old_metadata_packet_bytes": 6141,
+      "id_text_packet_bytes": 4803,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair019-th",
+      "old_metadata_packet_bytes": 6145,
+      "id_text_packet_bytes": 4811,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair019-en",
+      "old_metadata_packet_bytes": 6472,
+      "id_text_packet_bytes": 5133,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair020-th",
+      "old_metadata_packet_bytes": 6007,
+      "id_text_packet_bytes": 4674,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair020-en",
+      "old_metadata_packet_bytes": 7066,
+      "id_text_packet_bytes": 5550,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair021-th",
+      "old_metadata_packet_bytes": 5832,
+      "id_text_packet_bytes": 4495,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair021-en",
+      "old_metadata_packet_bytes": 5843,
+      "id_text_packet_bytes": 4495,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair022-th",
+      "old_metadata_packet_bytes": 6141,
+      "id_text_packet_bytes": 4811,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair022-en",
+      "old_metadata_packet_bytes": 6026,
+      "id_text_packet_bytes": 4675,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair023-th",
+      "old_metadata_packet_bytes": 6142,
+      "id_text_packet_bytes": 4811,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair023-en",
+      "old_metadata_packet_bytes": 6027,
+      "id_text_packet_bytes": 4675,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair024-th",
+      "old_metadata_packet_bytes": 6004,
+      "id_text_packet_bytes": 4674,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair024-en",
+      "old_metadata_packet_bytes": 6026,
+      "id_text_packet_bytes": 4675,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair025-th",
+      "old_metadata_packet_bytes": 6483,
+      "id_text_packet_bytes": 5150,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair025-en",
+      "old_metadata_packet_bytes": 7203,
+      "id_text_packet_bytes": 5705,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair026-th",
+      "old_metadata_packet_bytes": 5948,
+      "id_text_packet_bytes": 4609,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair026-en",
+      "old_metadata_packet_bytes": 6180,
+      "id_text_packet_bytes": 4852,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair027-th",
+      "old_metadata_packet_bytes": 6206,
+      "id_text_packet_bytes": 4872,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair027-en",
+      "old_metadata_packet_bytes": 6642,
+      "id_text_packet_bytes": 5314,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair028-th",
+      "old_metadata_packet_bytes": 6405,
+      "id_text_packet_bytes": 5071,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair028-en",
+      "old_metadata_packet_bytes": 6565,
+      "id_text_packet_bytes": 5230,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair029-th",
+      "old_metadata_packet_bytes": 7061,
+      "id_text_packet_bytes": 5732,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair029-en",
+      "old_metadata_packet_bytes": 5870,
+      "id_text_packet_bytes": 4703,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair030-th",
+      "old_metadata_packet_bytes": 6802,
+      "id_text_packet_bytes": 5472,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair030-en",
+      "old_metadata_packet_bytes": 6501,
+      "id_text_packet_bytes": 5168,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair031-th",
+      "old_metadata_packet_bytes": 6336,
+      "id_text_packet_bytes": 4990,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair031-en",
+      "old_metadata_packet_bytes": 6676,
+      "id_text_packet_bytes": 5329,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair032-th",
+      "old_metadata_packet_bytes": 6329,
+      "id_text_packet_bytes": 4990,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair032-en",
+      "old_metadata_packet_bytes": 6668,
+      "id_text_packet_bytes": 5329,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair033-th",
+      "old_metadata_packet_bytes": 6330,
+      "id_text_packet_bytes": 4990,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair033-en",
+      "old_metadata_packet_bytes": 6674,
+      "id_text_packet_bytes": 5329,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair034-th",
+      "old_metadata_packet_bytes": 6333,
+      "id_text_packet_bytes": 4990,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair034-en",
+      "old_metadata_packet_bytes": 6673,
+      "id_text_packet_bytes": 5329,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair035-th",
+      "old_metadata_packet_bytes": 6333,
+      "id_text_packet_bytes": 4990,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair035-en",
+      "old_metadata_packet_bytes": 6673,
+      "id_text_packet_bytes": 5329,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair036-th",
+      "old_metadata_packet_bytes": 5825,
+      "id_text_packet_bytes": 4650,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair036-en",
+      "old_metadata_packet_bytes": 5818,
+      "id_text_packet_bytes": 4650,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair037-th",
+      "old_metadata_packet_bytes": 6609,
+      "id_text_packet_bytes": 5282,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair037-en",
+      "old_metadata_packet_bytes": 6289,
+      "id_text_packet_bytes": 4959,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair038-th",
+      "old_metadata_packet_bytes": 6529,
+      "id_text_packet_bytes": 5211,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair038-en",
+      "old_metadata_packet_bytes": 6132,
+      "id_text_packet_bytes": 4813,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair039-th",
+      "old_metadata_packet_bytes": 6679,
+      "id_text_packet_bytes": 5360,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair039-en",
+      "old_metadata_packet_bytes": 6281,
+      "id_text_packet_bytes": 4962,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair040-th",
+      "old_metadata_packet_bytes": 6650,
+      "id_text_packet_bytes": 5333,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair040-en",
+      "old_metadata_packet_bytes": 6140,
+      "id_text_packet_bytes": 4810,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair041-th",
+      "old_metadata_packet_bytes": 6281,
+      "id_text_packet_bytes": 4967,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair041-en",
+      "old_metadata_packet_bytes": 6294,
+      "id_text_packet_bytes": 4967,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair042-th",
+      "old_metadata_packet_bytes": 6345,
+      "id_text_packet_bytes": 5012,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair042-en",
+      "old_metadata_packet_bytes": 6294,
+      "id_text_packet_bytes": 4967,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair043-th",
+      "old_metadata_packet_bytes": 6281,
+      "id_text_packet_bytes": 4967,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair043-en",
+      "old_metadata_packet_bytes": 6167,
+      "id_text_packet_bytes": 4837,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair044-th",
+      "old_metadata_packet_bytes": 7482,
+      "id_text_packet_bytes": 5997,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair044-en",
+      "old_metadata_packet_bytes": 5634,
+      "id_text_packet_bytes": 4457,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair045-th",
+      "old_metadata_packet_bytes": 6487,
+      "id_text_packet_bytes": 5160,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair045-en",
+      "old_metadata_packet_bytes": 6294,
+      "id_text_packet_bytes": 4967,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair046-th",
+      "old_metadata_packet_bytes": 6501,
+      "id_text_packet_bytes": 5154,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair046-en",
+      "old_metadata_packet_bytes": 6499,
+      "id_text_packet_bytes": 5154,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair047-th",
+      "old_metadata_packet_bytes": 6441,
+      "id_text_packet_bytes": 5096,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair047-en",
+      "old_metadata_packet_bytes": 6321,
+      "id_text_packet_bytes": 4979,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair048-th",
+      "old_metadata_packet_bytes": 6037,
+      "id_text_packet_bytes": 4696,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair048-en",
+      "old_metadata_packet_bytes": 6366,
+      "id_text_packet_bytes": 5018,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair049-th",
+      "old_metadata_packet_bytes": 6036,
+      "id_text_packet_bytes": 4696,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair049-en",
+      "old_metadata_packet_bytes": 6163,
+      "id_text_packet_bytes": 4814,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair050-th",
+      "old_metadata_packet_bytes": 6406,
+      "id_text_packet_bytes": 5058,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair050-en",
+      "old_metadata_packet_bytes": 6163,
+      "id_text_packet_bytes": 4814,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair051-th",
+      "old_metadata_packet_bytes": 6563,
+      "id_text_packet_bytes": 5214,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair051-en",
+      "old_metadata_packet_bytes": 7395,
+      "id_text_packet_bytes": 5886,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair052-th",
+      "old_metadata_packet_bytes": 6563,
+      "id_text_packet_bytes": 5214,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair052-en",
+      "old_metadata_packet_bytes": 7395,
+      "id_text_packet_bytes": 5886,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair053-th",
+      "old_metadata_packet_bytes": 6563,
+      "id_text_packet_bytes": 5214,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair053-en",
+      "old_metadata_packet_bytes": 7395,
+      "id_text_packet_bytes": 5886,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair054-th",
+      "old_metadata_packet_bytes": 6563,
+      "id_text_packet_bytes": 5214,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair054-en",
+      "old_metadata_packet_bytes": 7395,
+      "id_text_packet_bytes": 5886,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair055-th",
+      "old_metadata_packet_bytes": 6563,
+      "id_text_packet_bytes": 5214,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair055-en",
+      "old_metadata_packet_bytes": 7395,
+      "id_text_packet_bytes": 5886,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair056-th",
+      "old_metadata_packet_bytes": 6946,
+      "id_text_packet_bytes": 5600,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair056-en",
+      "old_metadata_packet_bytes": 6945,
+      "id_text_packet_bytes": 5601,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair057-th",
+      "old_metadata_packet_bytes": 6519,
+      "id_text_packet_bytes": 5176,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair057-en",
+      "old_metadata_packet_bytes": 6521,
+      "id_text_packet_bytes": 5177,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair058-th",
+      "old_metadata_packet_bytes": 7150,
+      "id_text_packet_bytes": 5647,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair058-en",
+      "old_metadata_packet_bytes": 6618,
+      "id_text_packet_bytes": 5273,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair059-th",
+      "old_metadata_packet_bytes": 7331,
+      "id_text_packet_bytes": 5827,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair059-en",
+      "old_metadata_packet_bytes": 6702,
+      "id_text_packet_bytes": 5356,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair060-th",
+      "old_metadata_packet_bytes": 6946,
+      "id_text_packet_bytes": 5600,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair060-en",
+      "old_metadata_packet_bytes": 6863,
+      "id_text_packet_bytes": 5517,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair061-th",
+      "old_metadata_packet_bytes": 6115,
+      "id_text_packet_bytes": 4768,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair061-en",
+      "old_metadata_packet_bytes": 6199,
+      "id_text_packet_bytes": 4852,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair062-th",
+      "old_metadata_packet_bytes": 6197,
+      "id_text_packet_bytes": 4851,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair062-en",
+      "old_metadata_packet_bytes": 6662,
+      "id_text_packet_bytes": 5314,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair063-th",
+      "old_metadata_packet_bytes": 6298,
+      "id_text_packet_bytes": 4942,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair063-en",
+      "old_metadata_packet_bytes": 6197,
+      "id_text_packet_bytes": 4852,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair064-th",
+      "old_metadata_packet_bytes": 6298,
+      "id_text_packet_bytes": 4942,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair064-en",
+      "old_metadata_packet_bytes": 6197,
+      "id_text_packet_bytes": 4852,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair065-th",
+      "old_metadata_packet_bytes": 6116,
+      "id_text_packet_bytes": 4768,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair065-en",
+      "old_metadata_packet_bytes": 6113,
+      "id_text_packet_bytes": 4768,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair066-th",
+      "old_metadata_packet_bytes": 6387,
+      "id_text_packet_bytes": 5064,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair066-en",
+      "old_metadata_packet_bytes": 6013,
+      "id_text_packet_bytes": 4698,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair067-th",
+      "old_metadata_packet_bytes": 6387,
+      "id_text_packet_bytes": 5064,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair067-en",
+      "old_metadata_packet_bytes": 6013,
+      "id_text_packet_bytes": 4698,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair068-th",
+      "old_metadata_packet_bytes": 6387,
+      "id_text_packet_bytes": 5064,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair068-en",
+      "old_metadata_packet_bytes": 6015,
+      "id_text_packet_bytes": 4698,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair069-th",
+      "old_metadata_packet_bytes": 6501,
+      "id_text_packet_bytes": 5191,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair069-en",
+      "old_metadata_packet_bytes": 6323,
+      "id_text_packet_bytes": 4993,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair070-th",
+      "old_metadata_packet_bytes": 6387,
+      "id_text_packet_bytes": 5064,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair070-en",
+      "old_metadata_packet_bytes": 6013,
+      "id_text_packet_bytes": 4698,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair071-th",
+      "old_metadata_packet_bytes": 5333,
+      "id_text_packet_bytes": 4174,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair071-en",
+      "old_metadata_packet_bytes": 5715,
+      "id_text_packet_bytes": 4559,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair072-th",
+      "old_metadata_packet_bytes": 5222,
+      "id_text_packet_bytes": 4079,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair072-en",
+      "old_metadata_packet_bytes": 5615,
+      "id_text_packet_bytes": 4457,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair073-th",
+      "old_metadata_packet_bytes": 6104,
+      "id_text_packet_bytes": 4791,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair073-en",
+      "old_metadata_packet_bytes": 6277,
+      "id_text_packet_bytes": 4967,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair074-th",
+      "old_metadata_packet_bytes": 5580,
+      "id_text_packet_bytes": 4391,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair074-en",
+      "old_metadata_packet_bytes": 5572,
+      "id_text_packet_bytes": 4391,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair075-th",
+      "old_metadata_packet_bytes": 6800,
+      "id_text_packet_bytes": 5482,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair075-en",
+      "old_metadata_packet_bytes": 6290,
+      "id_text_packet_bytes": 4959,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair076-th",
+      "old_metadata_packet_bytes": 5660,
+      "id_text_packet_bytes": 4315,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair076-en",
+      "old_metadata_packet_bytes": 5659,
+      "id_text_packet_bytes": 4315,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair077-th",
+      "old_metadata_packet_bytes": 6437,
+      "id_text_packet_bytes": 5093,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair077-en",
+      "old_metadata_packet_bytes": 6362,
+      "id_text_packet_bytes": 5008,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair078-th",
+      "old_metadata_packet_bytes": 5982,
+      "id_text_packet_bytes": 4640,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair078-en",
+      "old_metadata_packet_bytes": 6463,
+      "id_text_packet_bytes": 5116,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair079-th",
+      "old_metadata_packet_bytes": 6337,
+      "id_text_packet_bytes": 4990,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair079-en",
+      "old_metadata_packet_bytes": 6202,
+      "id_text_packet_bytes": 4854,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair080-th",
+      "old_metadata_packet_bytes": 7282,
+      "id_text_packet_bytes": 5941,
+      "complete_id_text_hash_matches": true
+    },
+    {
+      "id": "pair080-en",
+      "old_metadata_packet_bytes": 6924,
+      "id_text_packet_bytes": 5581,
+      "complete_id_text_hash_matches": true
+    }
+  ],
+  "evidence_byte_reduction_fraction": 0.21057757711379033
+}

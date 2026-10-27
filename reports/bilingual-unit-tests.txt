@@ -1,0 +1,134 @@
+test_clarification_never_executes (test_agent.AgentTests.test_clarification_never_executes) ... ok
+test_context_budget_rejects_oversized_prompt (test_agent.AgentTests.test_context_budget_rejects_oversized_prompt) ... ok
+test_contract_does_not_remove_legitimate_anonymous_groups (test_agent.AgentTests.test_contract_does_not_remove_legitimate_anonymous_groups) ... ok
+test_failed_query_retains_only_validated_evidence_ids (test_agent.AgentTests.test_failed_query_retains_only_validated_evidence_ids) ... ok
+test_identified_contract_repairs_null_result (test_agent.AgentTests.test_identified_contract_repairs_null_result) ... ok
+test_invented_citations_never_execute (test_agent.AgentTests.test_invented_citations_never_execute) ... ok
+test_missing_period_and_unavailable_snapshot_never_execute (test_agent.AgentTests.test_missing_period_and_unavailable_snapshot_never_execute) ... ok
+test_population_contract_rejects_or_that_admits_null (test_agent.AgentTests.test_population_contract_rejects_or_that_admits_null) ... ok
+test_rejected_sql_is_not_executed (test_agent.AgentTests.test_rejected_sql_is_not_executed) ... ok
+test_retry_budget (test_agent.AgentTests.test_retry_budget) ... ok
+test_scalar_pair_contract_rejects_extra_month_column (test_agent.AgentTests.test_scalar_pair_contract_rejects_extra_month_column) ... ok
+test_semantic_review_blocks_wrong_grain_before_execution (test_agent.AgentTests.test_semantic_review_blocks_wrong_grain_before_execution) ... ok
+test_snapshot_policy_does_not_reject_separate_transaction_range (test_agent.AgentTests.test_snapshot_policy_does_not_reject_separate_transaction_range) ... ok
+test_result_equivalence_and_duplicates (test_agent.EvaluationTests.test_result_equivalence_and_duplicates) ... ok
+test_analytics (test_agent.GuardTests.test_analytics) ... ok
+test_date_trunc_unit_order (test_agent.GuardTests.test_date_trunc_unit_order) ... ok
+test_rejects_unsafe (test_agent.GuardTests.test_rejects_unsafe) ... ok
+test_gold_queries_obey_guard (test_agent.RetrievalTests.test_gold_queries_obey_guard) ... ok
+test_metric_rule_brings_schema_and_top_n_syntax (test_agent.RetrievalTests.test_metric_rule_brings_schema_and_top_n_syntax) ... ok
+test_ranking_metrics_penalize_missing_and_low_rank_evidence (test_agent.RetrievalTests.test_ranking_metrics_penalize_missing_and_low_rank_evidence) ... ok
+test_repeatable_and_relevant (test_agent.RetrievalTests.test_repeatable_and_relevant) ... ok
+test_required_policy_documents_and_unknown_corpus (test_agent.RetrievalTests.test_required_policy_documents_and_unknown_corpus) ... ok
+test_return_instruction_is_not_refund_and_two_or_more_is_repeat (test_agent.RetrievalTests.test_return_instruction_is_not_refund_and_two_or_more_is_repeat) ... ok
+test_all_formula_answers_are_grounded_and_never_execute (test_bilingual_support.BilingualSupportTests.test_all_formula_answers_are_grounded_and_never_execute) ... ok
+test_anonymous_thai_is_not_identified_only (test_bilingual_support.BilingualSupportTests.test_anonymous_thai_is_not_identified_only) ... ok
+test_approximate_percentile_is_read_only_and_file_functions_stay_blocked (test_bilingual_support.BilingualSupportTests.test_approximate_percentile_is_read_only_and_file_functions_stay_blocked) ... ok
+test_bank_has_100_unique_questions_per_language_and_paired_oracles (test_bilingual_support.BilingualSupportTests.test_bank_has_100_unique_questions_per_language_and_paired_oracles) ... ok
+test_count_star_is_an_aggregate_not_a_projection_wildcard (test_bilingual_support.BilingualSupportTests.test_count_star_is_an_aggregate_not_a_projection_wildcard) ... ok
+test_country_breakdown_rejects_an_unrequested_month_column (test_bilingual_support.BilingualSupportTests.test_country_breakdown_rejects_an_unrequested_month_column) ... ok
+test_country_share_keeps_fraction_shape_and_requested_order (test_bilingual_support.BilingualSupportTests.test_country_share_keeps_fraction_shape_and_requested_order) ... ok
+test_cumulative_sales_and_null_previous_month_are_not_substituted (test_bilingual_support.BilingualSupportTests.test_cumulative_sales_and_null_previous_month_are_not_substituted) ... ok
+test_divided_by_does_not_mean_a_grouped_breakdown (test_bilingual_support.BilingualSupportTests.test_divided_by_does_not_mean_a_grouped_breakdown) ... ok
+test_formula_requests_do_not_capture_mixed_execution_requests (test_bilingual_support.BilingualSupportTests.test_formula_requests_do_not_capture_mixed_execution_requests) ... ok
+test_hour_and_quarter_buckets_must_not_be_substituted (test_bilingual_support.BilingualSupportTests.test_hour_and_quarter_buckets_must_not_be_substituted) ... ok
+test_invoice_fraction_condition_is_not_inverted (test_bilingual_support.BilingualSupportTests.test_invoice_fraction_condition_is_not_inverted) ... ok
+test_invoice_fraction_preserves_population_and_counts_not_money (test_bilingual_support.BilingualSupportTests.test_invoice_fraction_preserves_population_and_counts_not_money) ... ok
+test_maximum_cannot_be_answered_with_median (test_bilingual_support.BilingualSupportTests.test_maximum_cannot_be_answered_with_median) ... ok
+test_money_share_is_not_invoice_share_and_fraction_is_not_its_numerator (test_bilingual_support.BilingualSupportTests.test_money_share_is_not_invoice_share_and_fraction_is_not_its_numerator) ... ok
+test_month_and_to_date_parser_helpers_remain_pure_read_only (test_bilingual_support.BilingualSupportTests.test_month_and_to_date_parser_helpers_remain_pure_read_only) ... ok
+test_month_scope_accepts_alias_and_ordinal_grouping (test_bilingual_support.BilingualSupportTests.test_month_scope_accepts_alias_and_ordinal_grouping) ... ok
+test_named_day_is_not_expanded_to_a_whole_month (test_bilingual_support.BilingualSupportTests.test_named_day_is_not_expanded_to_a_whole_month) ... ok
+test_product_buyers_are_not_distinct_product_ids (test_bilingual_support.BilingualSupportTests.test_product_buyers_are_not_distinct_product_ids) ... ok
+test_scalar_fraction_must_not_return_multiple_customer_rows (test_bilingual_support.BilingualSupportTests.test_scalar_fraction_must_not_return_multiple_customer_rows) ... ok
+test_snapshot_frequency_mean_is_not_aov (test_bilingual_support.BilingualSupportTests.test_snapshot_frequency_mean_is_not_aov) ... ok
+test_snapshot_is_not_replaced_with_lifetime_history (test_bilingual_support.BilingualSupportTests.test_snapshot_is_not_replaced_with_lifetime_history) ... ok
+test_thai_country_share_is_a_breakdown_not_a_scalar (test_bilingual_support.BilingualSupportTests.test_thai_country_share_is_a_breakdown_not_a_scalar) ... ok
+test_thai_month_enforces_the_same_bounds_as_english (test_bilingual_support.BilingualSupportTests.test_thai_month_enforces_the_same_bounds_as_english) ... ok
+test_threshold_share_must_keep_denominator_population (test_bilingual_support.BilingualSupportTests.test_threshold_share_must_keep_denominator_population) ... ok
+test_transaction_types_and_all_type_breakdown (test_bilingual_support.BilingualSupportTests.test_transaction_types_and_all_type_breakdown) ... ok
+test_units_are_not_money_and_weighted_price_is_not_revenue (test_bilingual_support.BilingualSupportTests.test_units_are_not_money_and_weighted_price_is_not_revenue) ... ok
+test_units_per_invoice_is_not_monetary_aov (test_bilingual_support.BilingualSupportTests.test_units_per_invoice_is_not_monetary_aov) ... ok
+test_unrequested_month_breakdown_is_rejected (test_bilingual_support.BilingualSupportTests.test_unrequested_month_breakdown_is_rejected) ... ok
+test_window_and_formula_evidence_are_selected (test_bilingual_support.BilingualSupportTests.test_window_and_formula_evidence_are_selected) ... ok
+test_window_results_are_not_mistaken_for_scalar_aggregates (test_bilingual_support.BilingualSupportTests.test_window_results_are_not_mistaken_for_scalar_aggregates) ... ok
+test_budget_block_does_not_repeat_identical_model_attempt (test_context_engine.ContextTests.test_budget_block_does_not_repeat_identical_model_attempt) ... ok
+test_duplicate_conflicts_fail_closed (test_context_engine.ContextTests.test_duplicate_conflicts_fail_closed) ... ok
+test_fifty_repairs_keep_original_constraints_and_latest_state (test_context_engine.ContextTests.test_fifty_repairs_keep_original_constraints_and_latest_state) ... ok
+test_position_control_and_same_selected_facts (test_context_engine.ContextTests.test_position_control_and_same_selected_facts) ... ok
+test_required_oversize_is_blocked_without_execution (test_context_engine.ContextTests.test_required_oversize_is_blocked_without_execution) ... ok
+test_selected_facts_and_all_policies_are_lossless (test_context_engine.ContextTests.test_selected_facts_and_all_policies_are_lossless) ... ok
+test_analytical_questions_are_not_discovery (test_dataset_info.DatasetInfoTests.test_analytical_questions_are_not_discovery) ... ok
+test_columns_and_missing_metadata_are_not_invented (test_dataset_info.DatasetInfoTests.test_columns_and_missing_metadata_are_not_invented) ... ok
+test_discovery_does_not_call_model_or_spark (test_dataset_info.DatasetInfoTests.test_discovery_does_not_call_model_or_spark) ... ok
+test_thai_analytical_request_still_asks_for_period_in_thai (test_dataset_info.DatasetInfoTests.test_thai_analytical_request_still_asks_for_period_in_thai) ... ok
+test_correct_month (test_governance.BusinessTests.test_correct_month) ... ok
+test_cte_all_branches_must_be_filtered (test_governance.BusinessTests.test_cte_all_branches_must_be_filtered) ... ok
+test_cte_cannot_filter_after_destroying_population (test_governance.BusinessTests.test_cte_cannot_filter_after_destroying_population) ... ok
+test_fanout (test_governance.BusinessTests.test_fanout) ... ok
+test_missing_snapshot (test_governance.BusinessTests.test_missing_snapshot) ... ok
+test_month_span_is_not_last_month_only (test_governance.BusinessTests.test_month_span_is_not_last_month_only) ... ok
+test_or_bypass (test_governance.BusinessTests.test_or_bypass) ... ok
+test_transparent_cte_can_filter_before_grouping (test_governance.BusinessTests.test_transparent_cte_can_filter_before_grouping) ... ok
+test_wrong_grain (test_governance.BusinessTests.test_wrong_grain) ... ok
+test_wrong_month (test_governance.BusinessTests.test_wrong_month) ... ok
+test_wrong_transaction_type (test_governance.BusinessTests.test_wrong_transaction_type) ... ok
+test_bilingual_mapping_has_table_grain_formula_and_evidence (test_governance.OntologyTests.test_bilingual_mapping_has_table_grain_formula_and_evidence) ... ok
+test_conflicting_grain_fails (test_governance.OntologyTests.test_conflicting_grain_fails) ... ok
+test_missing_relation_fails_shacl (test_governance.OntologyTests.test_missing_relation_fails_shacl) ... ok
+test_unknown_term_is_not_silently_mapped (test_governance.OntologyTests.test_unknown_term_is_not_silently_mapped) ... ok
+test_agent_never_executes_if_opa_unavailable (test_governance.PolicyTests.test_agent_never_executes_if_opa_unavailable) ... ok
+test_unavailable_opa_denies (test_governance.PolicyTests.test_unavailable_opa_denies) ... ok
+test_undefined_decision_denies (test_governance.PolicyTests.test_undefined_decision_denies) ... ok
+test_bad_envelope_width_cap_nan_and_count (test_governance.PostToolTests.test_bad_envelope_width_cap_nan_and_count) ... ok
+test_group_duplicate (test_governance.PostToolTests.test_group_duplicate) ... ok
+test_null_identified_and_fraction (test_governance.PostToolTests.test_null_identified_and_fraction) ... ok
+test_valid_count (test_governance.PostToolTests.test_valid_count) ... ok
+test_two_sheets_preserve_missing_customer_return_and_csv_escaping (test_prepare_data.PrepareDataTest.test_two_sheets_preserve_missing_customer_return_and_csv_escaping) ... ok
+test_explicit_constraints_and_other_intents_not_rewritten (test_question_scope.ScopeTests.test_explicit_constraints_and_other_intents_not_rewritten) ... ok
+test_month_comparison_has_visible_all_data_scope (test_question_scope.ScopeTests.test_month_comparison_has_visible_all_data_scope) ... ok
+test_month_guard_preserves_year_ties_and_maximum_timestamp (test_question_scope.ScopeTests.test_month_guard_preserves_year_ties_and_maximum_timestamp) ... ok
+test_rank_and_dense_rank_preserve_only_the_top_ties (test_question_scope.ScopeTests.test_rank_and_dense_rank_preserve_only_the_top_ties) ... ok
+test_sorted_all_months_is_not_a_highest_month_answer (test_question_scope.ScopeTests.test_sorted_all_months_is_not_a_highest_month_answer) ... ok
+test_http_contract_and_trace (test_web_app.WebTests.test_http_contract_and_trace) ... 127.0.0.1 - - [27/Oct/2026 09:04:14] "POST /api/query HTTP/1.1" 403 -
+C:\Users\Admin\anaconda3\Lib\tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 403: 'Forbidden'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+127.0.0.1 - - [27/Oct/2026 09:04:14] "POST /api/query HTTP/1.1" 400 -
+127.0.0.1 - - [27/Oct/2026 09:04:14] "POST /api/query HTTP/1.1" 409 -
+127.0.0.1 - - [27/Oct/2026 09:04:14] "POST /api/query HTTP/1.1" 200 -
+C:\Users\Admin\anaconda3\Lib\tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 409: 'Conflict'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+C:\Users\Admin\anaconda3\Lib\tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 400: 'Bad Request'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+ok
+
+----------------------------------------------------------------------
+Ran 93 tests in 0.954s
+
+OK
+{
+  "source_url": "https://archive.ics.uci.edu/static/public/502/online+retail+ii.zip",
+  "dataset_doi": "10.24432/C5CG6D",
+  "license": "CC BY 4.0",
+  "prepared_at_utc": "2026-10-27T02:04:14.942278+00:00",
+  "archive_sha256": "de09eb41dfbd50ee6f48c9c58061a852ebcec086e3b5a710e07dc446ace7d487",
+  "csv_sha256": "239cd5dd027709a418f0fe07348e5cdee90cf222de19e92a53d10f9c20ead881",
+  "rows_by_sheet": {
+    "2009-2010": 1,
+    "2010-2011": 1
+  },
+  "rows": 2
+}
+{
+  "source_url": "https://archive.ics.uci.edu/static/public/502/online+retail+ii.zip",
+  "dataset_doi": "10.24432/C5CG6D",
+  "license": "CC BY 4.0",
+  "prepared_at_utc": "2026-10-27T02:04:14.949708+00:00",
+  "archive_sha256": "de09eb41dfbd50ee6f48c9c58061a852ebcec086e3b5a710e07dc446ace7d487",
+  "csv_sha256": "239cd5dd027709a418f0fe07348e5cdee90cf222de19e92a53d10f9c20ead881",
+  "rows_by_sheet": {
+    "2009-2010": 1,
+    "2010-2011": 1
+  },
+  "rows": 2
+}

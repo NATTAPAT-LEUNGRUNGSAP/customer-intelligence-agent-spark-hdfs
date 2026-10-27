@@ -20,7 +20,7 @@ $('question-form').addEventListener('submit', async event => {
     const response = await fetch('/api/query', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:$('question').value})});
     const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Request failed');
     $('answer').hidden = false;
-    $('answer-heading').textContent = {information:'ข้อมูลที่มีและคำถามที่รองรับ',executed:'ผลการวิเคราะห์',clarification:'ต้องการข้อมูลเพิ่มเติม',failed:'ยังตอบคำถามนี้ไม่ได้'}[data.status] || data.status;
+    $('answer-heading').textContent = data.intent==='formula' && data.status==='information' ? 'สูตรและวิธีคำนวณ' : ({information:'ข้อมูลที่มีและคำถามที่รองรับ',executed:'ผลการวิเคราะห์',clarification:'ต้องการข้อมูลเพิ่มเติม',failed:'ยังตอบคำถามนี้ไม่ได้'}[data.status] || data.status);
     $('message').textContent = data.message || data.error || data.explanation || '';
     if (data.analysis_scope) $('message').textContent += '\n' + data.analysis_scope.note;
     $('table').replaceChildren();
@@ -34,7 +34,7 @@ $('question-form').addEventListener('submit', async event => {
       if (!data.result.rows.length) $('message').textContent += ' · ไม่พบข้อมูลตามเงื่อนไข';
     }
     $('trace').textContent=`Trace ${data.trace_id} · ${data.elapsed_seconds.toFixed(2)} วินาที · ${data.model}`;
-    $('sql').textContent=data.executed_sql || data.sql || (data.status==='information' ? 'คำถามสำรวจชุดข้อมูล: อ่านจาก schema และข้อมูลกำกับที่โหลดไว้ จึงไม่ต้องรัน SQL' : 'ไม่มี SQL ที่รันสำเร็จ');
+    $('sql').textContent=data.executed_sql || data.sql || (data.intent==='formula' ? 'แสดงนิยามสูตรและ SQL expression จาก RAG โดยยังไม่ได้รันคำนวณ' : data.status==='information' ? 'คำถามสำรวจชุดข้อมูล: อ่านจาก schema และข้อมูลกำกับที่โหลดไว้ จึงไม่ต้องรัน SQL' : 'ไม่มี SQL ที่รันสำเร็จ');
     $('evidence').replaceChildren();
     (data.references || []).forEach(item => { const p=document.createElement('p'); p.textContent=`${(data.citations || []).includes(item.id) ? '✓ ' : ''}${item.id}: ${item.text}`; $('evidence').append(p); });
     $('diagnostics').textContent=JSON.stringify({attempts:data.attempts,review:data.review,result_contract:data.result_contract,context_plan:data.context_plan,context_blocked:data.context_blocked,context_usage:data.context_usage},null,2);

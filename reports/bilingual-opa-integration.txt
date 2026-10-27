@@ -1,0 +1,9 @@
+time="2026-10-27T09:04:47+07:00" level=warning msg="Found orphan containers ([customer-intelligence-friend-tunnel-1 customer-intelligence-friend-gateway-1 customer-intelligence-web-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+test_post_denial_never_delivers_bad_answer (__main__.ActualOPAIntegration) ... ok
+test_real_engine_checks_result_fixtures (__main__.ActualOPAIntegration) ... ok
+test_unreachable_endpoint_fails_closed (__main__.ActualOPAIntegration) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.250s
+
+OK

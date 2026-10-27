@@ -25,10 +25,10 @@ def assemble_evidence(references, background='', strategy='managed', position='m
             original.append(ref)
             unique[ident]={'id':ident,'text':body}
     selected=list(unique.values())
-    # Canonical minimal facts support auditing. Preserve the existing model-facing
-    # evidence representation: stripping metadata changed model behavior in v1.
+    # Preserve evidence IDs and complete text; retrieval scores, file names and
+    # duplicate hashes remain in the external trace, not the model working set.
     required=compact_json(selected)
-    model_evidence=json.dumps(original,ensure_ascii=False)
+    model_evidence=required
     supplied_background=background if strategy=='unfiltered' else ''
     midpoint=len(supplied_background)//2
     before,after={'front':('',supplied_background),
@@ -48,7 +48,8 @@ def assemble_evidence(references, background='', strategy='managed', position='m
            'requested_evidence_position':position,
            'effective_evidence_position':position if supplied_background else 'selected_evidence_only',
            'duplicates_removed':len(references)-len(unique)}
-    trace['wire_format']='legacy-evidence-json-preserved'
+    trace['wire_format']='complete-evidence-id-text-json'
+    trace['retrieval_metadata_omitted']=True
     return packet,trace
 
 

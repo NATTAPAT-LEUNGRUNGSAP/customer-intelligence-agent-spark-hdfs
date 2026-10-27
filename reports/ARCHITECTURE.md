@@ -16,9 +16,14 @@ flowchart TD
     UI[Web UI: question] --> RAG[RAG selects definitions and schema]
     KB[Knowledge corpus] --> RAG
     Ont[OWL ontology validated by SHACL] --> RAG
-    RAG --> Policy[Period and data availability check]
+    RAG --> Route[Overview, formula definition, or analysis]
+    Route -->|overview| Info[Loaded schema and manifest summary]
+    Route -->|formula| Formula[Grounded formula and SQL expression]
+    Route -->|analysis| Policy[Period and data availability check]
+    Info --> Output
+    Formula --> Output
     Policy -->|insufficient or unavailable| Clarify[Clarification to user]
-    Policy -->|sufficient| Context[Assemble evidence and latest repair state]
+    Policy -->|sufficient| Context[Complete evidence text, request constraints and latest repair state]
     Context --> LLM[LLM generates SQL and citations]
     LLM --> Pre[Citations, SQL AST, semantic contracts, OPA pre-check]
     Pre --> Review[Same-model evidence consistency review]

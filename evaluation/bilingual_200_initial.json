@@ -1,0 +1,2956 @@
+[
+  {
+    "pair_id": "pair001",
+    "family": "scalar",
+    "gold_sql": "SELECT SUM(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair001-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 ยอดขายรวมเท่าไร"
+  },
+  {
+    "pair_id": "pair001",
+    "family": "scalar",
+    "gold_sql": "SELECT SUM(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "metric.sales",
+      "schema.orders"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair001-en",
+    "language": "en",
+    "question": "For January 2011, what is the total completed sales?"
+  },
+  {
+    "pair_id": "pair002",
+    "family": "scalar",
+    "gold_sql": "SELECT COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair002-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 จำนวนคำสั่งซื้อสำเร็จเท่าไร"
+  },
+  {
+    "pair_id": "pair002",
+    "family": "scalar",
+    "gold_sql": "SELECT COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair002-en",
+    "language": "en",
+    "question": "For January 2011, what is the completed invoice count?"
+  },
+  {
+    "pair_id": "pair003",
+    "family": "scalar",
+    "gold_sql": "SELECT AVG(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "metric.aov",
+      "schema.orders"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair003-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 มูลค่าเฉลี่ยต่อคำสั่งซื้อเท่าไร"
+  },
+  {
+    "pair_id": "pair003",
+    "family": "scalar",
+    "gold_sql": "SELECT AVG(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "metric.aov",
+      "schema.orders"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair003-en",
+    "language": "en",
+    "question": "For January 2011, what is the average order value?"
+  },
+  {
+    "pair_id": "pair004",
+    "family": "scalar",
+    "gold_sql": "SELECT COUNT(DISTINCT customer_id) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "metric.customers",
+      "schema.orders"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair004-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 จำนวนลูกค้าที่ซื้อแบบไม่ซ้ำเท่าไร"
+  },
+  {
+    "pair_id": "pair004",
+    "family": "scalar",
+    "gold_sql": "SELECT COUNT(DISTINCT customer_id) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "metric.customers",
+      "schema.orders"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair004-en",
+    "language": "en",
+    "question": "For January 2011, what is the distinct purchasing customer count?"
+  },
+  {
+    "pair_id": "pair005",
+    "family": "scalar",
+    "gold_sql": "SELECT SUM(total_units) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair005-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 จำนวนสินค้าที่ขายรวมในคำสั่งซื้อสำเร็จเท่าไร"
+  },
+  {
+    "pair_id": "pair005",
+    "family": "scalar",
+    "gold_sql": "SELECT SUM(total_units) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "metric.orders",
+      "schema.orders"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair005-en",
+    "language": "en",
+    "question": "For January 2011, what is the total units in completed invoices?"
+  },
+  {
+    "pair_id": "pair006",
+    "family": "statistics",
+    "gold_sql": "SELECT MAX(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.statistics"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair006-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 มูลค่าคำสั่งซื้อสูงสุดเท่าไร"
+  },
+  {
+    "pair_id": "pair006",
+    "family": "statistics",
+    "gold_sql": "SELECT MAX(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.statistics"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair006-en",
+    "language": "en",
+    "question": "For January 2011, calculate the maximum invoice value."
+  },
+  {
+    "pair_id": "pair007",
+    "family": "statistics",
+    "gold_sql": "SELECT MIN(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.statistics"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair007-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 มูลค่าคำสั่งซื้อต่ำสุดเท่าไร"
+  },
+  {
+    "pair_id": "pair007",
+    "family": "statistics",
+    "gold_sql": "SELECT MIN(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.statistics"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair007-en",
+    "language": "en",
+    "question": "For January 2011, calculate the minimum invoice value."
+  },
+  {
+    "pair_id": "pair008",
+    "family": "statistics",
+    "gold_sql": "SELECT STDDEV(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.statistics"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair008-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 ส่วนเบี่ยงเบนมาตรฐานแบบตัวอย่างของมูลค่าคำสั่งซื้อเท่าไร"
+  },
+  {
+    "pair_id": "pair008",
+    "family": "statistics",
+    "gold_sql": "SELECT STDDEV(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.statistics"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair008-en",
+    "language": "en",
+    "question": "For January 2011, calculate the sample standard deviation of invoice value."
+  },
+  {
+    "pair_id": "pair009",
+    "family": "statistics",
+    "gold_sql": "SELECT PERCENTILE_APPROX(order_amount,0.5,10000) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.statistics"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair009-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 มัธยฐานโดยประมาณของมูลค่าคำสั่งซื้อเท่าไร"
+  },
+  {
+    "pair_id": "pair009",
+    "family": "statistics",
+    "gold_sql": "SELECT PERCENTILE_APPROX(order_amount,0.5,10000) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.statistics"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair009-en",
+    "language": "en",
+    "question": "For January 2011, calculate the approximate median invoice value."
+  },
+  {
+    "pair_id": "pair010",
+    "family": "statistics",
+    "gold_sql": "SELECT PERCENTILE_APPROX(order_amount,0.9,10000) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.statistics"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair010-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 เปอร์เซ็นไทล์ที่ 90 โดยประมาณของมูลค่าคำสั่งซื้อเท่าไร"
+  },
+  {
+    "pair_id": "pair010",
+    "family": "statistics",
+    "gold_sql": "SELECT PERCENTILE_APPROX(order_amount,0.9,10000) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.statistics"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair010-en",
+    "language": "en",
+    "question": "For January 2011, calculate the approximate 90th percentile of invoice value."
+  },
+  {
+    "pair_id": "pair011",
+    "family": "country",
+    "gold_sql": "SELECT country,SUM(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair011-th",
+    "language": "th",
+    "question": "แสดงยอดขายแยกประเทศเดือนมกราคม 2011 เรียงชื่อประเทศ"
+  },
+  {
+    "pair_id": "pair011",
+    "family": "country",
+    "gold_sql": "SELECT country,SUM(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair011-en",
+    "language": "en",
+    "question": "For January 2011 show sales by country, ordered by country."
+  },
+  {
+    "pair_id": "pair012",
+    "family": "country",
+    "gold_sql": "SELECT country,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair012-th",
+    "language": "th",
+    "question": "แสดงจำนวนคำสั่งซื้อแยกประเทศเดือนมกราคม 2011 เรียงชื่อประเทศ"
+  },
+  {
+    "pair_id": "pair012",
+    "family": "country",
+    "gold_sql": "SELECT country,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair012-en",
+    "language": "en",
+    "question": "For January 2011 show invoice count by country, ordered by country."
+  },
+  {
+    "pair_id": "pair013",
+    "family": "country",
+    "gold_sql": "SELECT country,AVG(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair013-th",
+    "language": "th",
+    "question": "แสดงAOVแยกประเทศเดือนมกราคม 2011 เรียงชื่อประเทศ"
+  },
+  {
+    "pair_id": "pair013",
+    "family": "country",
+    "gold_sql": "SELECT country,AVG(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair013-en",
+    "language": "en",
+    "question": "For January 2011 show AOV by country, ordered by country."
+  },
+  {
+    "pair_id": "pair014",
+    "family": "country",
+    "gold_sql": "SELECT country,COUNT(DISTINCT customer_id) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair014-th",
+    "language": "th",
+    "question": "แสดงจำนวนลูกค้าไม่ซ้ำแยกประเทศเดือนมกราคม 2011 เรียงชื่อประเทศ"
+  },
+  {
+    "pair_id": "pair014",
+    "family": "country",
+    "gold_sql": "SELECT country,COUNT(DISTINCT customer_id) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair014-en",
+    "language": "en",
+    "question": "For January 2011 show distinct purchasing customers by country, ordered by country."
+  },
+  {
+    "pair_id": "pair015",
+    "family": "country",
+    "gold_sql": "SELECT country,SUM(total_units) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair015-th",
+    "language": "th",
+    "question": "แสดงจำนวนสินค้าที่ขายแยกประเทศเดือนมกราคม 2011 เรียงชื่อประเทศ"
+  },
+  {
+    "pair_id": "pair015",
+    "family": "country",
+    "gold_sql": "SELECT country,SUM(total_units) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair015-en",
+    "language": "en",
+    "question": "For January 2011 show units by country, ordered by country."
+  },
+  {
+    "pair_id": "pair016",
+    "family": "customer_ranking",
+    "gold_sql": "SELECT customer_id,SUM(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id ORDER BY value DESC,customer_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair016-th",
+    "language": "th",
+    "question": "ลูกค้าที่มีรหัส 5 อันดับแรกตามยอดขายเดือนมกราคม 2011 แสดงรหัสและค่า เรียงค่าลดลงแล้วรหัสเพิ่มขึ้น"
+  },
+  {
+    "pair_id": "pair016",
+    "family": "customer_ranking",
+    "gold_sql": "SELECT customer_id,SUM(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id ORDER BY value DESC,customer_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair016-en",
+    "language": "en",
+    "question": "Rank the top 5 identified customers by sales in January 2011. Output customer ID and value; order value descending then customer ID ascending."
+  },
+  {
+    "pair_id": "pair017",
+    "family": "customer_ranking",
+    "gold_sql": "SELECT customer_id,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id ORDER BY value DESC,customer_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair017-th",
+    "language": "th",
+    "question": "ลูกค้าที่มีรหัส 5 อันดับแรกตามจำนวนคำสั่งซื้อเดือนมกราคม 2011 แสดงรหัสและค่า เรียงค่าลดลงแล้วรหัสเพิ่มขึ้น"
+  },
+  {
+    "pair_id": "pair017",
+    "family": "customer_ranking",
+    "gold_sql": "SELECT customer_id,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id ORDER BY value DESC,customer_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair017-en",
+    "language": "en",
+    "question": "Rank the top 5 identified customers by invoice count in January 2011. Output customer ID and value; order value descending then customer ID ascending."
+  },
+  {
+    "pair_id": "pair018",
+    "family": "customer_ranking",
+    "gold_sql": "SELECT customer_id,AVG(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id ORDER BY value DESC,customer_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair018-th",
+    "language": "th",
+    "question": "ลูกค้าที่มีรหัส 5 อันดับแรกตามมูลค่าเฉลี่ยคำสั่งซื้อเดือนมกราคม 2011 แสดงรหัสและค่า เรียงค่าลดลงแล้วรหัสเพิ่มขึ้น"
+  },
+  {
+    "pair_id": "pair018",
+    "family": "customer_ranking",
+    "gold_sql": "SELECT customer_id,AVG(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id ORDER BY value DESC,customer_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair018-en",
+    "language": "en",
+    "question": "Rank the top 5 identified customers by average invoice value in January 2011. Output customer ID and value; order value descending then customer ID ascending."
+  },
+  {
+    "pair_id": "pair019",
+    "family": "customer_ranking",
+    "gold_sql": "SELECT customer_id,SUM(total_units) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id ORDER BY value DESC,customer_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair019-th",
+    "language": "th",
+    "question": "ลูกค้าที่มีรหัส 5 อันดับแรกตามจำนวนสินค้าที่ซื้อเดือนมกราคม 2011 แสดงรหัสและค่า เรียงค่าลดลงแล้วรหัสเพิ่มขึ้น"
+  },
+  {
+    "pair_id": "pair019",
+    "family": "customer_ranking",
+    "gold_sql": "SELECT customer_id,SUM(total_units) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id ORDER BY value DESC,customer_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair019-en",
+    "language": "en",
+    "question": "Rank the top 5 identified customers by units purchased in January 2011. Output customer ID and value; order value descending then customer ID ascending."
+  },
+  {
+    "pair_id": "pair020",
+    "family": "customer_ranking",
+    "gold_sql": "SELECT customer_id,AVG(distinct_products) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id ORDER BY value DESC,customer_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair020-th",
+    "language": "th",
+    "question": "ลูกค้าที่มีรหัส 5 อันดับแรกตามจำนวนสินค้าแตกต่างกันเฉลี่ยต่อใบเดือนมกราคม 2011 แสดงรหัสและค่า เรียงค่าลดลงแล้วรหัสเพิ่มขึ้น"
+  },
+  {
+    "pair_id": "pair020",
+    "family": "customer_ranking",
+    "gold_sql": "SELECT customer_id,AVG(distinct_products) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id ORDER BY value DESC,customer_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair020-en",
+    "language": "en",
+    "question": "Rank the top 5 identified customers by mean distinct products per invoice in January 2011. Output customer ID and value; order value descending then customer ID ascending."
+  },
+  {
+    "pair_id": "pair021",
+    "family": "product_ranking",
+    "gold_sql": "SELECT product_id,SUM(line_amount) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY value DESC,product_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair021-th",
+    "language": "th",
+    "question": "สินค้า 5 อันดับตามยอดขายเดือนมกราคม 2011 ใช้เฉพาะรายการ sale แสดงรหัสและค่า เรียงค่าลดลงแล้วรหัสเพิ่มขึ้น"
+  },
+  {
+    "pair_id": "pair021",
+    "family": "product_ranking",
+    "gold_sql": "SELECT product_id,SUM(line_amount) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY value DESC,product_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair021-en",
+    "language": "en",
+    "question": "For January 2011 rank top 5 product IDs by sale revenue, using only sale lines. Output product ID and value; order value descending then product ID ascending."
+  },
+  {
+    "pair_id": "pair022",
+    "family": "product_ranking",
+    "gold_sql": "SELECT product_id,SUM(quantity) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY value DESC,product_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair022-th",
+    "language": "th",
+    "question": "สินค้า 5 อันดับตามจำนวนหน่วยเดือนมกราคม 2011 ใช้เฉพาะรายการ sale แสดงรหัสและค่า เรียงค่าลดลงแล้วรหัสเพิ่มขึ้น"
+  },
+  {
+    "pair_id": "pair022",
+    "family": "product_ranking",
+    "gold_sql": "SELECT product_id,SUM(quantity) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY value DESC,product_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair022-en",
+    "language": "en",
+    "question": "For January 2011 rank top 5 product IDs by sale units, using only sale lines. Output product ID and value; order value descending then product ID ascending."
+  },
+  {
+    "pair_id": "pair023",
+    "family": "product_ranking",
+    "gold_sql": "SELECT product_id,COUNT(*) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY value DESC,product_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair023-th",
+    "language": "th",
+    "question": "สินค้า 5 อันดับตามจำนวนรายการขายเดือนมกราคม 2011 ใช้เฉพาะรายการ sale แสดงรหัสและค่า เรียงค่าลดลงแล้วรหัสเพิ่มขึ้น"
+  },
+  {
+    "pair_id": "pair023",
+    "family": "product_ranking",
+    "gold_sql": "SELECT product_id,COUNT(*) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY value DESC,product_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair023-en",
+    "language": "en",
+    "question": "For January 2011 rank top 5 product IDs by sale product-line count, using only sale lines. Output product ID and value; order value descending then product ID ascending."
+  },
+  {
+    "pair_id": "pair024",
+    "family": "product_ranking",
+    "gold_sql": "SELECT product_id,SUM(line_amount)/NULLIF(SUM(quantity),0) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY value DESC,product_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair024-th",
+    "language": "th",
+    "question": "สินค้า 5 อันดับตามราคาขายต่อหน่วยเฉลี่ยแบบถ่วงน้ำหนักเดือนมกราคม 2011 ใช้เฉพาะรายการ sale แสดงรหัสและค่า เรียงค่าลดลงแล้วรหัสเพิ่มขึ้น"
+  },
+  {
+    "pair_id": "pair024",
+    "family": "product_ranking",
+    "gold_sql": "SELECT product_id,SUM(line_amount)/NULLIF(SUM(quantity),0) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY value DESC,product_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair024-en",
+    "language": "en",
+    "question": "For January 2011 rank top 5 product IDs by quantity-weighted sale unit price, using only sale lines. Output product ID and value; order value descending then product ID ascending."
+  },
+  {
+    "pair_id": "pair025",
+    "family": "product_ranking",
+    "gold_sql": "SELECT product_id,COUNT(DISTINCT customer_id) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY value DESC,product_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair025-th",
+    "language": "th",
+    "question": "สินค้า 5 อันดับตามจำนวนลูกค้าที่มีรหัสไม่ซ้ำเดือนมกราคม 2011 ใช้เฉพาะรายการ sale แสดงรหัสและค่า เรียงค่าลดลงแล้วรหัสเพิ่มขึ้น"
+  },
+  {
+    "pair_id": "pair025",
+    "family": "product_ranking",
+    "gold_sql": "SELECT product_id,COUNT(DISTINCT customer_id) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY product_id ORDER BY value DESC,product_id ASC LIMIT 5",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.ranking"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair025-en",
+    "language": "en",
+    "question": "For January 2011 rank top 5 product IDs by distinct identified purchasing customers, using only sale lines. Output product ID and value; order value descending then product ID ascending."
+  },
+  {
+    "pair_id": "pair026",
+    "family": "monthly",
+    "gold_sql": "SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair026-th",
+    "language": "th",
+    "question": "แสดงยอดขายรายเดือนตลอดปี 2011 แยกปีเดือน เรียงเดือน"
+  },
+  {
+    "pair_id": "pair026",
+    "family": "monthly",
+    "gold_sql": "SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair026-en",
+    "language": "en",
+    "question": "Show monthly sales for calendar year 2011, grouped by year-month and ordered by month."
+  },
+  {
+    "pair_id": "pair027",
+    "family": "monthly",
+    "gold_sql": "SELECT DATE_TRUNC('MONTH',order_ts) AS month,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair027-th",
+    "language": "th",
+    "question": "แสดงจำนวนคำสั่งซื้อรายเดือนตลอดปี 2011 แยกปีเดือน เรียงเดือน"
+  },
+  {
+    "pair_id": "pair027",
+    "family": "monthly",
+    "gold_sql": "SELECT DATE_TRUNC('MONTH',order_ts) AS month,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair027-en",
+    "language": "en",
+    "question": "Show monthly invoice count for calendar year 2011, grouped by year-month and ordered by month."
+  },
+  {
+    "pair_id": "pair028",
+    "family": "monthly",
+    "gold_sql": "SELECT DATE_TRUNC('MONTH',order_ts) AS month,AVG(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair028-th",
+    "language": "th",
+    "question": "แสดงAOVรายเดือนตลอดปี 2011 แยกปีเดือน เรียงเดือน"
+  },
+  {
+    "pair_id": "pair028",
+    "family": "monthly",
+    "gold_sql": "SELECT DATE_TRUNC('MONTH',order_ts) AS month,AVG(order_amount) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair028-en",
+    "language": "en",
+    "question": "Show monthly AOV for calendar year 2011, grouped by year-month and ordered by month."
+  },
+  {
+    "pair_id": "pair029",
+    "family": "monthly",
+    "gold_sql": "SELECT DATE_TRUNC('MONTH',order_ts) AS month,COUNT(DISTINCT customer_id) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair029-th",
+    "language": "th",
+    "question": "แสดงจำนวนลูกค้าไม่ซ้ำรายเดือนตลอดปี 2011 แยกปีเดือน เรียงเดือน"
+  },
+  {
+    "pair_id": "pair029",
+    "family": "monthly",
+    "gold_sql": "SELECT DATE_TRUNC('MONTH',order_ts) AS month,COUNT(DISTINCT customer_id) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair029-en",
+    "language": "en",
+    "question": "Show monthly distinct purchasing customers for calendar year 2011, grouped by year-month and ordered by month."
+  },
+  {
+    "pair_id": "pair030",
+    "family": "monthly",
+    "gold_sql": "SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(total_units) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair030-th",
+    "language": "th",
+    "question": "แสดงจำนวนสินค้าที่ขายรายเดือนตลอดปี 2011 แยกปีเดือน เรียงเดือน"
+  },
+  {
+    "pair_id": "pair030",
+    "family": "monthly",
+    "gold_sql": "SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(total_units) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts) ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair030-en",
+    "language": "en",
+    "question": "Show monthly units sold for calendar year 2011, grouped by year-month and ordered by month."
+  },
+  {
+    "pair_id": "pair031",
+    "family": "transaction_types",
+    "gold_sql": "SELECT COUNT(*) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair031-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 มีรายการสินค้าประเภท sale (ขาย) กี่แถว"
+  },
+  {
+    "pair_id": "pair031",
+    "family": "transaction_types",
+    "gold_sql": "SELECT COUNT(*) AS value FROM sales_lines WHERE transaction_type='sale' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair031-en",
+    "language": "en",
+    "question": "Count original product lines classified as sale in January 2011."
+  },
+  {
+    "pair_id": "pair032",
+    "family": "transaction_types",
+    "gold_sql": "SELECT COUNT(*) AS value FROM sales_lines WHERE transaction_type='cancellation' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair032-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 มีรายการสินค้าประเภท cancellation (ยกเลิก) กี่แถว"
+  },
+  {
+    "pair_id": "pair032",
+    "family": "transaction_types",
+    "gold_sql": "SELECT COUNT(*) AS value FROM sales_lines WHERE transaction_type='cancellation' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair032-en",
+    "language": "en",
+    "question": "Count original product lines classified as cancellation in January 2011."
+  },
+  {
+    "pair_id": "pair033",
+    "family": "transaction_types",
+    "gold_sql": "SELECT COUNT(*) AS value FROM sales_lines WHERE transaction_type='return' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair033-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 มีรายการสินค้าประเภท return (คืนสินค้า) กี่แถว"
+  },
+  {
+    "pair_id": "pair033",
+    "family": "transaction_types",
+    "gold_sql": "SELECT COUNT(*) AS value FROM sales_lines WHERE transaction_type='return' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair033-en",
+    "language": "en",
+    "question": "Count original product lines classified as return in January 2011."
+  },
+  {
+    "pair_id": "pair034",
+    "family": "transaction_types",
+    "gold_sql": "SELECT COUNT(*) AS value FROM sales_lines WHERE transaction_type='adjustment' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair034-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 มีรายการสินค้าประเภท adjustment (ปรับปรุง) กี่แถว"
+  },
+  {
+    "pair_id": "pair034",
+    "family": "transaction_types",
+    "gold_sql": "SELECT COUNT(*) AS value FROM sales_lines WHERE transaction_type='adjustment' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair034-en",
+    "language": "en",
+    "question": "Count original product lines classified as adjustment in January 2011."
+  },
+  {
+    "pair_id": "pair035",
+    "family": "transaction_types",
+    "gold_sql": "SELECT COUNT(*) AS value FROM sales_lines WHERE transaction_type='invalid' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair035-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 มีรายการสินค้าประเภท invalid (ไม่ถูกต้อง) กี่แถว"
+  },
+  {
+    "pair_id": "pair035",
+    "family": "transaction_types",
+    "gold_sql": "SELECT COUNT(*) AS value FROM sales_lines WHERE transaction_type='invalid' AND invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair035-en",
+    "language": "en",
+    "question": "Count original product lines classified as invalid in January 2011."
+  },
+  {
+    "pair_id": "pair036",
+    "family": "snapshot_counts",
+    "gold_sql": "SELECT COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND 1=1",
+    "relevant_ids": [
+      "schema.customer_summary",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair036-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 นับลูกค้าทั้งหมด"
+  },
+  {
+    "pair_id": "pair036",
+    "family": "snapshot_counts",
+    "gold_sql": "SELECT COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND 1=1",
+    "relevant_ids": [
+      "schema.customer_summary",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair036-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 count all customers."
+  },
+  {
+    "pair_id": "pair037",
+    "family": "snapshot_counts",
+    "gold_sql": "SELECT COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND is_high_value=true",
+    "relevant_ids": [
+      "metric.high_value",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair037-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 นับลูกค้ามูลค่าสูง"
+  },
+  {
+    "pair_id": "pair037",
+    "family": "snapshot_counts",
+    "gold_sql": "SELECT COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND is_high_value=true",
+    "relevant_ids": [
+      "metric.high_value",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair037-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 count high-value customers."
+  },
+  {
+    "pair_id": "pair038",
+    "family": "snapshot_counts",
+    "gold_sql": "SELECT COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Champions'",
+    "relevant_ids": [
+      "segment.champions",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair038-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 นับลูกค้า Champions"
+  },
+  {
+    "pair_id": "pair038",
+    "family": "snapshot_counts",
+    "gold_sql": "SELECT COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Champions'",
+    "relevant_ids": [
+      "segment.champions",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair038-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 count Champions."
+  },
+  {
+    "pair_id": "pair039",
+    "family": "snapshot_counts",
+    "gold_sql": "SELECT COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Inactive'",
+    "relevant_ids": [
+      "segment.inactive",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair039-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 นับลูกค้า Inactive"
+  },
+  {
+    "pair_id": "pair039",
+    "family": "snapshot_counts",
+    "gold_sql": "SELECT COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Inactive'",
+    "relevant_ids": [
+      "segment.inactive",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair039-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 count Inactive customers."
+  },
+  {
+    "pair_id": "pair040",
+    "family": "snapshot_counts",
+    "gold_sql": "SELECT COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Champions' AND is_high_value=true",
+    "relevant_ids": [
+      "segment.champions",
+      "metric.high_value",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair040-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 นับลูกค้าที่เป็นทั้ง Champions และ high-value"
+  },
+  {
+    "pair_id": "pair040",
+    "family": "snapshot_counts",
+    "gold_sql": "SELECT COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' AND rfm_segment='Champions' AND is_high_value=true",
+    "relevant_ids": [
+      "segment.champions",
+      "metric.high_value",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair040-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 count customers who are both Champions and high-value."
+  },
+  {
+    "pair_id": "pair041",
+    "family": "segment_statistics",
+    "gold_sql": "SELECT rfm_segment,AVG(recency_days) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair041-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 แสดงrecency เฉลี่ยแยก rfm_segment เรียงชื่อกลุ่ม"
+  },
+  {
+    "pair_id": "pair041",
+    "family": "segment_statistics",
+    "gold_sql": "SELECT rfm_segment,AVG(recency_days) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair041-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 show mean recency days by rfm_segment, ordered by segment."
+  },
+  {
+    "pair_id": "pair042",
+    "family": "segment_statistics",
+    "gold_sql": "SELECT rfm_segment,AVG(orders_180d) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair042-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 แสดงจำนวนคำสั่งซื้อ 180 วันเฉลี่ยแยก rfm_segment เรียงชื่อกลุ่ม"
+  },
+  {
+    "pair_id": "pair042",
+    "family": "segment_statistics",
+    "gold_sql": "SELECT rfm_segment,AVG(orders_180d) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair042-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 show mean 180-day order count by rfm_segment, ordered by segment."
+  },
+  {
+    "pair_id": "pair043",
+    "family": "segment_statistics",
+    "gold_sql": "SELECT rfm_segment,SUM(sales_180d) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair043-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 แสดงยอดซื้อ 180 วันรวมแยก rfm_segment เรียงชื่อกลุ่ม"
+  },
+  {
+    "pair_id": "pair043",
+    "family": "segment_statistics",
+    "gold_sql": "SELECT rfm_segment,SUM(sales_180d) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair043-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 show total 180-day sales by rfm_segment, ordered by segment."
+  },
+  {
+    "pair_id": "pair044",
+    "family": "segment_statistics",
+    "gold_sql": "SELECT rfm_segment,AVG(aov_180d) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair044-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 แสดงAOV ของลูกค้าเฉลี่ยแบบไม่ถ่วงน้ำหนักแยก rfm_segment เรียงชื่อกลุ่ม"
+  },
+  {
+    "pair_id": "pair044",
+    "family": "segment_statistics",
+    "gold_sql": "SELECT rfm_segment,AVG(aov_180d) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair044-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 show unweighted mean of customer AOV by rfm_segment, ordered by segment."
+  },
+  {
+    "pair_id": "pair045",
+    "family": "segment_statistics",
+    "gold_sql": "SELECT rfm_segment,COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair045-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 แสดงจำนวนลูกค้าในแต่ละกลุ่ม RFMแยก rfm_segment เรียงชื่อกลุ่ม"
+  },
+  {
+    "pair_id": "pair045",
+    "family": "segment_statistics",
+    "gold_sql": "SELECT rfm_segment,COUNT(*) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01' GROUP BY rfm_segment ORDER BY rfm_segment",
+    "relevant_ids": [
+      "segment.distribution",
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair045-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 show customer count by rfm_segment, ordered by segment."
+  },
+  {
+    "pair_id": "pair046",
+    "family": "basket",
+    "gold_sql": "SELECT AVG(total_units) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.basket"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair046-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 คำนวณจำนวนหน่วยเฉลี่ยต่อคำสั่งซื้อ"
+  },
+  {
+    "pair_id": "pair046",
+    "family": "basket",
+    "gold_sql": "SELECT AVG(total_units) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.basket"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair046-en",
+    "language": "en",
+    "question": "For January 2011 calculate the mean units per invoice."
+  },
+  {
+    "pair_id": "pair047",
+    "family": "basket",
+    "gold_sql": "SELECT AVG(distinct_products) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.basket"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair047-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 คำนวณจำนวนสินค้าต่างชนิดเฉลี่ยต่อคำสั่งซื้อ"
+  },
+  {
+    "pair_id": "pair047",
+    "family": "basket",
+    "gold_sql": "SELECT AVG(distinct_products) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.basket"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair047-en",
+    "language": "en",
+    "question": "For January 2011 calculate the mean distinct products per invoice."
+  },
+  {
+    "pair_id": "pair048",
+    "family": "basket",
+    "gold_sql": "SELECT SUM(CASE WHEN total_units>20 THEN 1 ELSE 0 END) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.basket"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair048-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 คำนวณจำนวนคำสั่งซื้อที่มีหน่วยสินค้ามากกว่า 20"
+  },
+  {
+    "pair_id": "pair048",
+    "family": "basket",
+    "gold_sql": "SELECT SUM(CASE WHEN total_units>20 THEN 1 ELSE 0 END) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.basket"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair048-en",
+    "language": "en",
+    "question": "For January 2011 calculate the count of invoices with more than 20 units."
+  },
+  {
+    "pair_id": "pair049",
+    "family": "basket",
+    "gold_sql": "SELECT SUM(CASE WHEN distinct_products>=5 THEN 1 ELSE 0 END) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.basket"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair049-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 คำนวณจำนวนคำสั่งซื้อที่มีสินค้าอย่างน้อย 5 ชนิด"
+  },
+  {
+    "pair_id": "pair049",
+    "family": "basket",
+    "gold_sql": "SELECT SUM(CASE WHEN distinct_products>=5 THEN 1 ELSE 0 END) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.basket"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair049-en",
+    "language": "en",
+    "question": "For January 2011 calculate the count of invoices with at least 5 distinct products."
+  },
+  {
+    "pair_id": "pair050",
+    "family": "basket",
+    "gold_sql": "SELECT SUM(CASE WHEN distinct_products=1 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.basket"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair050-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 คำนวณสัดส่วนคำสั่งซื้อที่มีสินค้าชนิดเดียว ไม่ใช่เปอร์เซ็นต์"
+  },
+  {
+    "pair_id": "pair050",
+    "family": "basket",
+    "gold_sql": "SELECT SUM(CASE WHEN distinct_products=1 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.basket"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair050-en",
+    "language": "en",
+    "question": "For January 2011 calculate the fraction of single-product invoices, not a percentage."
+  },
+  {
+    "pair_id": "pair051",
+    "family": "repeat_rate",
+    "gold_sql": "WITH f AS (SELECT customer_id,COUNT(*) AS n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND country='United Kingdom' AND customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN n>=2 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair051-th",
+    "language": "th",
+    "question": "สัดส่วนลูกค้าที่มีรหัสและซื้อซ้ำอย่างน้อย 2 ใบในเดือนมกราคม 2011 ประเทศ United Kingdom เท่าไร แสดงเป็น fraction"
+  },
+  {
+    "pair_id": "pair051",
+    "family": "repeat_rate",
+    "gold_sql": "WITH f AS (SELECT customer_id,COUNT(*) AS n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND country='United Kingdom' AND customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN n>=2 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair051-en",
+    "language": "en",
+    "question": "In United Kingdom in January 2011, calculate the repeat customer fraction: identified customers with at least two invoices divided by all identified purchasing customers."
+  },
+  {
+    "pair_id": "pair052",
+    "family": "repeat_rate",
+    "gold_sql": "WITH f AS (SELECT customer_id,COUNT(*) AS n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND country='France' AND customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN n>=2 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair052-th",
+    "language": "th",
+    "question": "สัดส่วนลูกค้าที่มีรหัสและซื้อซ้ำอย่างน้อย 2 ใบในเดือนมกราคม 2011 ประเทศ France เท่าไร แสดงเป็น fraction"
+  },
+  {
+    "pair_id": "pair052",
+    "family": "repeat_rate",
+    "gold_sql": "WITH f AS (SELECT customer_id,COUNT(*) AS n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND country='France' AND customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN n>=2 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair052-en",
+    "language": "en",
+    "question": "In France in January 2011, calculate the repeat customer fraction: identified customers with at least two invoices divided by all identified purchasing customers."
+  },
+  {
+    "pair_id": "pair053",
+    "family": "repeat_rate",
+    "gold_sql": "WITH f AS (SELECT customer_id,COUNT(*) AS n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND country='Germany' AND customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN n>=2 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair053-th",
+    "language": "th",
+    "question": "สัดส่วนลูกค้าที่มีรหัสและซื้อซ้ำอย่างน้อย 2 ใบในเดือนมกราคม 2011 ประเทศ Germany เท่าไร แสดงเป็น fraction"
+  },
+  {
+    "pair_id": "pair053",
+    "family": "repeat_rate",
+    "gold_sql": "WITH f AS (SELECT customer_id,COUNT(*) AS n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND country='Germany' AND customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN n>=2 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair053-en",
+    "language": "en",
+    "question": "In Germany in January 2011, calculate the repeat customer fraction: identified customers with at least two invoices divided by all identified purchasing customers."
+  },
+  {
+    "pair_id": "pair054",
+    "family": "repeat_rate",
+    "gold_sql": "WITH f AS (SELECT customer_id,COUNT(*) AS n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND country='Spain' AND customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN n>=2 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair054-th",
+    "language": "th",
+    "question": "สัดส่วนลูกค้าที่มีรหัสและซื้อซ้ำอย่างน้อย 2 ใบในเดือนมกราคม 2011 ประเทศ Spain เท่าไร แสดงเป็น fraction"
+  },
+  {
+    "pair_id": "pair054",
+    "family": "repeat_rate",
+    "gold_sql": "WITH f AS (SELECT customer_id,COUNT(*) AS n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND country='Spain' AND customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN n>=2 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair054-en",
+    "language": "en",
+    "question": "In Spain in January 2011, calculate the repeat customer fraction: identified customers with at least two invoices divided by all identified purchasing customers."
+  },
+  {
+    "pair_id": "pair055",
+    "family": "repeat_rate",
+    "gold_sql": "WITH f AS (SELECT customer_id,COUNT(*) AS n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND country='Netherlands' AND customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN n>=2 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair055-th",
+    "language": "th",
+    "question": "สัดส่วนลูกค้าที่มีรหัสและซื้อซ้ำอย่างน้อย 2 ใบในเดือนมกราคม 2011 ประเทศ Netherlands เท่าไร แสดงเป็น fraction"
+  },
+  {
+    "pair_id": "pair055",
+    "family": "repeat_rate",
+    "gold_sql": "WITH f AS (SELECT customer_id,COUNT(*) AS n FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND country='Netherlands' AND customer_id IS NOT NULL GROUP BY customer_id) SELECT SUM(CASE WHEN n>=2 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM f",
+    "relevant_ids": [
+      "metric.repeat_rate",
+      "syntax.aggregation"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair055-en",
+    "language": "en",
+    "question": "In Netherlands in January 2011, calculate the repeat customer fraction: identified customers with at least two invoices divided by all identified purchasing customers."
+  },
+  {
+    "pair_id": "pair056",
+    "family": "ratios",
+    "gold_sql": "SELECT SUM(CASE WHEN customer_id IS NULL THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair056-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 คำนวณสัดส่วนคำสั่งซื้อที่ไม่มีรหัสลูกค้า แสดงเป็นสัดส่วนไม่คูณ 100"
+  },
+  {
+    "pair_id": "pair056",
+    "family": "ratios",
+    "gold_sql": "SELECT SUM(CASE WHEN customer_id IS NULL THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair056-en",
+    "language": "en",
+    "question": "For January 2011 calculate anonymous invoice fraction. Return a fraction, not multiplied by 100."
+  },
+  {
+    "pair_id": "pair057",
+    "family": "ratios",
+    "gold_sql": "SELECT SUM(CASE WHEN customer_id IS NULL THEN order_amount ELSE 0 END)/NULLIF(SUM(order_amount),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair057-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 คำนวณสัดส่วนยอดขายจากคำสั่งซื้อที่ไม่มีรหัสลูกค้า แสดงเป็นสัดส่วนไม่คูณ 100"
+  },
+  {
+    "pair_id": "pair057",
+    "family": "ratios",
+    "gold_sql": "SELECT SUM(CASE WHEN customer_id IS NULL THEN order_amount ELSE 0 END)/NULLIF(SUM(order_amount),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair057-en",
+    "language": "en",
+    "question": "For January 2011 calculate anonymous invoice sales share. Return a fraction, not multiplied by 100."
+  },
+  {
+    "pair_id": "pair058",
+    "family": "ratios",
+    "gold_sql": "SELECT SUM(CASE WHEN customer_id IS NOT NULL THEN order_amount ELSE 0 END)/NULLIF(COUNT(DISTINCT customer_id),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair058-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 คำนวณยอดขายต่อผู้ซื้อที่มีรหัสหนึ่งคน โดยตัดคำสั่งซื้อไม่มีรหัสออกทั้งเศษและส่วน แสดงเป็นสัดส่วนไม่คูณ 100"
+  },
+  {
+    "pair_id": "pair058",
+    "family": "ratios",
+    "gold_sql": "SELECT SUM(CASE WHEN customer_id IS NOT NULL THEN order_amount ELSE 0 END)/NULLIF(COUNT(DISTINCT customer_id),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair058-en",
+    "language": "en",
+    "question": "For January 2011 calculate sales per identified purchasing customer excluding anonymous invoices from numerator and denominator. Return a fraction, not multiplied by 100."
+  },
+  {
+    "pair_id": "pair059",
+    "family": "ratios",
+    "gold_sql": "SELECT COUNT(customer_id)/NULLIF(COUNT(DISTINCT customer_id),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair059-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 คำนวณจำนวนคำสั่งซื้อเฉลี่ยต่อผู้ซื้อที่มีรหัส โดยตัดคำสั่งซื้อไม่มีรหัสออก แสดงเป็นสัดส่วนไม่คูณ 100"
+  },
+  {
+    "pair_id": "pair059",
+    "family": "ratios",
+    "gold_sql": "SELECT COUNT(customer_id)/NULLIF(COUNT(DISTINCT customer_id),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair059-en",
+    "language": "en",
+    "question": "For January 2011 calculate invoice frequency per identified purchasing customer excluding anonymous invoices. Return a fraction, not multiplied by 100."
+  },
+  {
+    "pair_id": "pair060",
+    "family": "ratios",
+    "gold_sql": "SELECT SUM(CASE WHEN order_amount>100 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair060-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 คำนวณสัดส่วนคำสั่งซื้อที่ยอดมากกว่า 100 GBP แสดงเป็นสัดส่วนไม่คูณ 100"
+  },
+  {
+    "pair_id": "pair060",
+    "family": "ratios",
+    "gold_sql": "SELECT SUM(CASE WHEN order_amount>100 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair060-en",
+    "language": "en",
+    "question": "For January 2011 calculate fraction of invoices above 100 GBP. Return a fraction, not multiplied by 100."
+  },
+  {
+    "pair_id": "pair061",
+    "family": "windows",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,SUM(sales) OVER (ORDER BY month ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS value FROM m ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.windows"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair061-th",
+    "language": "th",
+    "question": "แสดงรายเดือนปี 2011 พร้อมยอดขายสะสมตั้งแต่ต้นปี แสดงเฉพาะเดือนและค่าที่ขอ เรียงเดือน"
+  },
+  {
+    "pair_id": "pair061",
+    "family": "windows",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,SUM(sales) OVER (ORDER BY month ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS value FROM m ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.windows"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair061-en",
+    "language": "en",
+    "question": "For each month of 2011 show year-to-date cumulative sales. Output only month and the requested value, ordered by month."
+  },
+  {
+    "pair_id": "pair062",
+    "family": "windows",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,AVG(sales) OVER (ORDER BY month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS value FROM m ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.windows"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair062-th",
+    "language": "th",
+    "question": "แสดงรายเดือนปี 2011 พร้อมค่าเฉลี่ยเคลื่อนที่ยอดขาย 3 เดือนที่มีข้อมูล รวมเดือนปัจจุบัน แสดงเฉพาะเดือนและค่าที่ขอ เรียงเดือน"
+  },
+  {
+    "pair_id": "pair062",
+    "family": "windows",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,AVG(sales) OVER (ORDER BY month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS value FROM m ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.windows"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair062-en",
+    "language": "en",
+    "question": "For each month of 2011 show 3-observed-month trailing moving average including current month. Output only month and the requested value, ordered by month."
+  },
+  {
+    "pair_id": "pair063",
+    "family": "windows",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,LAG(sales) OVER (ORDER BY month) AS value FROM m ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.windows"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair063-th",
+    "language": "th",
+    "question": "แสดงรายเดือนปี 2011 พร้อมยอดขายเดือนก่อนหน้า โดยเดือนแรกเป็น NULL แสดงเฉพาะเดือนและค่าที่ขอ เรียงเดือน"
+  },
+  {
+    "pair_id": "pair063",
+    "family": "windows",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,LAG(sales) OVER (ORDER BY month) AS value FROM m ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.windows"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair063-en",
+    "language": "en",
+    "question": "For each month of 2011 show previous observed month sales, NULL for first month. Output only month and the requested value, ordered by month."
+  },
+  {
+    "pair_id": "pair064",
+    "family": "windows",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,sales-LAG(sales) OVER (ORDER BY month) AS value FROM m ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.windows"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair064-th",
+    "language": "th",
+    "question": "แสดงรายเดือนปี 2011 พร้อมการเปลี่ยนแปลงยอดขายจากเดือนก่อนหน้าเป็นจำนวนเงิน โดยเดือนแรกเป็น NULL แสดงเฉพาะเดือนและค่าที่ขอ เรียงเดือน"
+  },
+  {
+    "pair_id": "pair064",
+    "family": "windows",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,sales-LAG(sales) OVER (ORDER BY month) AS value FROM m ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.windows"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair064-en",
+    "language": "en",
+    "question": "For each month of 2011 show sales change from previous observed month in GBP, NULL for first month. Output only month and the requested value, ordered by month."
+  },
+  {
+    "pair_id": "pair065",
+    "family": "windows",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,(sales-LAG(sales) OVER (ORDER BY month))/NULLIF(LAG(sales) OVER (ORDER BY month),0) AS value FROM m ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.windows"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair065-th",
+    "language": "th",
+    "question": "แสดงรายเดือนปี 2011 พร้อมอัตราเติบโตยอดขายเทียบเดือนก่อนหน้าเป็น fraction เดือนแรกหรือฐานศูนย์เป็น NULL แสดงเฉพาะเดือนและค่าที่ขอ เรียงเดือน"
+  },
+  {
+    "pair_id": "pair065",
+    "family": "windows",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,(sales-LAG(sales) OVER (ORDER BY month))/NULLIF(LAG(sales) OVER (ORDER BY month),0) AS value FROM m ORDER BY month",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.windows"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair065-en",
+    "language": "en",
+    "question": "For each month of 2011 show month-over-month sales growth as a fraction, NULL for first month or zero base. Output only month and the requested value, ordered by month."
+  },
+  {
+    "pair_id": "pair066",
+    "family": "time_buckets",
+    "gold_sql": "SELECT DATE_TRUNC('DAY',order_ts) AS bucket,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY DATE_TRUNC('DAY',order_ts) ORDER BY bucket",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair066-th",
+    "language": "th",
+    "question": "ปี 2011 แสดงจำนวนคำสั่งซื้อรายวันเดือนมกราคม เรียงเวลา"
+  },
+  {
+    "pair_id": "pair066",
+    "family": "time_buckets",
+    "gold_sql": "SELECT DATE_TRUNC('DAY',order_ts) AS bucket,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY DATE_TRUNC('DAY',order_ts) ORDER BY bucket",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair066-en",
+    "language": "en",
+    "question": "Show invoice counts daily during January 2011, ordered by time."
+  },
+  {
+    "pair_id": "pair067",
+    "family": "time_buckets",
+    "gold_sql": "SELECT DATE_TRUNC('HOUR',order_ts) AS bucket,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-05' AND order_ts<TIMESTAMP '2011-01-06' GROUP BY DATE_TRUNC('HOUR',order_ts) ORDER BY bucket",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair067-th",
+    "language": "th",
+    "question": "ปี 2011 แสดงจำนวนคำสั่งซื้อรายชั่วโมงของวันที่ 5 มกราคม เรียงเวลา"
+  },
+  {
+    "pair_id": "pair067",
+    "family": "time_buckets",
+    "gold_sql": "SELECT DATE_TRUNC('HOUR',order_ts) AS bucket,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-05' AND order_ts<TIMESTAMP '2011-01-06' GROUP BY DATE_TRUNC('HOUR',order_ts) ORDER BY bucket",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair067-en",
+    "language": "en",
+    "question": "Show invoice counts hourly during January 5 2011, ordered by time."
+  },
+  {
+    "pair_id": "pair068",
+    "family": "time_buckets",
+    "gold_sql": "SELECT DATE_TRUNC('QUARTER',order_ts) AS bucket,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('QUARTER',order_ts) ORDER BY bucket",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair068-th",
+    "language": "th",
+    "question": "ปี 2011 แสดงจำนวนคำสั่งซื้อรายไตรมาส เรียงเวลา"
+  },
+  {
+    "pair_id": "pair068",
+    "family": "time_buckets",
+    "gold_sql": "SELECT DATE_TRUNC('QUARTER',order_ts) AS bucket,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2012-01-01' GROUP BY DATE_TRUNC('QUARTER',order_ts) ORDER BY bucket",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair068-en",
+    "language": "en",
+    "question": "Show invoice counts quarterly 2011, ordered by time."
+  },
+  {
+    "pair_id": "pair069",
+    "family": "time_buckets",
+    "gold_sql": "SELECT DATE_TRUNC('YEAR',order_ts) AS bucket,COUNT(*) AS value FROM orders WHERE 1=1 GROUP BY DATE_TRUNC('YEAR',order_ts) ORDER BY bucket",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair069-th",
+    "language": "th",
+    "question": "ปี 2011 แสดงจำนวนคำสั่งซื้อรายปีตลอดข้อมูลทั้งหมด เรียงเวลา (ใช้ข้อมูลทั้งหมดทุกปี)"
+  },
+  {
+    "pair_id": "pair069",
+    "family": "time_buckets",
+    "gold_sql": "SELECT DATE_TRUNC('YEAR',order_ts) AS bucket,COUNT(*) AS value FROM orders WHERE 1=1 GROUP BY DATE_TRUNC('YEAR',order_ts) ORDER BY bucket",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair069-en",
+    "language": "en",
+    "question": "Show invoice counts yearly over all available data 2011 (use all available years, not only 2011), ordered by time."
+  },
+  {
+    "pair_id": "pair070",
+    "family": "time_buckets",
+    "gold_sql": "SELECT DATE_TRUNC('WEEK',order_ts) AS bucket,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY DATE_TRUNC('WEEK',order_ts) ORDER BY bucket",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair070-th",
+    "language": "th",
+    "question": "ปี 2011 แสดงจำนวนคำสั่งซื้อรายสัปดาห์เดือนมกราคม เรียงเวลา"
+  },
+  {
+    "pair_id": "pair070",
+    "family": "time_buckets",
+    "gold_sql": "SELECT DATE_TRUNC('WEEK',order_ts) AS bucket,COUNT(*) AS value FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY DATE_TRUNC('WEEK',order_ts) ORDER BY bucket",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.time"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair070-en",
+    "language": "en",
+    "question": "Show invoice counts weekly during January 2011, ordered by time."
+  },
+  {
+    "pair_id": "pair071",
+    "family": "snapshot_activity",
+    "gold_sql": "SELECT MIN(first_purchase_date) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair071-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 หาวันซื้อที่พบครั้งแรกต่ำสุด"
+  },
+  {
+    "pair_id": "pair071",
+    "family": "snapshot_activity",
+    "gold_sql": "SELECT MIN(first_purchase_date) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair071-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 find the earliest observed first purchase date."
+  },
+  {
+    "pair_id": "pair072",
+    "family": "snapshot_activity",
+    "gold_sql": "SELECT MAX(last_purchase_date) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair072-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 หาวันซื้อครั้งล่าสุดสูงสุด"
+  },
+  {
+    "pair_id": "pair072",
+    "family": "snapshot_activity",
+    "gold_sql": "SELECT MAX(last_purchase_date) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair072-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 find the latest observed purchase date."
+  },
+  {
+    "pair_id": "pair073",
+    "family": "snapshot_activity",
+    "gold_sql": "SELECT MAX(recency_days) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair073-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 หาrecency สูงสุด"
+  },
+  {
+    "pair_id": "pair073",
+    "family": "snapshot_activity",
+    "gold_sql": "SELECT MAX(recency_days) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair073-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 find the maximum recency days."
+  },
+  {
+    "pair_id": "pair074",
+    "family": "snapshot_activity",
+    "gold_sql": "SELECT SUM(CASE WHEN orders_180d>=10 THEN 1 ELSE 0 END) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair074-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 หาจำนวนลูกค้าที่มีคำสั่งซื้อ 180 วันอย่างน้อย 10 ใบ"
+  },
+  {
+    "pair_id": "pair074",
+    "family": "snapshot_activity",
+    "gold_sql": "SELECT SUM(CASE WHEN orders_180d>=10 THEN 1 ELSE 0 END) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair074-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 find the customers with at least 10 invoices in 180 days."
+  },
+  {
+    "pair_id": "pair075",
+    "family": "snapshot_activity",
+    "gold_sql": "SELECT SUM(CASE WHEN rfm_segment='Inactive' AND is_high_value=false THEN 1 ELSE 0 END) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary",
+      "segment.inactive"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair075-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 หาจำนวนลูกค้าที่เป็น Inactive และไม่ใช่ high-value"
+  },
+  {
+    "pair_id": "pair075",
+    "family": "snapshot_activity",
+    "gold_sql": "SELECT SUM(CASE WHEN rfm_segment='Inactive' AND is_high_value=false THEN 1 ELSE 0 END) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "schema.customer_summary",
+      "segment.inactive"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair075-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 find the Inactive customers who are not high-value."
+  },
+  {
+    "pair_id": "pair076",
+    "family": "monthly_max",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,COUNT(*) AS n FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,n FROM m WHERE n=(SELECT MAX(n) FROM m) ORDER BY month",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.monthly_extrema"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair076-th",
+    "language": "th",
+    "question": "เดือนไหนออเดอร์เยอะสุด"
+  },
+  {
+    "pair_id": "pair076",
+    "family": "monthly_max",
+    "gold_sql": "WITH m AS (SELECT DATE_TRUNC('MONTH',order_ts) AS month,COUNT(*) AS n FROM orders GROUP BY DATE_TRUNC('MONTH',order_ts)) SELECT month,n FROM m WHERE n=(SELECT MAX(n) FROM m) ORDER BY month",
+    "relevant_ids": [
+      "metric.orders",
+      "syntax.monthly_extrema"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair076-en",
+    "language": "en",
+    "question": "Which month had the most orders?"
+  },
+  {
+    "pair_id": "pair077",
+    "family": "country_share",
+    "gold_sql": "WITH c AS (SELECT country,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country) SELECT country,sales/NULLIF(SUM(sales) OVER (),0) AS value FROM c ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair077-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 แสดงแต่ละประเทศกับสัดส่วนยอดขายต่อยอดรวม เรียงประเทศ"
+  },
+  {
+    "pair_id": "pair077",
+    "family": "country_share",
+    "gold_sql": "WITH c AS (SELECT country,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country) SELECT country,sales/NULLIF(SUM(sales) OVER (),0) AS value FROM c ORDER BY country",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair077-en",
+    "language": "en",
+    "question": "For January 2011 show each country and its fraction of total sales, ordered by country."
+  },
+  {
+    "pair_id": "pair078",
+    "family": "having",
+    "gold_sql": "WITH c AS (SELECT customer_id FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id HAVING COUNT(*)>=3) SELECT COUNT(*) AS value FROM c",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.having"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair078-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 มีลูกค้าที่มีรหัสอย่างน้อย 3 คำสั่งซื้อกี่คน"
+  },
+  {
+    "pair_id": "pair078",
+    "family": "having",
+    "gold_sql": "WITH c AS (SELECT customer_id FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' AND customer_id IS NOT NULL GROUP BY customer_id HAVING COUNT(*)>=3) SELECT COUNT(*) AS value FROM c",
+    "relevant_ids": [
+      "schema.orders",
+      "syntax.having"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair078-en",
+    "language": "en",
+    "question": "How many identified customers placed at least three invoices in January 2011?"
+  },
+  {
+    "pair_id": "pair079",
+    "family": "line_quality",
+    "gold_sql": "SELECT transaction_type,COUNT(*) AS value FROM sales_lines WHERE invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY transaction_type ORDER BY transaction_type",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair079-th",
+    "language": "th",
+    "question": "เดือนมกราคม 2011 แสดงจำนวนแถวสินค้าแยก transaction_type เรียงประเภท"
+  },
+  {
+    "pair_id": "pair079",
+    "family": "line_quality",
+    "gold_sql": "SELECT transaction_type,COUNT(*) AS value FROM sales_lines WHERE invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' GROUP BY transaction_type ORDER BY transaction_type",
+    "relevant_ids": [
+      "schema.sales_lines",
+      "syntax.transactions"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": true,
+    "id": "pair079-en",
+    "language": "en",
+    "question": "For January 2011 show product-line counts by transaction_type, ordered by type."
+  },
+  {
+    "pair_id": "pair080",
+    "family": "high_value_fraction",
+    "gold_sql": "SELECT SUM(CASE WHEN is_high_value THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "metric.high_value",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair080-th",
+    "language": "th",
+    "question": "ณ snapshot 2011-12-01 ลูกค้า high-value เป็นสัดส่วนเท่าไรของลูกค้าทั้งหมด"
+  },
+  {
+    "pair_id": "pair080",
+    "family": "high_value_fraction",
+    "gold_sql": "SELECT SUM(CASE WHEN is_high_value THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) AS value FROM customer_summary WHERE as_of_date=DATE '2011-12-01'",
+    "relevant_ids": [
+      "metric.high_value",
+      "syntax.ratios"
+    ],
+    "formula_id": null,
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair080-en",
+    "language": "en",
+    "question": "At snapshot 2011-12-01 what fraction of customers are high-value?"
+  },
+  {
+    "pair_id": "pair081",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.aov"
+    ],
+    "formula_id": "aov",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair081-th",
+    "language": "th",
+    "question": "ขอสูตรAOV ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair081",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.aov"
+    ],
+    "formula_id": "aov",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair081-en",
+    "language": "en",
+    "question": "Explain the formula for AOV; do not execute SQL."
+  },
+  {
+    "pair_id": "pair082",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.repeat_rate"
+    ],
+    "formula_id": "repeat_rate",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair082-th",
+    "language": "th",
+    "question": "ขอสูตรสัดส่วนลูกค้าซื้อซ้ำ ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair082",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.repeat_rate"
+    ],
+    "formula_id": "repeat_rate",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair082-en",
+    "language": "en",
+    "question": "Explain the formula for repeat customer fraction; do not execute SQL."
+  },
+  {
+    "pair_id": "pair083",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.anonymous_share"
+    ],
+    "formula_id": "anonymous_share",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair083-th",
+    "language": "th",
+    "question": "ขอสูตรสัดส่วนคำสั่งซื้อไม่มีรหัสลูกค้า ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair083",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.anonymous_share"
+    ],
+    "formula_id": "anonymous_share",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair083-en",
+    "language": "en",
+    "question": "Explain the formula for anonymous invoice fraction; do not execute SQL."
+  },
+  {
+    "pair_id": "pair084",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.units_per_order"
+    ],
+    "formula_id": "units_per_order",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair084-th",
+    "language": "th",
+    "question": "ขอสูตรจำนวนหน่วยเฉลี่ยต่อคำสั่งซื้อ ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair084",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.units_per_order"
+    ],
+    "formula_id": "units_per_order",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair084-en",
+    "language": "en",
+    "question": "Explain the formula for units per order; do not execute SQL."
+  },
+  {
+    "pair_id": "pair085",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.product_revenue"
+    ],
+    "formula_id": "product_revenue",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair085-th",
+    "language": "th",
+    "question": "ขอสูตรยอดขายสินค้า ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair085",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.product_revenue"
+    ],
+    "formula_id": "product_revenue",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair085-en",
+    "language": "en",
+    "question": "Explain the formula for product sale revenue; do not execute SQL."
+  },
+  {
+    "pair_id": "pair086",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.mom_growth"
+    ],
+    "formula_id": "mom_growth",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair086-th",
+    "language": "th",
+    "question": "ขอสูตรอัตราเติบโตยอดขายรายเดือน ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair086",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.mom_growth"
+    ],
+    "formula_id": "mom_growth",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair086-en",
+    "language": "en",
+    "question": "Explain the formula for month-over-month sales growth; do not execute SQL."
+  },
+  {
+    "pair_id": "pair087",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.country_share"
+    ],
+    "formula_id": "country_share",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair087-th",
+    "language": "th",
+    "question": "ขอสูตรสัดส่วนยอดขายแต่ละประเทศ ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair087",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.country_share"
+    ],
+    "formula_id": "country_share",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair087-en",
+    "language": "en",
+    "question": "Explain the formula for country sales share; do not execute SQL."
+  },
+  {
+    "pair_id": "pair088",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.cumulative_sales"
+    ],
+    "formula_id": "cumulative_sales",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair088-th",
+    "language": "th",
+    "question": "ขอสูตรยอดขายสะสม ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair088",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.cumulative_sales"
+    ],
+    "formula_id": "cumulative_sales",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair088-en",
+    "language": "en",
+    "question": "Explain the formula for cumulative sales; do not execute SQL."
+  },
+  {
+    "pair_id": "pair089",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.moving_average"
+    ],
+    "formula_id": "moving_average",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair089-th",
+    "language": "th",
+    "question": "ขอสูตรค่าเฉลี่ยเคลื่อนที่ 3 เดือน ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair089",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.moving_average"
+    ],
+    "formula_id": "moving_average",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair089-en",
+    "language": "en",
+    "question": "Explain the formula for three-month moving average; do not execute SQL."
+  },
+  {
+    "pair_id": "pair090",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.median_order"
+    ],
+    "formula_id": "median_order",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair090-th",
+    "language": "th",
+    "question": "ขอสูตรมัธยฐานมูลค่าคำสั่งซื้อโดยประมาณ ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair090",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.median_order"
+    ],
+    "formula_id": "median_order",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair090-en",
+    "language": "en",
+    "question": "Explain the formula for approximate median order value; do not execute SQL."
+  },
+  {
+    "pair_id": "pair091",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.high_value_share"
+    ],
+    "formula_id": "high_value_share",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair091-th",
+    "language": "th",
+    "question": "ขอสูตรสัดส่วนลูกค้ามูลค่าสูง ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair091",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.high_value_share"
+    ],
+    "formula_id": "high_value_share",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair091-en",
+    "language": "en",
+    "question": "Explain the formula for high-value customer fraction; do not execute SQL."
+  },
+  {
+    "pair_id": "pair092",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.cancellation_share"
+    ],
+    "formula_id": "cancellation_share",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair092-th",
+    "language": "th",
+    "question": "ขอสูตรสัดส่วนแถวรายการยกเลิก ไม่ต้องรัน SQL"
+  },
+  {
+    "pair_id": "pair092",
+    "family": "formula",
+    "gold_sql": null,
+    "relevant_ids": [
+      "formula.cancellation_share"
+    ],
+    "formula_id": "cancellation_share",
+    "clarification_policy": null,
+    "ordered": false,
+    "id": "pair092-en",
+    "language": "en",
+    "question": "Explain the formula for cancellation line fraction; do not execute SQL."
+  },
+  {
+    "pair_id": "pair093",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.period"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.period",
+    "ordered": false,
+    "id": "pair093-th",
+    "language": "th",
+    "question": "ยอดขายรวมเท่าไร"
+  },
+  {
+    "pair_id": "pair093",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.period"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.period",
+    "ordered": false,
+    "id": "pair093-en",
+    "language": "en",
+    "question": "What is total revenue?"
+  },
+  {
+    "pair_id": "pair094",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.period"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.period",
+    "ordered": false,
+    "id": "pair094-th",
+    "language": "th",
+    "question": "ลูกค้าดีที่สุดคือใคร"
+  },
+  {
+    "pair_id": "pair094",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.period"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.period",
+    "ordered": false,
+    "id": "pair094-en",
+    "language": "en",
+    "question": "Who are our best customers?"
+  },
+  {
+    "pair_id": "pair095",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.snapshot"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.snapshot",
+    "ordered": false,
+    "id": "pair095-th",
+    "language": "th",
+    "question": "แสดงกลุ่มลูกค้า RFM"
+  },
+  {
+    "pair_id": "pair095",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.snapshot"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.snapshot",
+    "ordered": false,
+    "id": "pair095-en",
+    "language": "en",
+    "question": "Show RFM segments."
+  },
+  {
+    "pair_id": "pair096",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.snapshot"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.snapshot",
+    "ordered": false,
+    "id": "pair096-th",
+    "language": "th",
+    "question": "นับลูกค้ามูลค่าสูง"
+  },
+  {
+    "pair_id": "pair096",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.snapshot"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.snapshot",
+    "ordered": false,
+    "id": "pair096-en",
+    "language": "en",
+    "question": "Count high-value customers."
+  },
+  {
+    "pair_id": "pair097",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.snapshot"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.snapshot",
+    "ordered": false,
+    "id": "pair097-th",
+    "language": "th",
+    "question": "แสดงกลุ่ม RFM ณ snapshot 2011-11-30"
+  },
+  {
+    "pair_id": "pair097",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.snapshot"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.snapshot",
+    "ordered": false,
+    "id": "pair097-en",
+    "language": "en",
+    "question": "Show RFM segments at snapshot 2011-11-30."
+  },
+  {
+    "pair_id": "pair098",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.availability"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.availability",
+    "ordered": false,
+    "id": "pair098-th",
+    "language": "th",
+    "question": "กำไรเดือนมกราคม 2011 เท่าไร"
+  },
+  {
+    "pair_id": "pair098",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.availability"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.availability",
+    "ordered": false,
+    "id": "pair098-en",
+    "language": "en",
+    "question": "What was profit in January 2011?"
+  },
+  {
+    "pair_id": "pair099",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.availability"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.availability",
+    "ordered": false,
+    "id": "pair099-th",
+    "language": "th",
+    "question": "ยอดขายเดือนมกราคม 2024 เท่าไร"
+  },
+  {
+    "pair_id": "pair099",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.availability"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.availability",
+    "ordered": false,
+    "id": "pair099-en",
+    "language": "en",
+    "question": "What were sales in January 2024?"
+  },
+  {
+    "pair_id": "pair100",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.availability"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.availability",
+    "ordered": false,
+    "id": "pair100-th",
+    "language": "th",
+    "question": "วัดผลแคมเปญในปี 2011"
+  },
+  {
+    "pair_id": "pair100",
+    "family": "clarification",
+    "gold_sql": null,
+    "relevant_ids": [
+      "policy.availability"
+    ],
+    "formula_id": null,
+    "clarification_policy": "policy.availability",
+    "ordered": false,
+    "id": "pair100-en",
+    "language": "en",
+    "question": "Measure campaign uplift in 2011."
+  }
+]

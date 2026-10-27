@@ -1,3 +1,5 @@
+> Historical result: this report predates the bilingual analytics expansion. See [latest development results](BILINGUAL_ANALYTICS_REPORT.md).
+
 # ผลทดสอบระบบปัจจุบัน
 
 หลักฐานดิบ: `acceptance-376b19a376714e218c6197ab5c9b27c4.json`
