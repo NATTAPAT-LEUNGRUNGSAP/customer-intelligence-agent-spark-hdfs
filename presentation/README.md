@@ -14,7 +14,7 @@ limits are documented in reports/GOVERNANCE_REPORT.md. No software/release label
 or delivery time-box framing appear on the slides.
 
 Text, including table cells, is in slide-text-system-guide.json. Live object IDs and
-source notes are in outline-system-guide.ndjson. Earlier decks remain historical.
+source notes are in outline-system-guide.ndjson. Earlier decks were removed from the working tree; their history remains in Git.
 User-supplied reference images are not embedded or published. The original 32 slides were
 rendered and reviewed. The file was not opened in Microsoft PowerPoint.
 
@@ -28,3 +28,5 @@ Docker pages 5-7 explain all configured service roles, long-running versus job c
 Page 5 adds the unified data/question architecture and page 16 explains SHACL with actual sourceTable cardinality/class constraints. README and architecture Mermaid diagrams were reconciled against current code. SHACL and governance checks were actually rerun: 22 passed (architecture-shacl-check.txt). Source-grain agreement is explicitly a separate Python check; SHACL does not prove SQL answer correctness. The two added pages were rendered and inspected.
 
 Removed the final demonstration/future-development slide at the user’s request. The current deck has 31 slides. Verified the remaining 31 slide XML parts are byte-identical and all retained internal package relationships resolve. No layout changes were made.
+
+Only the current PowerPoint, its outline and extracted text remain in this directory. Removed old deck exports and obsolete companion files during disk cleanup.
