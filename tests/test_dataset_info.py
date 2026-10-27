@@ -4,7 +4,7 @@ from pathlib import Path
 from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'jobs'))
 from agent import answer
-from dataset_info import is_dataset_discovery, overview
+from dataset_info import is_dataset_discovery, overview, unavailable_product_categories
 
 ROOT=Path(__file__).resolve().parents[1]
 SCHEMA={'orders':'struct<invoice_id:string,order_amount:decimal(18,4)>',
@@ -12,6 +12,24 @@ SCHEMA={'orders':'struct<invoice_id:string,order_amount:decimal(18,4)>',
 
 
 class DatasetInfoTests(unittest.TestCase):
+    def test_missing_product_categories_precede_time_policy(self):
+        schema=dict(SCHEMA,sales_lines='struct<product_id:string,description:string,invoice_ts:timestamp>')
+        for q in ('สินค้ามีหมวดหมู่อะไรบ้าง','ยอดขายแยกตามหมวดหมู่สินค้าเดือนมกราคม 2011',
+                  'What product categories are available?', 'Show sales by product category in January 2011'):
+            with self.subTest(q=q),patch('agent.generate',side_effect=AssertionError('No model')):
+                r=answer(q,schema,lambda sql:self.fail('No SQL'),'fixture','unused',ROOT/'knowledge')
+                self.assertEqual(r['intent'],'unavailable_product_categories')
+                self.assertEqual(r['model_calls'],0)
+                self.assertFalse(r['sql_executed'])
+                self.assertIn('product_id',r['message'])
+                self.assertIn('schema.sales_lines',r['citations'])
+                self.assertTrue(set(r['citations']).issubset({c['id'] for c in r['references']}))
+    def test_category_detector_does_not_block_supported_dimensions(self):
+        schema={'sales_lines':'struct<product_id:string,description:string>'}
+        for q in ('สินค้าใดขายดีที่สุด','รายการขายมีกี่ประเภท','What customer categories exist?'):
+            self.assertIsNone(unavailable_product_categories(q,schema))
+        self.assertIsNone(unavailable_product_categories('What product categories exist?',
+                          {'sales_lines':'struct<product_id:string,category:string>'}))
     def test_discovery_does_not_call_model_or_spark(self):
         for q in ('มีข้อมูลอะไรบ้าง','มีข้อมูลอะไร','What data is available?','What tables do you have?'):
             with self.subTest(q=q),patch('agent.generate',side_effect=AssertionError('No model')):

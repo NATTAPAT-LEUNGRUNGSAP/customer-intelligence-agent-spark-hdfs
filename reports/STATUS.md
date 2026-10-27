@@ -1,3 +1,12 @@
+# Product-category availability fix
+
+The exact reported Thai question now returns that no product taxonomy exists,
+with product_id/description alternatives, before the time-period policy.
+95 unit tests passed; 3 actual authenticated HTTPS checks passed in Thai/English.
+See product-category-unit-tests.txt and product-category-https-verification.json.
+The 196/200 bilingual run below predates this routing/schema-evidence change;
+it has not been rerun on this source.
+
 # Current verification status
 
 Latest live-model development run: bilingual-development-final.json.

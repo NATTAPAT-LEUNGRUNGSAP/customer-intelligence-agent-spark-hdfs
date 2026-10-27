@@ -2,6 +2,29 @@
 import re
 
 
+def unavailable_product_categories(question, schema):
+    """A missing product taxonomy cannot be supplied by choosing a time range."""
+    text=question.lower()
+    requested=bool(re.search(r'หมวดหมู่|หมวดสินค้า|ประเภทสินค้า|categor(?:y|ies)|taxonomy',text))
+    product=bool(re.search(r'สินค้า|products?|items?',text))
+    if not (requested and product):return None
+    columns=set(re.findall(r'(?:<|,)([a-zA-Z_][a-zA-Z_0-9]*):',schema.get('sales_lines','')))
+    if not columns or columns & {'category','category_id','product_category','category_name'}:return None
+    thai=bool(re.search(r'[\u0e00-\u0e7f]',question))
+    message=(
+        'ชุดข้อมูลนี้ไม่มีหมวดหมู่สินค้า มีเพียงรหัสสินค้า (product_id) และคำอธิบายสินค้า (description) '
+        'จึงยังแสดงหมวดหมู่หรือวิเคราะห์ยอดขายตามหมวดหมู่ไม่ได้ และไม่ควรเดาหมวดจากชื่อสินค้า '
+        'หากต้องการใช้งาน ต้องเพิ่มตารางจับคู่รหัสสินค้ากับหมวดหมู่ที่ตรวจสอบแล้ว '
+        'ขณะนี้สามารถวิเคราะห์รายสินค้าได้ เช่น “เดือนมกราคม 2011 สินค้าใดขายได้จำนวนมากที่สุด”'
+        if thai else
+        'This dataset has no product categories. It contains product_id and description, '
+        'so category listings or category-level analytics are unavailable. Descriptions are not verified categories. '
+        'A validated product-to-category mapping is required. You can analyze individual products instead, '
+        'for example: Which products sold the most units in January 2011?')
+    return {'status':'information','intent':'unavailable_product_categories','message':message,
+            'model_calls':0,'attempts':[],'sql_executed':False,'citations':['schema.sales_lines']}
+
+
 def is_dataset_discovery(question):
     text=re.sub(r'[?？!.]+$','',question.strip().lower()).strip()
     return bool(re.fullmatch(

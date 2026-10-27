@@ -1,0 +1,380 @@
+{
+  "status": "passed",
+  "transport": "actual authenticated public HTTPS",
+  "checks": [
+    {
+      "question": "สินค้ามีหมวดหมู่อะไรบ้าง",
+      "passed": true,
+      "response": {
+        "rag": true,
+        "references": [
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.\n\nProduct categories / หมวดหมู่สินค้า are NOT present. product_id and description identify/describe products but are not a verified product taxonomy. Do not invent categories from descriptions or ask for a time period to resolve a missing category field. Category listings and category-level analytics require an externally validated product-to-category mapping.",
+            "sha256": "128efafe89546822fabde65c3565c3af96fc7de081e3694c7a8870221746fc82",
+            "score": 34.77836189220446,
+            "selection": "lexical_head"
+          },
+          {
+            "id": "metric.units",
+            "source": "metrics.md",
+            "text": "Sold/purchased units / จำนวนสินค้าที่ขาย / จำนวนสินค้าที่ซื้อ means unit quantity, not money or number of different product IDs. On completed invoices use SUM(orders.total_units); for mean units per invoice use AVG(total_units). Customer rankings by purchased units aggregate total_units by customer_id, excluding NULL IDs. A product-specific ranking uses SUM(sales_lines.quantity) filtered transaction_type='sale'. Do not SUM(order_amount) for units. Basket variety is AVG(orders.distinct_products) when asked mean distinct products per invoice, not AVG(total_units) and not monetary AOV.",
+            "sha256": "02582b7ba17af7301098b5a2213d41ad40ebd50fd41761bd3920441b21c6ee72",
+            "score": 13.985022692484051,
+            "selection": "primary_fact"
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 5.406447985512468,
+            "selection": "schema_dependency"
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Exception: an unqualified question asking which month has the most orders may use the whole observed dataset when the application explicitly supplies this scope and displays it to the user. Compare calendar year-months, count completed invoices from orders, retain all ties, and label potentially partial boundary months. Do not merge the same month across different years. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "bb2c4ad8ffe792024015628c0dc64acce95e22a3b5adebd67e71d6a3b9ad1334",
+            "score": 1.0213548127266943,
+            "selection": "policy_dependency"
+          },
+          {
+            "id": "metric.customers",
+            "source": "metrics.md",
+            "text": "Identified purchasing customers / ลูกค้าที่ซื้อ / ลูกค้าไม่ซ้ำ / จำนวนลูกค้าที่ซื้อแบบไม่ซ้ำ = COUNT(DISTINCT customer_id) from orders in the requested period; NULL customer IDs are excluded by COUNT(DISTINCT) itself. Count customers, not invoices or lines. Thai ไม่ซ้ำ means unique/distinct IDs, NOT customers with exactly one invoice or non-repeat customers. Do not add frequency=1 or HAVING COUNT(*)=1. For a country breakdown retain all countries from the requested invoices, including zero identified buyers; do not remove anonymous rows with WHERE unless an explicitly identified-only invoice population is requested.\nFor product-specific distinct purchasing customers, read sales_lines filtered transaction_type='sale' and GROUP BY product_id with COUNT(DISTINCT customer_id). The generic orders view has no product_id; do not use it for product-specific buyer rankings.",
+            "sha256": "0b5cf8a391373b8e0863671bcdb8b255416126a6681e29a12d9c643a51ae68c0",
+            "score": 6.112180402759967,
+            "selection": "secondary_fact"
+          },
+          {
+            "id": "syntax.product_metrics",
+            "source": "analytics_patterns.md",
+            "text": "Product ranking / จัดอันดับสินค้า: output product_id and the requested metric only, not description. Group by product_id, never product_id+description unless asked. Sale product-line count / จำนวนรายการขาย = COUNT(*) on sale lines, different from sale units = SUM(quantity). Sale revenue = SUM(line_amount). Quantity-weighted unit price / ราคาต่อหน่วยถ่วงน้ำหนัก = SUM(line_amount)/NULLIF(SUM(quantity),0), not SUM(line_amount) alone or AVG(unit_price). Distinct purchasing customers = COUNT(DISTINCT customer_id). Use the requested measure, not a substitute, and a deterministic product_id tie break.",
+            "sha256": "d2a9b8bc14128cfe520c00f72c3b6e0d5975db87d8984a8e4d72dae1484bbe1b",
+            "score": 11.408788627159414,
+            "selection": "lexical"
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+          "ranked_ids": [
+            "schema.sales_lines",
+            "metric.units",
+            "schema.orders",
+            "policy.period",
+            "metric.customers",
+            "syntax.product_metrics"
+          ],
+          "context_ids": [
+            "schema.sales_lines",
+            "metric.units",
+            "schema.orders",
+            "policy.period",
+            "metric.customers",
+            "syntax.product_metrics",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "8e60b83eb5acfa047bc6b9ea2156925132243b211e3b78f5339ef7edeecb1d73",
+          "corpus_chunks": 45,
+          "context_characters": 5225,
+          "ontology": {
+            "status": "validated",
+            "format": "RDF/OWL + SHACL",
+            "sha256": "3a447790ecf784da93f089bbf1537334e94076ef36a0b6da00427f3f2cdd6346",
+            "domain_metrics": 9,
+            "matches": []
+          },
+          "elapsed_ms": 64.56363400002374
+        },
+        "status": "information",
+        "intent": "unavailable_product_categories",
+        "message": "ชุดข้อมูลนี้ไม่มีหมวดหมู่สินค้า มีเพียงรหัสสินค้า (product_id) และคำอธิบายสินค้า (description) จึงยังแสดงหมวดหมู่หรือวิเคราะห์ยอดขายตามหมวดหมู่ไม่ได้ และไม่ควรเดาหมวดจากชื่อสินค้า หากต้องการใช้งาน ต้องเพิ่มตารางจับคู่รหัสสินค้ากับหมวดหมู่ที่ตรวจสอบแล้ว ขณะนี้สามารถวิเคราะห์รายสินค้าได้ เช่น “เดือนมกราคม 2011 สินค้าใดขายได้จำนวนมากที่สุด”",
+        "model_calls": 0,
+        "attempts": [],
+        "sql_executed": false,
+        "citations": [
+          "schema.sales_lines"
+        ],
+        "trace_id": "4753cd7812fb404e830365985f04e7ce",
+        "question": "สินค้ามีหมวดหมู่อะไรบ้าง",
+        "model": "qwen3.5:9b",
+        "build_run_id": "c81fa72c3c174a96bf8c03195b9e6f5e",
+        "elapsed_seconds": 0.1620539610000833
+      }
+    },
+    {
+      "question": "What product categories are available?",
+      "passed": true,
+      "response": {
+        "rag": true,
+        "references": [
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.\n\nProduct categories / หมวดหมู่สินค้า are NOT present. product_id and description identify/describe products but are not a verified product taxonomy. Do not invent categories from descriptions or ask for a time period to resolve a missing category field. Category listings and category-level analytics require an externally validated product-to-category mapping.",
+            "sha256": "128efafe89546822fabde65c3565c3af96fc7de081e3694c7a8870221746fc82",
+            "score": 14.175834166513159,
+            "selection": "lexical_head"
+          },
+          {
+            "id": "metric.orders",
+            "source": "metrics.md",
+            "text": "Completed orders / invoices / จำนวนคำสั่งซื้อ / กี่ใบ = COUNT(*) from orders. One orders row is ONE INVOICE. A sales_lines row is ONE PRODUCT LINE, not an invoice. Never COUNT(*) from sales_lines to answer how many orders/invoices. Anonymous / unidentified / ไม่ระบุตัวตน orders are retained. ONLY when asked for anonymous orders alone, filter customer_id IS NULL. With no customer_id filter, COUNT(*) already includes both identified and anonymous invoices.",
+            "sha256": "e5f37b85b10b44cf47915f2c2b45915e9650fcad9d5b101d2dfb14a43776931f",
+            "score": 6.411542180616993,
+            "selection": "primary_fact"
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 5.406447985512468,
+            "selection": "schema_dependency"
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Exception: an unqualified question asking which month has the most orders may use the whole observed dataset when the application explicitly supplies this scope and displays it to the user. Compare calendar year-months, count completed invoices from orders, retain all ties, and label potentially partial boundary months. Do not merge the same month across different years. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "bb2c4ad8ffe792024015628c0dc64acce95e22a3b5adebd67e71d6a3b9ad1334",
+            "score": 2.1459946633528655,
+            "selection": "policy_dependency"
+          },
+          {
+            "id": "metric.units",
+            "source": "metrics.md",
+            "text": "Sold/purchased units / จำนวนสินค้าที่ขาย / จำนวนสินค้าที่ซื้อ means unit quantity, not money or number of different product IDs. On completed invoices use SUM(orders.total_units); for mean units per invoice use AVG(total_units). Customer rankings by purchased units aggregate total_units by customer_id, excluding NULL IDs. A product-specific ranking uses SUM(sales_lines.quantity) filtered transaction_type='sale'. Do not SUM(order_amount) for units. Basket variety is AVG(orders.distinct_products) when asked mean distinct products per invoice, not AVG(total_units) and not monetary AOV.",
+            "sha256": "02582b7ba17af7301098b5a2213d41ad40ebd50fd41761bd3920441b21c6ee72",
+            "score": 6.350977370619071,
+            "selection": "secondary_fact"
+          },
+          {
+            "id": "schema.joins",
+            "source": "schema.md",
+            "text": "Joining product lines to orders repeats order_amount per product line: never SUM the repeated invoice amount. Select the snapshot before joining customer_summary to orders by customer_id. Prefer a single table when it already contains the requested facts.",
+            "sha256": "b0aaf3dc8867c28b9e8af7238619079fd83a6576d5f2a28f8dd6063bf7b8e536",
+            "score": 7.6108796580903855,
+            "selection": "lexical"
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+          "ranked_ids": [
+            "schema.sales_lines",
+            "metric.orders",
+            "schema.orders",
+            "policy.period",
+            "metric.units",
+            "schema.joins"
+          ],
+          "context_ids": [
+            "schema.sales_lines",
+            "metric.orders",
+            "schema.orders",
+            "policy.period",
+            "metric.units",
+            "schema.joins",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "8e60b83eb5acfa047bc6b9ea2156925132243b211e3b78f5339ef7edeecb1d73",
+          "corpus_chunks": 45,
+          "context_characters": 4460,
+          "ontology": {
+            "status": "validated",
+            "format": "RDF/OWL + SHACL",
+            "sha256": "3a447790ecf784da93f089bbf1537334e94076ef36a0b6da00427f3f2cdd6346",
+            "domain_metrics": 9,
+            "matches": []
+          },
+          "elapsed_ms": 20.882568000160973
+        },
+        "status": "information",
+        "intent": "unavailable_product_categories",
+        "message": "This dataset has no product categories. It contains product_id and description, so category listings or category-level analytics are unavailable. Descriptions are not verified categories. A validated product-to-category mapping is required. You can analyze individual products instead, for example: Which products sold the most units in January 2011?",
+        "model_calls": 0,
+        "attempts": [],
+        "sql_executed": false,
+        "citations": [
+          "schema.sales_lines"
+        ],
+        "trace_id": "60889dc83a53479e9f3d8348dc626b6e",
+        "question": "What product categories are available?",
+        "model": "qwen3.5:9b",
+        "build_run_id": "c81fa72c3c174a96bf8c03195b9e6f5e",
+        "elapsed_seconds": 0.02096283399987442
+      }
+    },
+    {
+      "question": "ยอดขายตามหมวดหมู่สินค้าเดือนมกราคม 2011",
+      "passed": true,
+      "response": {
+        "rag": true,
+        "references": [
+          {
+            "id": "metric.sales",
+            "source": "metrics.md",
+            "text": "Completed sales / revenue / ยอดขาย = SUM(order_amount) from orders. Currency GBP. orders contains completed-sale invoices only; do not add a transaction_type column to orders. This is gross completed sales before returns, not profit or net sales. Use orders for country/month sales totals. Currency does not imply a country filter.",
+            "sha256": "5f627b3382300af5ac8d993914ea02f769a6566ff9246f9b83f2ff41c3d80975",
+            "score": 19.916052905014304,
+            "selection": "explicit_metric"
+          },
+          {
+            "id": "schema.sales_lines",
+            "source": "schema.md",
+            "text": "sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.\n\nProduct categories / หมวดหมู่สินค้า are NOT present. product_id and description identify/describe products but are not a verified product taxonomy. Do not invent categories from descriptions or ask for a time period to resolve a missing category field. Category listings and category-level analytics require an externally validated product-to-category mapping.",
+            "sha256": "128efafe89546822fabde65c3565c3af96fc7de081e3694c7a8870221746fc82",
+            "score": 48.238893632184414,
+            "selection": "lexical_head"
+          },
+          {
+            "id": "schema.orders",
+            "source": "schema.md",
+            "text": "orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/country strings; order_ts timestamp; order_amount decimal; total_units bigint; distinct_products bigint. Use for invoice counts, completed sales, AOV, purchasing customers, repeat rates. Anonymous customer_id NULL invoices are retained. Mixed customer/country invoices are excluded and counted in the build report. No transaction_type column exists in orders.",
+            "sha256": "eec924c7de121c013ab42da35673d4e1ab35803b29c05f1ab0656717e27c5e75",
+            "score": 12.147424509886756,
+            "selection": "schema_dependency"
+          },
+          {
+            "id": "policy.period",
+            "source": "thai_glossary.md",
+            "text": "For sales, orders, AOV, purchasing/return/cancellation counts or repeat rates, require an explicit time period or an explicit request for the entire available dataset. If missing (เช่น ยอดขายรวมเท่าไร), ASK which period, never silently use all data. Exception: an unqualified question asking which month has the most orders may use the whole observed dataset when the application explicitly supplies this scope and displays it to the user. Compare calendar year-months, count completed invoices from orders, retain all ties, and label potentially partial boundary months. Do not merge the same month across different years. Observed min/max timestamps and data-quality metadata questions may inspect the whole dataset. For ambiguous best customers / ลูกค้าดีที่สุด, ASK for metric and period/snapshot.",
+            "sha256": "bb2c4ad8ffe792024015628c0dc64acce95e22a3b5adebd67e71d6a3b9ad1334",
+            "score": 17.618891654114897,
+            "selection": "policy_dependency"
+          },
+          {
+            "id": "syntax.time",
+            "source": "spark_sql.md",
+            "text": "Time period / ช่วงเวลา: transaction ranges include start and exclude end. Use timestamp comparisons on order_ts for orders, invoice_ts for sales_lines. January through March ends at April 1, exclusive. Use date_trunc('MONTH', timestamp_column) for monthly grouping; order by month ascending. Source timezone is unspecified; UTC session is a processing convention only.\nFor execution use direct half-open WHERE comparisons with typed full TIMESTAMP literals at midnight; keep DATE_TRUNC for grouping. Never add an amount, country or customer filter unless asked. Spark DATE_TRUNC returns a timestamp, not a month-name string.",
+            "sha256": "f1a673b445d9705918832ef25bd9131891a8efaaa9ffc6b4c7734a46d1e59186",
+            "score": 12.507386956330098,
+            "selection": "syntax_dependency"
+          },
+          {
+            "id": "metric.spend_per_customer",
+            "source": "metrics.md",
+            "text": "Sales per identified purchasing customer / ยอดขายต่อผู้ซื้อที่มีรหัส = SUM(order_amount) / NULLIF(COUNT(DISTINCT customer_id),0) from orders WHERE customer_id IS NOT NULL in the requested period. Return one scalar GBP-per-buyer average. Filter anonymous invoices out of BOTH numerator and denominator. This is not invoice AOV; the denominator is distinct buyers, not COUNT(*).",
+            "sha256": "ca7abf391217f50e03f598b2c342063e5e870df414452376abffe1f7524b8422",
+            "score": 18.052903283810558,
+            "selection": "secondary_fact"
+          },
+          {
+            "id": "policy.availability",
+            "source": "thai_glossary.md",
+            "text": "Use observed_min_timestamp/observed_max_timestamp from the passed build manifest. Outside observed dates means UNAVAILABLE, not automatically zero. Label partial periods. No costs, margins, measured profit, campaign outcomes/uplift, or future measured sales exist. For กำไร / profit / campaign uplift, explain missing evidence instead of generating a numeric answer. Do not infer unsupported facts or introduce unrequested filters.",
+            "sha256": "daa1e6ddeb9e8535938eec3513781cfe7d769101cb7f81e0b8a43805430a4231",
+            "score": null,
+            "selection": "mandatory_policy"
+          },
+          {
+            "id": "policy.snapshot",
+            "source": "thai_glossary.md",
+            "text": "This policy applies ONLY to customer_summary snapshot questions, NOT to orders or sales_lines transaction queries. Count distinct purchasing customers for a month from orders without a snapshot restriction. The manifest as_of_date identifies the ONLY built customer_summary snapshot. Never query another snapshot and interpret empty rows as its distribution: explain it is unavailable. Snapshot 2011-12-01 uses purchases strictly before that date within the 180-day window. For a customer_summary snapshot question require a snapshot date and check availability.",
+            "sha256": "1fe04154c2ec394a6adfcca02359ceadb427abe912fb3b5e37e40aa1c5835750",
+            "score": null,
+            "selection": "mandatory_policy"
+          }
+        ],
+        "retrieval": {
+          "method": "BM25+bilingual-topic+metric-schema-syntax-expansion-v2.4",
+          "ranked_ids": [
+            "metric.sales",
+            "schema.sales_lines",
+            "schema.orders",
+            "policy.period",
+            "syntax.time",
+            "metric.spend_per_customer"
+          ],
+          "context_ids": [
+            "metric.sales",
+            "schema.sales_lines",
+            "schema.orders",
+            "policy.period",
+            "syntax.time",
+            "metric.spend_per_customer",
+            "policy.availability",
+            "policy.snapshot"
+          ],
+          "corpus_sha256": "8e60b83eb5acfa047bc6b9ea2156925132243b211e3b78f5339ef7edeecb1d73",
+          "corpus_chunks": 45,
+          "context_characters": 4489,
+          "ontology": {
+            "status": "validated",
+            "format": "RDF/OWL + SHACL",
+            "sha256": "3a447790ecf784da93f089bbf1537334e94076ef36a0b6da00427f3f2cdd6346",
+            "domain_metrics": 9,
+            "matches": [
+              {
+                "concept": "urn:ci:sales",
+                "labels": [
+                  "completed sales",
+                  "total sales",
+                  "revenue",
+                  "ยอดขาย"
+                ],
+                "table": "orders",
+                "grain": "invoice",
+                "formula": "SUM(order_amount)",
+                "evidence_ids": [
+                  "metric.sales",
+                  "schema.orders"
+                ]
+              }
+            ]
+          },
+          "elapsed_ms": 21.721049000007042
+        },
+        "status": "information",
+        "intent": "unavailable_product_categories",
+        "message": "ชุดข้อมูลนี้ไม่มีหมวดหมู่สินค้า มีเพียงรหัสสินค้า (product_id) และคำอธิบายสินค้า (description) จึงยังแสดงหมวดหมู่หรือวิเคราะห์ยอดขายตามหมวดหมู่ไม่ได้ และไม่ควรเดาหมวดจากชื่อสินค้า หากต้องการใช้งาน ต้องเพิ่มตารางจับคู่รหัสสินค้ากับหมวดหมู่ที่ตรวจสอบแล้ว ขณะนี้สามารถวิเคราะห์รายสินค้าได้ เช่น “เดือนมกราคม 2011 สินค้าใดขายได้จำนวนมากที่สุด”",
+        "model_calls": 0,
+        "attempts": [],
+        "sql_executed": false,
+        "citations": [
+          "schema.sales_lines"
+        ],
+        "trace_id": "7f92b305ba5a40cfb943bde135f2e12e",
+        "question": "ยอดขายตามหมวดหมู่สินค้าเดือนมกราคม 2011",
+        "model": "qwen3.5:9b",
+        "build_run_id": "c81fa72c3c174a96bf8c03195b9e6f5e",
+        "elapsed_seconds": 0.021788163999872268
+      }
+    }
+  ]
+}

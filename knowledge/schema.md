@@ -6,6 +6,8 @@ orders: one consistent COMPLETED-SALE INVOICE per row. invoice_id/customer_id/co
 ## schema.sales_lines
 sales_lines: one ORIGINAL PRODUCT LINE per row; never one invoice per row. invoice_id/customer_id/product_id strings; description string; invoice_ts timestamp; country string; quantity bigint; unit_price decimal; line_amount decimal; transaction_type string; source_sheet string; source_row bigint. Types are sale, cancellation, return, adjustment, invalid; 'completed' is NOT a type. For product revenue/units use transaction_type='sale', then sum line_amount/quantity. For cancellation / ยกเลิก lines use 'cancellation'; for return / คืนสินค้า lines use 'return'.
 
+Product categories / หมวดหมู่สินค้า are NOT present. product_id and description identify/describe products but are not a verified product taxonomy. Do not invent categories from descriptions or ask for a time period to resolve a missing category field. Category listings and category-level analytics require an externally validated product-to-category mapping.
+
 ## schema.customer_summary
 customer_summary: one IDENTIFIED CUSTOMER in the 180-day window for one snapshot. customer_id string; first_purchase_date/last_purchase_date/as_of_date dates; recency_days int; orders_180d bigint; sales_180d/aov_180d decimal; monetary_rank/population_size bigint; is_high_value boolean; rfm_segment string. Anonymous customers and those without a purchase in the window are excluded. first_purchase_date is first OBSERVED, not necessarily first-ever purchase.
 

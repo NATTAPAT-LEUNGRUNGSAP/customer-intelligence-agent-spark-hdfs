@@ -20,7 +20,7 @@ $('question-form').addEventListener('submit', async event => {
     const response = await fetch('/api/query', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:$('question').value})});
     const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Request failed');
     $('answer').hidden = false;
-    $('answer-heading').textContent = data.intent==='formula' && data.status==='information' ? 'สูตรและวิธีคำนวณ' : ({information:'ข้อมูลที่มีและคำถามที่รองรับ',executed:'ผลการวิเคราะห์',clarification:'ต้องการข้อมูลเพิ่มเติม',failed:'ยังตอบคำถามนี้ไม่ได้'}[data.status] || data.status);
+    $('answer-heading').textContent = data.intent==='unavailable_product_categories' ? 'ชุดข้อมูลไม่มีหมวดหมู่สินค้า' : data.intent==='formula' && data.status==='information' ? 'สูตรและวิธีคำนวณ' : ({information:'ข้อมูลที่มีและคำถามที่รองรับ',executed:'ผลการวิเคราะห์',clarification:'ต้องการข้อมูลเพิ่มเติม',failed:'ยังตอบคำถามนี้ไม่ได้'}[data.status] || data.status);
     $('message').textContent = data.message || data.error || data.explanation || '';
     if (data.analysis_scope) $('message').textContent += '\n' + data.analysis_scope.note;
     $('table').replaceChildren();

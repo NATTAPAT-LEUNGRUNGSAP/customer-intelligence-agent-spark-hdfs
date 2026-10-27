@@ -15,7 +15,7 @@ from result_contracts import validate_result, validate_semantics
 from result_contracts import result_violations
 from semantic_contracts import validate_business_sql
 from policy_engine import authorize, policy_facts, PolicyUnavailable
-from dataset_info import is_dataset_discovery, overview, localize_policy
+from dataset_info import is_dataset_discovery, overview, localize_policy, unavailable_product_categories
 from question_scope import resolve_scope, validate_month_comparison
 from formula_intent import requested_formula, formula_response
 from metric_contracts import validate_metric_expression, request_constraints
@@ -102,6 +102,14 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
         retrieval['context_ids']=[c['id'] for c in context]
         retrieval['context_characters']=sum(len(c['text']) for c in context)
         return dict(base,**overview(schema),citations=sorted(ids),intent='dataset_discovery')
+    unavailable=unavailable_product_categories(question,schema)
+    if unavailable:
+        from retrieval import index
+        if 'schema.sales_lines' not in {c['id'] for c in context}:
+            context.append(next(c for c in index(knowledge)[0] if c['id']=='schema.sales_lines'))
+        retrieval['context_ids']=[c['id'] for c in context]
+        retrieval['context_characters']=sum(len(c['text']) for c in context)
+        return dict(base,**unavailable)
     decision = policy_check(question,schema.get('_dataset_metadata',{}))
     if decision:
         message, citation = decision
