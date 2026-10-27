@@ -1,5 +1,35 @@
 """Explicit, visible defaults for otherwise unqualified month comparisons."""
 import re
+import datetime as dt
+
+
+def validate_time_selection(selection):
+    if selection is None:return
+    if not isinstance(selection,dict):raise ValueError('Invalid time selection')
+    if selection=={'mode':'all'}:return
+    if set(selection)!={'mode','start','end'} or selection['mode']!='custom':
+        raise ValueError('Choose all data or a custom date range')
+    start,end=(dt.date.fromisoformat(selection[k]) for k in ('start','end'))
+    if start>end or end==dt.date.max:raise ValueError('Invalid date range')
+
+
+def apply_time_selection(question, metadata, selection):
+    validate_time_selection(selection)
+    if selection is None:return question,None
+    # Explicit dates/periods and snapshot requests always take precedence.
+    if re.search(r'\b(?:19|20|25|26)\d{2}\b|all available|entire.*data|whole.*data|all.time|ข้อมูลทั้งหมด|ตลอดช่วงข้อมูล|snapshot|\brfm\b|high[ -]value|recency|กลุ่มลูกค้า|มูลค่าสูง|แชมเปี้ยน|inactive|champion|180d',question,re.I):
+        return question,{'source':'question','default_applied':False,'note':'ใช้ช่วงเวลาหรือ snapshot ตามคำถาม ซึ่งมีลำดับเหนือช่วงเวลาที่เลือกบนเว็บ'}
+    if re.search(r'วันนี้|เมื่อวาน|เดือนนี้|เดือนก่อน|ปีนี้|ปีก่อน|ล่าสุด|today|yesterday|last month|this month|this year|last year|latest',question,re.I):
+        return question,{'source':'question','default_applied':False,'note':'คำถามระบุเวลาแบบสัมพัทธ์ ต้องตรวจความหมายก่อนใช้ข้อมูลประวัติศาสตร์'}
+    if re.search(r'มกราคม|กุมภาพันธ์|มีนาคม|เมษายน|พฤษภาคม|มิถุนายน|กรกฎาคม|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกายน|ธันวาคม|\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\b',question,re.I):
+        return question,{'source':'question','default_applied':False,'note':'คำถามระบุเดือน ต้องระบุปีให้ชัดเจนก่อนวิเคราะห์'}
+    if selection['mode']=='all':
+        start,end=metadata.get('observed_min_timestamp'),metadata.get('observed_max_timestamp')
+        return question+'\nScope: all available data.',{'source':'web_selection','mode':'all','default_applied':True,'start':start,'end':end,'note':f'ใช้ข้อมูลทั้งหมดที่มี: {start} ถึง {end}'}
+    start=selection['start'];end=selection['end']
+    exclusive=(dt.date.fromisoformat(end)+dt.timedelta(days=1)).isoformat()
+    return (question+f'\nScope: from {start} before {exclusive} (end exclusive).',
+            {'source':'web_selection','mode':'custom','default_applied':True,'start':start,'end':end,'end_exclusive':exclusive,'note':f'ใช้ช่วงเวลาที่เลือก: {start} ถึง {end} (รวมวันสิ้นสุด)'})
 
 
 def resolve_scope(question, metadata):

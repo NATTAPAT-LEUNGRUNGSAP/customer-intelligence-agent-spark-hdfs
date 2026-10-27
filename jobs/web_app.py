@@ -11,6 +11,7 @@ from urllib.parse import urlsplit
 from agent import answer
 from provenance import fingerprint
 from query_runtime import load_views, run_query
+from question_scope import validate_time_selection
 
 
 class Application:
@@ -20,7 +21,8 @@ class Application:
         self.reports = Path(reports)
         self.lock = threading.Lock()
 
-    def query(self, question):
+    def query(self, question, time_selection=None):
+        validate_time_selection(time_selection)
         if not isinstance(question,str) or not question.strip() or len(question)>2000:
             raise ValueError('Question must contain 1–2000 characters')
         if not self.lock.acquire(blocking=False):
@@ -29,7 +31,7 @@ class Application:
         try:
             try:
                 result = answer(question.strip(),self.schema,
-                    lambda sql:run_query(self.spark,sql),self.model,self.endpoint,'/app/knowledge')
+                    lambda sql:run_query(self.spark,sql),self.model,self.endpoint,'/app/knowledge',time_selection=time_selection)
             except Exception as error:
                 result = {'status':'failed','error':str(error),'rag':True}
             result.update(trace_id=trace_id,question=question,model=self.model,
@@ -83,9 +85,9 @@ def handler(app, static_root):
                 if not 0<size<=12000:
                     raise ValueError('Invalid request size')
                 body=json.loads(self.rfile.read(size))
-                if not isinstance(body,dict) or set(body)!={'question'}:
-                    raise ValueError('Only the question field is accepted')
-                self.send(200,app.query(body['question']))
+                if not isinstance(body,dict) or 'question' not in body or set(body)-{'question','time_selection'}:
+                    raise ValueError('Only question and time_selection fields are accepted')
+                self.send(200,app.query(body['question'],body.get('time_selection')))
             except BlockingIOError as error:
                 self.send(409,{'error':str(error)})
             except (ValueError,TypeError) as error:

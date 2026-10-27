@@ -1,3 +1,13 @@
+# Web time selection
+
+Web defaults to all available data; custom dates include both selected dates.
+Explicit question periods/snapshots override selection. The chosen scope is visible.
+Best-selling product requests ask units versus revenue when unspecified.
+100 unit tests passed; 4 actual authenticated HTTPS checks passed, including
+October invoice count 2040 and question-over-selector precedence.
+See web-time-unit-tests.txt and web-time-https-verification.json.
+The earlier 196/200 development evaluation was not rerun on this source.
+
 # Product-category availability fix
 
 The exact reported Thai question now returns that no product taxonomy exists,

@@ -1,16 +1,24 @@
 # Local web application
 
-An unqualified “เดือนไหนออเดอร์เยอะสุด” compares calendar year-months across
-the whole loaded dataset. The answer displays this default scope, the observed
-dates and a partial-month warning. It counts completed invoices, retains tied
-highest months, and still asks for a period on general questions such as
-“ยอดขายรวมเท่าไร”. Explicitly qualified questions are not rewritten by this rule.
+The web form provides an analysis-period selector, defaulting to **all available data**.
+Choose custom start/end dates when needed; both selected dates are included.
+SQL uses the equivalent half-open range ending at midnight after the selected end date.
+An explicit period or snapshot in the question takes precedence over the selector.
+The answer displays which scope was used. Formula/discovery/unavailable-field requests
+remain independent of the selected transaction period; snapshots still need their date.
+Month names without a year and relative periods are not silently converted to all data.
+The historical dataset does not become current data by choosing “today”.
 
-Ask “มีข้อมูลอะไรบ้าง” to see the tables and columns loaded by the running app,
-the observed date range and the available customer snapshot. This overview uses
-loaded schema/manifest metadata and cites the schema knowledge sections; it does
-not generate SQL or call the model. Analytical questions still require a period
-or snapshot. Deterministic clarification messages follow Thai questions in Thai.
+“สินค้าขายดีสุด 10 อันดับ” asks whether to rank by units or revenue, without asking
+for a period when the web selector already supplies one. Ask “มีข้อมูลอะไรบ้าง”
+for the loaded tables and columns. No verified product-category taxonomy is present.
+The API accepts optional `time_selection`: `{"mode":"all"}` or
+`{"mode":"custom","start":"2011-10-01","end":"2011-10-31"}`.
+API/CLI callers omitting that field keep the previous missing-period clarification.
+
+An unqualified highest-month invoice question still retains all tied highest months
+across calendar year-months for the all-data selector. A custom selector uses its
+requested period instead.
 
 Start the cluster with scripts/start.ps1 and ensure Ollama serves qwen3.5:9b at
 host.docker.internal:11434 from the container. Build data with scripts/build-data.ps1

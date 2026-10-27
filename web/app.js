@@ -1,10 +1,17 @@
 const $ = id => document.getElementById(id);
 let running = false;
+$('time-mode').addEventListener('change',()=>{
+  const custom=$('time-mode').value==='custom';
+  $('date-range').hidden=!custom;
+  $('start-date').required=custom; $('end-date').required=custom;
+});
 async function status() {
   try {
     const response = await fetch('/api/status');
     if (!response.ok) throw new Error('ระบบยังไม่พร้อม');
     const data = await response.json(), m = data.metadata;
+    $('start-date').value=m.observed_min_timestamp.slice(0,10);
+    $('end-date').value=m.observed_max_timestamp.slice(0,10);
     $('dataset').textContent = `ข้อมูล ${m.observed_min_timestamp} ถึง ${m.observed_max_timestamp} · snapshot ${m.as_of_date}`;
     $('submit').disabled = false;
   } catch (error) { $('progress').textContent = `เชื่อมต่อไม่ได้: ${error.message} กรุณาโหลดหน้าใหม่`; }
@@ -17,7 +24,8 @@ $('question-form').addEventListener('submit', async event => {
   running = true; $('submit').disabled = true; $('answer').hidden = true;
   $('progress').textContent = 'กำลังค้นหลักฐาน ตรวจ SQL และประมวลผล…';
   try {
-    const response = await fetch('/api/query', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:$('question').value})});
+    const time_selection=$('time-mode').value==='all' ? {mode:'all'} : {mode:'custom',start:$('start-date').value,end:$('end-date').value};
+    const response = await fetch('/api/query', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:$('question').value,time_selection})});
     const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Request failed');
     $('answer').hidden = false;
     $('answer-heading').textContent = data.intent==='unavailable_product_categories' ? 'ชุดข้อมูลไม่มีหมวดหมู่สินค้า' : data.intent==='formula' && data.status==='information' ? 'สูตรและวิธีคำนวณ' : ({information:'ข้อมูลที่มีและคำถามที่รองรับ',executed:'ผลการวิเคราะห์',clarification:'ต้องการข้อมูลเพิ่มเติม',failed:'ยังตอบคำถามนี้ไม่ได้'}[data.status] || data.status);

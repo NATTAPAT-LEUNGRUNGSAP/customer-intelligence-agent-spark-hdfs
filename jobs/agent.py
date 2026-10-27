@@ -16,7 +16,7 @@ from result_contracts import result_violations
 from semantic_contracts import validate_business_sql
 from policy_engine import authorize, policy_facts, PolicyUnavailable
 from dataset_info import is_dataset_discovery, overview, localize_policy, unavailable_product_categories
-from question_scope import resolve_scope, validate_month_comparison
+from question_scope import resolve_scope, validate_month_comparison, apply_time_selection
 from formula_intent import requested_formula, formula_response
 from metric_contracts import validate_metric_expression, request_constraints
 
@@ -44,6 +44,9 @@ def generate(messages, model, endpoint, timeout=90, max_tokens=768):
 def policy_check(question, metadata):
     """Enforce retrieved global evidence policies; never constructs SQL."""
     text = question.lower()
+    if (re.search(r'สินค้า|products?|items?',text) and re.search(r'ขายดี|best.sell|top\s*\d*',text)
+            and not re.search(r'จำนวนชิ้น|จำนวนสินค้า|จำนวนหน่วย|มูลค่า|ยอดขาย|units?|quantity|revenue|sales amount',text)):
+        return ('ต้องการจัดอันดับสินค้าตามจำนวนชิ้นที่ขาย หรือมูลค่ายอดขายครับ?' if re.search(r'[\u0e00-\u0e7f]',text) else 'Rank products by units sold or by sales revenue?'), 'policy.period'
     if re.search(r'profit|margin|cost|campaign|uplift|กำไร|ต้นทุน|แคมเปญ',text):
         return 'The dataset has no costs, profit or measured campaign outcomes to answer this question.', 'policy.availability'
     explicit_metric = re.search(r'by.*(?:sales|orders?|frequency|recency)|ตาม.*(?:ยอดขาย|จำนวนคำสั่งซื้อ)',text)
@@ -81,8 +84,11 @@ def validate_citations(citations, context):
 
 
 def answer(question, schema, execute, model, endpoint, knowledge, *,
-           context_strategy='managed', background='', evidence_position='middle'):
-    question, scope = resolve_scope(question,schema.get('_dataset_metadata',{}))
+           context_strategy='managed', background='', evidence_position='middle', time_selection=None):
+    if isinstance(time_selection,dict) and time_selection.get('mode')=='custom':
+        scope=None
+    else:
+        question, scope = resolve_scope(question,schema.get('_dataset_metadata',{}))
     context, retrieval = retrieve_context(question,knowledge)
     base = {'rag':True,'references':context,'retrieval':retrieval}
     if scope:base['analysis_scope']=scope
@@ -110,6 +116,13 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
         retrieval['context_ids']=[c['id'] for c in context]
         retrieval['context_characters']=sum(len(c['text']) for c in context)
         return dict(base,**unavailable)
+    if not scope:
+        resolved,selected_scope=apply_time_selection(question,schema.get('_dataset_metadata',{}),time_selection)
+        if selected_scope:base['analysis_scope']=selected_scope
+        if resolved!=question:
+            question=resolved
+            context,retrieval=retrieve_context(question,knowledge)
+            base.update(references=context,retrieval=retrieval)
     decision = policy_check(question,schema.get('_dataset_metadata',{}))
     if decision:
         message, citation = decision

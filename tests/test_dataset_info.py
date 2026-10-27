@@ -30,6 +30,14 @@ class DatasetInfoTests(unittest.TestCase):
             self.assertIsNone(unavailable_product_categories(q,schema))
         self.assertIsNone(unavailable_product_categories('What product categories exist?',
                           {'sales_lines':'struct<product_id:string,category:string>'}))
+    def test_best_selling_products_ask_metric_instead_of_period(self):
+        with patch('agent.generate',side_effect=AssertionError('No model')):
+            r=answer('สินค้าขายดีสุด 10 อันดับ',SCHEMA,lambda sql:self.fail('No SQL'),
+                     'fixture','unused',ROOT/'knowledge',time_selection={'mode':'all'})
+        self.assertEqual(r['status'],'clarification')
+        self.assertIn('จำนวนชิ้น',r['message'])
+        self.assertIn('มูลค่า',r['message'])
+        self.assertEqual(r['analysis_scope']['mode'],'all')
     def test_discovery_does_not_call_model_or_spark(self):
         for q in ('มีข้อมูลอะไรบ้าง','มีข้อมูลอะไร','What data is available?','What tables do you have?'):
             with self.subTest(q=q),patch('agent.generate',side_effect=AssertionError('No model')):

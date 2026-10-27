@@ -62,6 +62,8 @@ def overview(schema):
 def localize_policy(message, citation, question, metadata):
     if not re.search(r'[\u0e00-\u0e7f]',question):return message
     if citation=='policy.period':
+        if 'จัดอันดับสินค้า' in message:return message
+        if 'Rank products' in message:return 'ต้องการจัดอันดับสินค้าตามจำนวนชิ้นที่ขาย หรือมูลค่ายอดขายครับ?'
         if 'metric' in message.lower():
             return 'ต้องการจัดอันดับลูกค้าด้วยเกณฑ์ใด เช่น ยอดขายหรือจำนวนคำสั่งซื้อ และใช้ช่วงเวลาหรือวัน snapshot ใด?'
         return 'ต้องการวิเคราะห์ช่วงเวลาใดครับ? ระบุเดือนและปี หรือวันที่เริ่มต้นและสิ้นสุด เช่น “ตุลาคม 2011”'
