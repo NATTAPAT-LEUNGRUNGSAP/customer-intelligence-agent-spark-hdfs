@@ -2,4 +2,4 @@
 
 #message{white-space:pre-line;line-height:1.7}
 
-.time-controls{margin-top:18px}.time-controls select,.time-controls input{font:inherit;padding:10px;border:1px solid #a7bdb5;border-radius:8px;max-width:100%}#date-range label{margin:12px 0 6px}.time-controls label{margin-bottom:8px}
+.time-controls{margin:0 0 20px}.time-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.time-row label{font-size:14px;font-weight:500;margin:0}.time-controls select,.time-controls input{font:inherit;font-size:14px;padding:8px 12px;color:#264d43;background:#f7faf8;border:1px solid #c9dcd4;border-radius:8px;max-width:100%}.time-row .muted{font-size:12px}#date-range:not([hidden]){display:flex;gap:16px;flex-wrap:wrap;margin-top:14px}#date-range label{font-size:13px;font-weight:500;margin:0 0 6px}@media(max-width:600px){.time-row .muted{flex-basis:100%;line-height:1.6}}
