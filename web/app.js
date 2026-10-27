@@ -17,7 +17,12 @@ async function status() {
   } catch (error) { $('progress').textContent = `เชื่อมต่อไม่ได้: ${error.message} กรุณาโหลดหน้าใหม่`; }
 }
 document.querySelectorAll('[data-question]').forEach(button => button.addEventListener('click', () => {
-  if (!running) { $('question').value = button.dataset.question; $('question').focus(); }
+  if (!running) {
+    $('question').value = button.dataset.question;
+    $('question').focus();
+    $('question').scrollIntoView({behavior:'smooth',block:'center'});
+    $('progress').textContent='เติมคำถามตัวอย่างแล้ว แก้ไขได้ก่อนกดวิเคราะห์';
+  }
 }));
 $('question-form').addEventListener('submit', async event => {
   event.preventDefault(); if (running) return;
