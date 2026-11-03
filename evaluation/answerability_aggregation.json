@@ -1,0 +1,50 @@
+[
+  {
+    "id": "country_th",
+    "question": "ยอดขายรวมตามประเทศ เดือนมกราคม 2011 เรียงประเทศ",
+    "gold_sql": "SELECT country,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "ordered": true
+  },
+  {
+    "id": "product_th",
+    "question": "แต่ละสินค้ามียอดขายเท่าไร เดือนมกราคม 2011 แสดง 5 สินค้าแรกเรียงรหัสสินค้า",
+    "gold_sql": "SELECT product_id,SUM(line_amount) AS sales FROM sales_lines WHERE invoice_ts>=TIMESTAMP '2011-01-01' AND invoice_ts<TIMESTAMP '2011-02-01' AND transaction_type='sale' GROUP BY product_id ORDER BY product_id LIMIT 5",
+    "ordered": true
+  },
+  {
+    "id": "two_dims_th",
+    "question": "ยอดขายรวมแยกตามประเทศและเดือน ตลอดช่วงข้อมูลทั้งหมด แสดง 20 คู่แรก เรียงประเทศแล้วเดือน",
+    "gold_sql": "SELECT country,DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders GROUP BY country,DATE_TRUNC('MONTH',order_ts) ORDER BY country,month LIMIT 20",
+    "ordered": true
+  },
+  {
+    "id": "two_dims_en",
+    "question": "Show total sales by country and month for all available data, first 20 country-month pairs ordered by country then month",
+    "gold_sql": "SELECT country,DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders GROUP BY country,DATE_TRUNC('MONTH',order_ts) ORDER BY country,month LIMIT 20",
+    "ordered": true
+  },
+  {
+    "id": "two_measures_th",
+    "question": "ยอดขายรวมและจำนวนคำสั่งซื้อแยกตามประเทศ เดือนมกราคม 2011 เรียงประเทศ",
+    "gold_sql": "SELECT country,SUM(order_amount) AS sales,COUNT(*) AS invoices FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "ordered": true
+  },
+  {
+    "id": "three_measures_th",
+    "question": "สรุปยอดขายรวม จำนวนคำสั่งซื้อ และจำนวนลูกค้าไม่ซ้ำแยกประเทศ เดือนมกราคม 2011 เรียงประเทศ",
+    "gold_sql": "SELECT country,SUM(order_amount) AS sales,COUNT(*) AS invoices,COUNT(DISTINCT customer_id) AS buyers FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country ORDER BY country",
+    "ordered": true
+  },
+  {
+    "id": "having_th",
+    "question": "ยอดขายรวมของแต่ละประเทศที่มากกว่า 10000 GBP เดือนมกราคม 2011 เรียงประเทศ",
+    "gold_sql": "SELECT country,SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01' GROUP BY country HAVING SUM(order_amount)>10000 ORDER BY country",
+    "ordered": true
+  },
+  {
+    "id": "scalar_th",
+    "question": "ยอดขายรวมเท่าไร เดือนมกราคม 2011",
+    "gold_sql": "SELECT SUM(order_amount) AS sales FROM orders WHERE order_ts>=TIMESTAMP '2011-01-01' AND order_ts<TIMESTAMP '2011-02-01'",
+    "ordered": true
+  }
+]

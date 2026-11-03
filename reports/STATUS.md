@@ -1,3 +1,13 @@
+# Aggregation answerability fix — 3 November 2026
+
+108 unit tests and 3 actual OPA integration tests passed.
+Targeted 8-case live model/Spark comparison: executed 4/8 -> 8/8; strict
+reference-result match 3/8 -> 6/8. The other two differ only in country/month
+column positions and match values after explicit named-dimension reordering.
+See AGGREGATION_IMPROVEMENT.md and raw before/after reports.
+This is an exposed diagnostic; the historical 200-case bank was NOT rerun.
+Web is restored. MCP/privacy work has not been deployed.
+
 # Web time selection
 
 Web defaults to all available data; custom dates include both selected dates.

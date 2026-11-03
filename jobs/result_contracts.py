@@ -95,9 +95,21 @@ def result_violations(question, result, sql=None, max_rows=200):
                     errors.append('count_must_be_nonnegative_integer')
         group = tree.args.get('group')
         if group:
-            indices = [i for i,e in enumerate(expressions)
-                       if isinstance(e.this if isinstance(e,exp.Alias) else e,exp.Column)]
-            if indices and not tree.args.get('joins'):
+            projected=[e.this if isinstance(e,exp.Alias) else e for e in expressions]
+            aliases={e.alias:e.this for e in expressions if isinstance(e,exp.Alias)}
+            indices=[]
+            for grouped in group.expressions:
+                if isinstance(grouped,exp.Literal) and grouped.is_int:
+                    index=int(grouped.this)-1
+                    if 0<=index<len(projected):indices.append(index)
+                else:
+                    if isinstance(grouped,exp.Column) and grouped.name in aliases:
+                        grouped=aliases[grouped.name]
+                    match=next((i for i,e in enumerate(projected) if e==grouped),None)
+                    if match is not None:indices.append(match)
+            # A partial key (country alone in country/month) is not unique.
+            # Check only when every GROUP BY expression is actually projected.
+            if len(indices)==len(group.expressions) and indices and not tree.args.get('joins'):
                 keys = [tuple(str(row[i]) for i in indices if i < len(columns)) for row in rows]
                 if len(keys) != len(set(keys)):
                     errors.append('duplicate_group_keys')

@@ -8,17 +8,18 @@ def invoice_share_target(text):
 
 
 def has_breakdown(text):
+    text=text.lower()
+    if re.search(r'(?:ตาม|แต่ละ|แยก(?:ตาม)?)\s*(?:ประเทศ|สินค้า|ลูกค้า|เดือน|ปี|ไตรมาส|สัปดาห์|วัน|ชั่วโมง|กลุ่ม)',text):
+        return True
     return bool(re.search(r'\bby\s+(?:country|month|year|quarter|week|day|hour|product|customer|rfm_segment|segment|transaction_type)\b|\bper\s+(?:country|month|year|product|customer_id)\b|monthly|daily|weekly|hourly|quarterly|yearly|each (?:month|country|customer|product)|แต่ละประเทศ|แยก|รายเดือน|รายวัน|รายชั่วโมง|รายไตรมาส|รายปี|รายสัปดาห์|อันดับ|\brank\b|\btop\s+\d|which month|เดือนไหน|distribution',text))
 
 
 def expected_columns(text):
     if re.search(r'แสดงรหัสและค่า|output (?:customer|product) id and value|แสดงเฉพาะเดือนและค่า|output only month and|each country and its fraction|แต่ละประเทศกับสัดส่วน',text):return 2
     if re.search(r'\bfraction\b|สัดส่วน',text) and not has_breakdown(text):return 1
-    metrics=(r'\bsales\b|ยอดขาย',r'invoice count|จำนวนคำสั่งซื้อ',r'\baov\b|average order value|มูลค่าเฉลี่ยต่อคำสั่งซื้อ',r'distinct purchasing customer|จำนวนลูกค้าไม่ซ้ำ',r'\bunits\b|จำนวนสินค้าที่ขาย')
-    compound=re.search(r'\b(?:and|plus)\b.+\b(?:sales|count|aov|units|mean|average|growth|cumulative)\b',text)
-    if has_breakdown(text) and sum(bool(re.search(m,text)) for m in metrics)==1 and not compound:return 2
-    if has_breakdown(text) and re.search(r'by transaction_type|แยก transaction_type',text):return 2
-    if not has_breakdown(text) and not compound and not re.search(r'\band\b|followed by|และ|กับ',text) and re.search(r'\bcount\b|how many|\bcalculate\b|find the|เท่าไร|คำนวณ|นับ|\bnumber of\b',text):return 1
+    # Do not guess a hard column count from one metric keyword. A question may
+    # have multiple dimensions/measures, or include useful labels. Exact counts
+    # are enforced only for explicit projections or one overall fraction.
     return None
 
 
@@ -41,6 +42,7 @@ def request_constraints(question):
     if re.search(r'total units|units sold|units purchased|show units\b|จำนวนสินค้าที่ขาย|จำนวนสินค้าที่ซื้อ',text) and not re.search(r'product ids?|สินค้า\s*\d',text):
         constraints['metric']={'meaning':'sold/purchased unit quantity, not money','source':'orders.total_units','aggregation':'SUM'}
     if re.search(r'ordered by country|เรียงประเทศ|เรียงชื่อประเทศ',text):constraints['final_order']='country ASC'
+    if re.search(r'เรียงรหัสสินค้า|(?:ordered|sort) by product[_ ]id',text):constraints['final_order']='product_id ASC'
     for word,unit in [('quarterly','QUARTER'),('รายไตรมาส','QUARTER'),('hourly','HOUR'),('รายชั่วโมง','HOUR'),('weekly','WEEK'),('รายสัปดาห์','WEEK'),('yearly','YEAR'),('รายปี','YEAR'),('daily','DAY'),('รายวัน','DAY'),('monthly','MONTH'),('รายเดือน','MONTH')]:
         if word in text:constraints['time_bucket_unit']=unit;break
     snapshot=re.search(r'snapshot\s+(\d{4}-\d{2}-\d{2})',text)
@@ -113,6 +115,16 @@ def validate_metric_expression(question,sql):
             if not found:raise ValueError('Invoice-share numerator must use the requested condition: '+condition)
         checks.append('invoice_share_population_and_unit')
     breakdown=has_breakdown(text)
+    # A country breakdown does not imply a time breakdown. Check the unwanted
+    # dimension itself, rather than forbidding every third output column.
+    country_breakdown=re.search(r'\b(?:by|per|each)\s+countr(?:y|ies)\b|(?:ตาม|แต่ละ|แยก(?:ตาม)?)\s*ประเทศ',text)
+    time_breakdown=re.search(r'\b(?:by|per|each|and)\s+(?:month|year|quarter|week|day|hour)s?\b|monthly|yearly|quarterly|weekly|daily|hourly|รายเดือน|รายปี|รายไตรมาส|รายสัปดาห์|รายวัน|รายชั่วโมง|(?:ตาม|แต่ละ|และ)\s*(?:เดือน|ปี|ไตรมาส|สัปดาห์|วัน|ชั่วโมง)',text)
+    if country_breakdown and not time_breakdown:
+        for expression in tree.expressions:
+            expression=expression.this if isinstance(expression,exp.Alias) else expression
+            if not any(expression.find_all(exp.AggFunc,exp.Window)) and any(
+                    c.name.lower() in {'order_ts','invoice_ts'} for c in expression.find_all(exp.Column)):
+                raise ValueError('Country-only breakdown must not add an unrequested time dimension')
     columns=expected_columns(text)
     if columns and len(tree.expressions)!=columns:
         raise ValueError('Requested output requires exactly '+str(columns)+' column(s); remove unrequested dimensions, totals and intermediate values')
@@ -127,6 +139,10 @@ def validate_metric_expression(question,sql):
         order=tree.args.get('order')
         if not order or not order.expressions or not isinstance(order.expressions[0].this,exp.Column) or order.expressions[0].this.name.lower()!='country' or order.expressions[0].args.get('desc'):
             raise ValueError('Requested final ordering is country ascending, not metric descending')
+    if re.search(r'เรียงรหัสสินค้า|(?:ordered|sort) by product[_ ]id',text):
+        order=tree.args.get('order')
+        if not order or not order.expressions or not isinstance(order.expressions[0].this,exp.Column) or order.expressions[0].this.name.lower()!='product_id' or order.expressions[0].args.get('desc'):
+            raise ValueError('Requested final ordering is product_id ascending, not sales descending')
     if re.search(r'\bfraction\b|สัดส่วน',text) and not breakdown:
         if len(tree.expressions)!=1 or projection_wildcard(tree.expressions[0]):
             raise ValueError('Question asks for one overall fraction: return only the ratio, not numerator and denominator columns or individual customer rows')

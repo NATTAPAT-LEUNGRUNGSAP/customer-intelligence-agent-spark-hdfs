@@ -1,0 +1,143 @@
+{
+  "method": "actual execution of current Python validation functions against manually inspected valid aggregation SQL; not Spark or model execution",
+  "cases": [
+    {
+      "id": "country_th",
+      "question": "ยอดขายรวมตามประเทศ ตลอดช่วงข้อมูลทั้งหมด",
+      "sql": "SELECT country,SUM(order_amount) AS sales FROM orders GROUP BY country",
+      "checks": {
+        "sql_guard": {
+          "passed": true
+        },
+        "semantics": {
+          "passed": false,
+          "error": "Question asks for an overall statistic, not a breakdown: remove unrequested GROUP BY and month/date columns"
+        },
+        "business": {
+          "passed": true
+        },
+        "metric_shape": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "product_th",
+      "question": "แต่ละสินค้ามียอดขายเท่าไร ตลอดช่วงข้อมูลทั้งหมด",
+      "sql": "SELECT product_id,SUM(line_amount) AS sales FROM sales_lines WHERE transaction_type='sale' GROUP BY product_id",
+      "checks": {
+        "sql_guard": {
+          "passed": true
+        },
+        "semantics": {
+          "passed": false,
+          "error": "Question asks for an overall statistic, not a breakdown: remove unrequested GROUP BY and month/date columns"
+        },
+        "business": {
+          "passed": true
+        },
+        "metric_shape": {
+          "passed": false,
+          "error": "Requested output requires exactly 1 column(s); remove unrequested dimensions, totals and intermediate values"
+        }
+      }
+    },
+    {
+      "id": "two_dims_th",
+      "question": "ยอดขายรวมแยกตามประเทศและเดือน ตลอดช่วงข้อมูลทั้งหมด",
+      "sql": "SELECT country,DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders GROUP BY country,DATE_TRUNC('MONTH',order_ts)",
+      "checks": {
+        "sql_guard": {
+          "passed": true
+        },
+        "semantics": {
+          "passed": true
+        },
+        "business": {
+          "passed": true
+        },
+        "metric_shape": {
+          "passed": false,
+          "error": "Requested output requires exactly 2 column(s); remove unrequested dimensions, totals and intermediate values"
+        }
+      }
+    },
+    {
+      "id": "two_dims_en",
+      "question": "Show total sales by country and month for all available data",
+      "sql": "SELECT country,DATE_TRUNC('MONTH',order_ts) AS month,SUM(order_amount) AS sales FROM orders GROUP BY country,DATE_TRUNC('MONTH',order_ts)",
+      "checks": {
+        "sql_guard": {
+          "passed": true
+        },
+        "semantics": {
+          "passed": true
+        },
+        "business": {
+          "passed": true
+        },
+        "metric_shape": {
+          "passed": false,
+          "error": "Requested output requires exactly 2 column(s); remove unrequested dimensions, totals and intermediate values"
+        }
+      }
+    },
+    {
+      "id": "country_en",
+      "question": "Show total sales by country for all available data",
+      "sql": "SELECT country,SUM(order_amount) AS sales FROM orders GROUP BY country",
+      "checks": {
+        "sql_guard": {
+          "passed": true
+        },
+        "semantics": {
+          "passed": true
+        },
+        "business": {
+          "passed": true
+        },
+        "metric_shape": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "scalar",
+      "question": "ยอดขายรวมเท่าไร ตลอดช่วงข้อมูลทั้งหมด",
+      "sql": "SELECT SUM(order_amount) AS sales FROM orders",
+      "checks": {
+        "sql_guard": {
+          "passed": true
+        },
+        "semantics": {
+          "passed": true
+        },
+        "business": {
+          "passed": true
+        },
+        "metric_shape": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "multi_measures",
+      "question": "สรุปยอดขายรวม จำนวนคำสั่งซื้อ และจำนวนลูกค้าไม่ซ้ำแยกประเทศ ตลอดช่วงข้อมูลทั้งหมด",
+      "sql": "SELECT country,SUM(order_amount) AS sales,COUNT(*) AS invoices,COUNT(DISTINCT customer_id) AS buyers FROM orders GROUP BY country",
+      "checks": {
+        "sql_guard": {
+          "passed": true
+        },
+        "semantics": {
+          "passed": true
+        },
+        "business": {
+          "passed": true
+        },
+        "metric_shape": {
+          "passed": true
+        }
+      }
+    }
+  ]
+}

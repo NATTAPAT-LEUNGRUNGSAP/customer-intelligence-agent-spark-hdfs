@@ -1,0 +1,788 @@
+{
+  "method": "replay historical SQL through current pre-execution deterministic validators only; no new model or Spark calls",
+  "result_replay_excluded": "JSON records serialize some Decimal values as strings; do not interpret that as actual runtime numeric type failures",
+  "total": 156,
+  "passed": 156,
+  "checks": [
+    {
+      "id": "pair001-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair001-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair002-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair002-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair003-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair003-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair004-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair004-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair005-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair005-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair006-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair006-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair007-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair007-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair008-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair008-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair009-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair009-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair010-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair010-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair011-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair011-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair012-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair012-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair013-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair013-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair014-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair014-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair015-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair015-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair016-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair016-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair017-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair017-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair018-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair018-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair019-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair019-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair020-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair020-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair021-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair021-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair022-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair022-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair023-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair023-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair024-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair024-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair025-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair025-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair026-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair026-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair027-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair027-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair028-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair028-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair029-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair029-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair030-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair030-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair031-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair031-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair032-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair032-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair033-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair033-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair034-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair034-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair035-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair035-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair036-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair036-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair037-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair037-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair038-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair038-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair039-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair039-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair040-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair040-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair041-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair041-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair042-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair042-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair043-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair043-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair044-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair044-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair045-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair045-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair046-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair046-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair047-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair047-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair048-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair048-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair049-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair049-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair050-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair050-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair051-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair051-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair052-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair052-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair053-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair053-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair054-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair054-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair055-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair055-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair056-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair056-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair057-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair058-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair058-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair059-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair059-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair060-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair060-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair061-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair061-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair062-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair062-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair063-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair063-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair064-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair064-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair065-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair065-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair066-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair066-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair067-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair068-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair068-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair069-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair069-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair070-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair070-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair071-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair071-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair072-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair072-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair073-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair073-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair074-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair075-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair075-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair076-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair076-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair077-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair077-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair078-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair078-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair079-th",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair079-en",
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "pair080-en",
+      "passed": true,
+      "error": null
+    }
+  ]
+}

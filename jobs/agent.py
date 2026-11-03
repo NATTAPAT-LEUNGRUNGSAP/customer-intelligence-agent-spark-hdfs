@@ -151,6 +151,9 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
         'Cite the metric/schema IDs actually used, never invented IDs. '
         'Clarification must ask for genuinely missing user information or explain unavailable data. '
         'For window/statistical questions compose the retrieved syntax, not a fixed query template. '
+        'A breakdown can have multiple dimensions and multiple measures. Return every requested '
+        'dimension/measure; do not assume every grouped answer must have exactly two columns. '
+        'Inside the JSON sql string use valid SQL whitespace, never literal backslash-n outside SQL literals. '
         'Output exactly the requested columns and use the requested sample/approximate definition. '
         'A single-period total, count, AOV or statistic is one scalar column, not a monthly breakdown. '
         'Do not add a month/date column or GROUP BY unless a breakdown/ranking is requested. '
@@ -198,6 +201,9 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
                  'AVG(order_amount) is a valid AOV on orders: amounts are non-null; anonymous invoices are already included. '
                  'Check the SQL text itself for country/time filters. A present country filter is not missing. '
                  'Approve a correct query; reject only a concrete discrepancy, not missing optional syntax. '
+                 'A grouped result may have several dimensions and measures; that is not an extra-column error '
+                 'when the question requests them. Citation membership is already checked by code. '
+                 'Do not claim an evidence ID is missing when it appears in proposal.citations. '
                  'Spark DATE_TRUNC returns timestamp; half-open timestamp bounds and comparison to YYYY-MM-DD are valid. '
                  'SUM(value) OVER () is valid Spark SQL; no partition/frame is required for the overall sum. '
                  'Units, invoice frequency per buyer and sales per buyer are not transaction AOV. '
@@ -210,7 +216,8 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
                  'Do not approve SQL merely because it parses. Do not rewrite or execute SQL.\n'+
                  'Schemas/metadata:\n'+json.dumps(schema)+'\nEvidence:\n'+evidence+
                  '\nVerified request constraints:\n'+json.dumps(constraints,ensure_ascii=False)},
-                {'role':'user','content':json.dumps({'question':question,'proposal':proposed},ensure_ascii=False)}],
+                {'role':'user','content':json.dumps({'question':question,'proposal':proposed,
+                  'citation_validation':{'membership_checked':True,'validated_ids':citations}},ensure_ascii=False)}],
                 model,endpoint,max_tokens=384)
             calls += 1
             usage.append(review.pop('_context_usage',{}))

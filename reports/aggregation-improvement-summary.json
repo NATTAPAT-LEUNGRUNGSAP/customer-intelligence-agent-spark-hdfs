@@ -1,0 +1,74 @@
+{
+  "purpose": "targeted exposed diagnostic, not general accuracy or fresh holdout",
+  "same_bank_data_and_model": true,
+  "before": {
+    "executed": 4,
+    "strict_correct": 3,
+    "total": 8
+  },
+  "after": {
+    "executed": 8,
+    "strict_correct": 6,
+    "total": 8,
+    "matching_values_with_two_named_dimension_columns_reordered": 8
+  },
+  "supplementary_check_note": "Strict recorded scores unchanged. Only the two country/month cases receive an additional explicit [country,month,sales] value comparison; row ordering, counts and values remain exact. This is not an automatic semantic correctness oracle.",
+  "checks": [
+    {
+      "id": "country_th",
+      "strict_correct": true,
+      "values_match_after_named_dimension_column_reordering": true,
+      "column_permutation": null
+    },
+    {
+      "id": "product_th",
+      "strict_correct": true,
+      "values_match_after_named_dimension_column_reordering": true,
+      "column_permutation": null
+    },
+    {
+      "id": "two_dims_th",
+      "strict_correct": false,
+      "values_match_after_named_dimension_column_reordering": true,
+      "column_permutation": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "two_dims_en",
+      "strict_correct": false,
+      "values_match_after_named_dimension_column_reordering": true,
+      "column_permutation": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "two_measures_th",
+      "strict_correct": true,
+      "values_match_after_named_dimension_column_reordering": true,
+      "column_permutation": null
+    },
+    {
+      "id": "three_measures_th",
+      "strict_correct": true,
+      "values_match_after_named_dimension_column_reordering": true,
+      "column_permutation": null
+    },
+    {
+      "id": "having_th",
+      "strict_correct": true,
+      "values_match_after_named_dimension_column_reordering": true,
+      "column_permutation": null
+    },
+    {
+      "id": "scalar_th",
+      "strict_correct": true,
+      "values_match_after_named_dimension_column_reordering": true,
+      "column_permutation": null
+    }
+  ]
+}
