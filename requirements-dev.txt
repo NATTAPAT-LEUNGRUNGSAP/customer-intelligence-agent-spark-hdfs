@@ -1,0 +1,4 @@
+-r requirements-mcp.txt
+openpyxl==3.1.5
+ruff==0.14.3
+mypy==1.18.2

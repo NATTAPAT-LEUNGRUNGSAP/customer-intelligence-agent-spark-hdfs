@@ -18,10 +18,35 @@ def load_views(spark, path):
         frame = spark.read.parquet(root + '/' + name)
         frame.createOrReplaceTempView(name)
         schema[name] = frame.schema.simpleString()
+        schema.setdefault('_table_metadata',{})[name] = {
+            'schema':schema[name], 'columns':frame.schema.jsonValue()['fields'],
+            'approximate_rows':manifest.get(name+'_rows'),
+            'grain':{'orders':'one completed-sale invoice','sales_lines':'one source product line',
+                     'customer_summary':'one customer at one snapshot'}[name],
+            'logical_keys':{'orders':['invoice_id'],'sales_lines':['source_sheet','source_row'],
+                            'customer_summary':['customer_id','as_of_date']}[name],
+            'relationships':{'customer_id':'customer_summary.customer_id (snapshot-dependent)'} if name!='customer_summary' else {},
+            'keys_enforced_by_database':False}
     schema['_dataset_metadata'] = {key: manifest.get(key) for key in (
         'as_of_date', 'observed_min_timestamp', 'observed_max_timestamp',
         'duplicate_policy', 'excluded_inconsistent_invoice_sale_rows')}
     return schema, manifest
+
+
+def require_read_only(spark, root):
+    """Ask HDFS itself, not the SQL guard, to confirm read is allowed/write denied."""
+    path = spark._jvm.org.apache.hadoop.fs.Path(root)
+    fs = path.getFileSystem(spark._jsc.hadoopConfiguration())
+    action = spark._jvm.org.apache.hadoop.fs.permission.FsAction
+    fs.access(path, action.READ_EXECUTE)
+    for location in (root, '/customer_intelligence/runs', '/customer_intelligence'):
+        target=spark._jvm.org.apache.hadoop.fs.Path(location)
+        try:
+            fs.access(target, action.WRITE)
+        except Exception as error:
+            if 'AccessControlException' not in str(error):raise
+            continue
+        raise RuntimeError('Analytics identity has HDFS write access; refusing to serve queries')
 
 
 def run_query(spark, sql, timeout=45, max_rows=200):

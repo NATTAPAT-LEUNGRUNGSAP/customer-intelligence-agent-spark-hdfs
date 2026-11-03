@@ -1,3 +1,12 @@
+# Integrated deployment — 3 November 2026
+
+Main8090 now serves the integrated dashboard/AI application as ci_analyst.
+Preview8091 stopped after main checks passed. No HDFS rebuild or migration repeated.
+136 full Python tests, Node4/4, configured lint/type/syntax/Compose passed.
+Actual main-web HTTP6/6 passed; see local-integration-http-verification.json.
+See ../docs/CURRENT_STATE.md for all incorporated features and limits.
+Historical benchmark results below are not fresh measurements of this source.
+
 # Aggregation answerability fix — 3 November 2026
 
 108 unit tests and 3 actual OPA integration tests passed.

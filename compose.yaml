@@ -59,6 +59,8 @@ services:
       - ./data:/app/data:ro
   spark-job:
     build: ./infra/spark
+    environment:
+      HADOOP_USER_NAME: ci_etl
     hostname: spark-job
     profiles: ["jobs"]
     entrypoint: ["/opt/spark/bin/spark-submit"]
@@ -82,6 +84,13 @@ services:
       namenode: {condition: service_healthy}
       spark-worker: {condition: service_started}
       opa: {condition: service_started}
+  analytics-job:
+    extends:
+      service: spark-job
+    hostname: analytics-job
+    environment:
+      HADOOP_USER_NAME: ci_analyst
+    command: ["--master", "local[1]", "/app/jobs/agent.py", "--help"]
   prepare-data:
     build: ./infra/spark
     profiles: ["jobs"]

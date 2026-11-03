@@ -5,5 +5,5 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 Set-Location (Split-Path $PSScriptRoot -Parent)
-docker compose run --rm --no-deps --use-aliases spark-job --master spark://spark-master:7077 --conf spark.driver.host=spark-job --conf spark.driver.bindAddress=0.0.0.0 --conf spark.executor.memory=512m /app/jobs/evaluate.py --manifest $Manifest --model $Model --split $Split
+docker compose run --rm --no-deps --use-aliases analytics-job --master spark://spark-master:7077 --conf spark.driver.host=analytics-job --conf spark.driver.bindAddress=0.0.0.0 --conf spark.executor.memory=512m /app/jobs/evaluate.py --manifest $Manifest --model $Model --split $Split
 if ($LASTEXITCODE -ne 0) { throw 'Evaluation failed or incomplete; inspect report status.' }

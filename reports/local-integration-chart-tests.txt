@@ -1,0 +1,12 @@
+✔ bar chart handles negative values and uses safe SVG text (10.9403ms)
+✔ line chart requires time axis (0.9855ms)
+✔ scatter rejects categorical x and accepts two numeric columns (0.5059ms)
+✔ truncated chart warns about partial data (0.3533ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84.4179

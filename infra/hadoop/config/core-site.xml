@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
 <configuration>
   <property><name>fs.defaultFS</name><value>hdfs://namenode:9000</value></property>
+  <property><name>hadoop.user.group.static.mapping.overrides</name><value>ci_etl=ci_readers;ci_analyst=ci_readers;spark=ci_readers</value></property>
+  <property><name>fs.permissions.umask-mode</name><value>027</value></property>
 </configuration>

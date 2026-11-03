@@ -35,6 +35,19 @@ class BilingualSupportTests(unittest.TestCase):
             self.assertEqual(requested_period(q),['2011-01-05','2011-01-06'])
         with self.assertRaises(ValueError):validate_business_sql('Invoice counts hourly during January 5 2011',"SELECT DATE_TRUNC('HOUR',order_ts),COUNT(*) FROM orders WHERE DATE_TRUNC('MONTH',order_ts)=TIMESTAMP '2011-01-05' GROUP BY 1")
 
+    def test_thai_top_countries_without_rank_keyword_is_a_breakdown(self):
+        from metric_contracts import has_breakdown,request_constraints,validate_metric_expression
+        from result_contracts import validate_semantics
+        question='แสดงยอดขายรวมของ 5 ประเทศที่มียอดขายสูงสุดในเดือนตุลาคม 2011 แสดงประเทศและยอดขาย เรียงยอดขายจากมากไปน้อยแล้วประเทศจากน้อยไปมาก'
+        self.assertTrue(has_breakdown(question))
+        validate_semantics(question,'SELECT country, SUM(order_amount) FROM orders GROUP BY country')
+        self.assertFalse(has_breakdown('ยอดขายรวมใน 5 ประเทศเท่าไร'))
+        self.assertEqual(request_constraints(question)['ranking_limit'],5)
+        sql='SELECT country,SUM(order_amount) AS sales FROM orders GROUP BY country ORDER BY sales DESC,country ASC'
+        with self.assertRaisesRegex(ValueError,'LIMIT 5'):validate_metric_expression(question,sql)
+        with self.assertRaisesRegex(ValueError,'LIMIT 5'):validate_metric_expression(question,sql+' LIMIT 10')
+        validate_metric_expression(question,sql+' LIMIT 5')
+
     def test_thai_country_share_is_a_breakdown_not_a_scalar(self):
         from metric_contracts import expected_columns,has_breakdown
         q='แสดงแต่ละประเทศกับสัดส่วนยอดขายต่อยอดรวม เรียงประเทศ'

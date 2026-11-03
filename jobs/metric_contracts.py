@@ -7,9 +7,19 @@ def invoice_share_target(text):
     return bool(re.search(r'anonymous invoice fraction|fraction of invoices|single.product invoice fraction|สัดส่วนคำสั่งซื้อ',text))
 
 
+def ranking_limit(text):
+    match = re.search(r'\btop\s+(\d+)\b|'
+                      r'(\d+)\s*(?:ประเทศ|สินค้า|ลูกค้า).{0,50}(?:สูงสุด|มากที่สุด|ขายดีที่สุด)|'
+                      r'(?:ประเทศ|สินค้า|ลูกค้า)\s*(\d+)\s*อันดับ',text)
+    return int(next(value for value in match.groups() if value is not None)) if match else None
+
+
 def has_breakdown(text):
     text=text.lower()
     if re.search(r'(?:ตาม|แต่ละ|แยก(?:ตาม)?)\s*(?:ประเทศ|สินค้า|ลูกค้า|เดือน|ปี|ไตรมาส|สัปดาห์|วัน|ชั่วโมง|กลุ่ม)',text):
+        return True
+    if re.search(r'(?:แสดง|คืนค่า)\s*(?:ชื่อ)?ประเทศ\s*(?:และ|กับ)\s*(?:ยอดขาย|จำนวน|ค่า)|'
+                 r'\d+\s*(?:ประเทศ|สินค้า|ลูกค้า).{0,50}(?:สูงสุด|มากที่สุด|ขายดีที่สุด)',text):
         return True
     return bool(re.search(r'\bby\s+(?:country|month|year|quarter|week|day|hour|product|customer|rfm_segment|segment|transaction_type)\b|\bper\s+(?:country|month|year|product|customer_id)\b|monthly|daily|weekly|hourly|quarterly|yearly|each (?:month|country|customer|product)|แต่ละประเทศ|แยก|รายเดือน|รายวัน|รายชั่วโมง|รายไตรมาส|รายปี|รายสัปดาห์|อันดับ|\brank\b|\btop\s+\d|which month|เดือนไหน|distribution',text))
 
@@ -32,6 +42,8 @@ def request_constraints(question):
     from semantic_contracts import requested_period
     text=question.lower()
     constraints={}
+    top_n=ranking_limit(text)
+    if top_n is not None:constraints['ranking_limit']=top_n
     period=requested_period(question)
     if period:
         constraints['transaction_period']={'start_inclusive':period[0]+' 00:00:00','end_exclusive':period[1]+' 00:00:00',
@@ -80,6 +92,13 @@ def validate_metric_expression(question,sql):
     text=question.lower()
     tree=parse_one(sql,read='spark')
     checks=[]
+    top_n=ranking_limit(text)
+    if top_n is not None:
+        limit=tree.args.get('limit')
+        value=limit.expression if limit else None
+        if not isinstance(value,exp.Literal) or not value.is_int or int(value.this)!=top_n:
+            raise ValueError('Requested ranking requires an outer LIMIT '+str(top_n))
+        checks.append('requested_ranking_limit')
     def aggregate(kind,column):
         return any(isinstance(n.this,exp.Column) and n.this.name.lower()==column for n in tree.find_all(kind))
     if invoice_share_target(text):

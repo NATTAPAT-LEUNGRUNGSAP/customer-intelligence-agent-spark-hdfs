@@ -1,4 +1,8 @@
+> Integrated deployment update: see [current system](../docs/CURRENT_STATE.md). Optional MCP stdio adapter now exists; web still uses direct Python. The earlier audit below describes its inspected prior source.
+
 # Customer Intelligence
+
+> [MCP / Agentic AI audit, 3 Nov 2026](../docs/AGENTIC_MCP_AUDIT.md): MCP adapters/client and mandatory pseudonymization are proposed, not implemented. See the audit for source evidence and the instructor mapping.
 
 ### เส้นทางเตรียมข้อมูล
 

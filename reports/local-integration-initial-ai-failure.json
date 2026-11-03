@@ -1,0 +1,70 @@
+{
+  "purpose": "preserved failed pre-fix deployed check; not a passing result",
+  "question": "How many completed invoices were recorded in October 2011?",
+  "status": "failed",
+  "attempts": [
+    {
+      "sql": "SELECT COUNT(*) AS invoice_count FROM orders WHERE order_ts >= TIMESTAMP '2011-10-01 00:00:00' AND order_ts < TIMESTAMP '2011-11-01 00:00:00'",
+      "error": "Cite at least one supplied evidence ID; invented IDs are rejected",
+      "validated_citations": []
+    },
+    {
+      "sql": "SELECT COUNT(*) AS invoice_count FROM orders WHERE order_ts >= TIMESTAMP '2011-10-01 00:00:00' AND order_ts < TIMESTAMP '2011-11-01 00:00:00'",
+      "error": "Cite at least one supplied evidence ID; invented IDs are rejected",
+      "validated_citations": []
+    },
+    {
+      "sql": "SELECT COUNT(*) AS invoice_count FROM orders WHERE order_ts >= TIMESTAMP '2011-10-01 00:00:00' AND order_ts < TIMESTAMP '2011-11-01 00:00:00'",
+      "error": "Cite at least one supplied evidence ID; invented IDs are rejected",
+      "validated_citations": []
+    }
+  ],
+  "agent_trace": [
+    {
+      "stage": "retrieve",
+      "status": "ok",
+      "evidence_count": 8
+    },
+    {
+      "stage": "plan",
+      "attempt": 1,
+      "plan": [],
+      "observations": []
+    },
+    {
+      "stage": "repair",
+      "attempt": 1,
+      "error_type": "ValueError",
+      "retry": true
+    },
+    {
+      "stage": "plan",
+      "attempt": 2,
+      "plan": [],
+      "observations": []
+    },
+    {
+      "stage": "repair",
+      "attempt": 2,
+      "error_type": "ValueError",
+      "retry": true
+    },
+    {
+      "stage": "plan",
+      "attempt": 3,
+      "plan": [],
+      "observations": []
+    },
+    {
+      "stage": "repair",
+      "attempt": 3,
+      "error_type": "ValueError",
+      "retry": false
+    },
+    {
+      "stage": "stop",
+      "status": "failed",
+      "reason": "attempt_budget_exhausted"
+    }
+  ]
+}

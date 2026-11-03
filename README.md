@@ -1,5 +1,9 @@
 # Customer Intelligence Agent with Spark & HDFS
 
+New: [business overview dashboard](docs/dashboard.md) with shared date/country filters, four KPI cards, four charts and the existing AI analysis/evidence flow.
+
+Latest local improvements: [storage roles, bounded follow-ups, charts, metadata and validation](docs/platform-improvements.md). Use `analytics-job` for read-only queries; `spark-job` is the ETL role. Earlier benchmark tables below are historical and predate these changes.
+
 ระบบวิเคราะห์ข้อมูลลูกค้าและยอดขายด้วยภาษาธรรมชาติ ผู้ใช้ถามผ่านเว็บ แล้ว Agent ค้นนิยามธุรกิจด้วย RAG สร้าง SQL และประมวลผลบน Apache Spark โดยอ่านข้อมูลจาก HDFS
 
 ผลลัพธ์แสดงเป็นตาราง พร้อม SQL และหลักฐานที่ใช้ เพื่อให้ผู้ใช้ตรวจสอบวิธีคำนวณและที่มาของคำตอบได้
@@ -21,6 +25,8 @@
 พร้อม [นิยามสูตรและรูปแบบ SQL สำหรับ RAG](docs/ANALYTICS_RAG.md) เช่น AOV,
 สัดส่วนลูกค้าซื้อซ้ำ สถิติ และ window functions. ขอสูตรได้โดยไม่รันคำนวณ เช่น
 `ขอสูตรAOV ไม่ต้องรัน SQL`; การถามตัวเลขยังผ่านการสร้างและตรวจ SQL ตามปกติ.
+
+> **ระบบปัจจุบัน:** Dashboard, agent metadata tools, session/follow-up และ optional MCP stdio รวมไว้แล้ว ดู [สถานะล่าสุดและผลทดสอบ](docs/CURRENT_STATE.md) · [วิธีใช้ Dashboard](docs/dashboard.md). เว็บหลักอยู่ที่ http://localhost:8090; privacy ยังมีข้อจำกัดตามเอกสาร.
 
 ## Architecture
 
@@ -201,3 +207,6 @@ docker compose run --rm --no-deps --entrypoint python3 spark-job -m unittest dis
 - จำกัดผลลัพธ์ 200 แถว และส่งคำสั่งยกเลิก Spark job เมื่อเกิน 45 วินาที การยกเลิกเป็น best effort
 - Context budget เป็น heuristic; การทดสอบเบื้องต้นยังไม่พิสูจน์ว่าป้องกัน context rot ได้ทั่วไป
 - ยังไม่ได้ยืนยันการดาวน์โหลดและ build ข้อมูลใหม่ครบกระบวนการบนเครื่องอื่น
+# Agent planning and optional MCP
+
+See [evidence, changes, usage and validation limits](docs/agentic-improvements.md) for the optional metadata-tool loop, local PySpark MCP adapter, export pseudonyms and trace evaluation. Existing RAG and SQL safety gates remain mandatory.

@@ -1,0 +1,2 @@
+-r requirements-agent.txt
+mcp==1.26.0
