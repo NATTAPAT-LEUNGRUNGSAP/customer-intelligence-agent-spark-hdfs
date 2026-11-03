@@ -34,6 +34,8 @@ Input guard covers targeted patterns, not all prompt injections. Sessions/quotas
 RFM charts filter purchasers who exist in the prebuilt2011-12-01 snapshot, not a newly computed snapshot. Product codes include M/DOT/POST and similar source entries.
 MCP requires requirements-mcp.txt and an operator-supplied secret; no public MCP HTTP listener or long-running MCP service was deployed. No key was checked into Git.
 
-Before merging, destination source/untracked documents and patches were backed up under ignored `.private/local-integration-20261103/`. That directory contains rollback snapshots, not an active legacy web service. Source checkout/venv/data/credentials/caches were not copied wholesale. Original source checkout remains available; only its preview container was stopped.
+After successful integration and deployment, the user requested removal of unused versions. Removed the ignored integration rollback/snapshot directory, legacy overrides, old diagnostic source copies and the stopped8091 preview container. Removed319 verified redundant source files from the former checkout, plus its Git and lint caches; no unique source changes were discarded. The current committed checkout and its Git history remain the source of truth.
 
-Future web startup uses current compose.yaml + compose.web.yaml (ci_analyst). Do not use the backup's legacy override for normal startup. Do not rerun HDFS migration unless separately required.
+The former source location now retains only the Python validation environment (and a pointer README); the environment remains at its existing absolute path so installed tool launchers keep working. It is not an old running app. Current main web uses only this checkout.
+
+Normal startup uses current compose.yaml + compose.web.yaml as ci_analyst. Do not repeat HDFS migration unless separately required. HDFS tables, raw datasets, credentials and current136-test validation dependencies were preserved.
