@@ -16,6 +16,7 @@ from result_contracts import result_violations
 from semantic_contracts import validate_business_sql
 from policy_engine import authorize, policy_facts, PolicyUnavailable
 from dataset_info import is_dataset_discovery, overview, localize_policy, unavailable_product_categories
+from dataset_info import is_product_listing
 from question_scope import resolve_scope, validate_month_comparison, apply_time_selection
 from formula_intent import requested_formula, formula_response
 from metric_contracts import validate_metric_expression, request_constraints
@@ -90,6 +91,9 @@ def validate_citations(citations, context):
 def answer(question, schema, execute, model, endpoint, knowledge, *,
            context_strategy='managed', background='', evidence_position='middle', time_selection=None):
     question = validate_question(question)
+    catalog = is_product_listing(question)
+    if catalog and time_selection is None:
+        time_selection = {'mode':'all'}
     if isinstance(time_selection,dict) and time_selection.get('mode')=='custom':
         scope=None
     else:
@@ -138,6 +142,13 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
     evidence,context_plan=assemble_evidence(context,background,context_strategy,evidence_position)
     base['context_plan']=context_plan
     constraints=request_constraints(question)
+    if catalog:
+        constraints['product_listing'] = (
+            "List up to 20 observed products using sales_lines, transaction_type='sale'. "
+            "Return product_id and one nonempty description per product_id, sorted by product_id. "
+            "Use the selected time and country scope if present. "
+            "Product names are available and no category is requested. Generate SQL directly."
+        )
     prompt_schema = {key:value for key,value in schema.items() if key!='_table_metadata'}
     base['request_constraints']=constraints
     instructions = (
@@ -211,6 +222,8 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
             citations = validate_citations(proposed.get('citations'),context)
             last_valid_citations = citations
             if proposed.get('clarification'):
+                if catalog:
+                    raise ValueError('This is a product list, not a category request. Use the product_listing constraints and generate SQL.')
                 return dict(base,status='clarification',message=proposed['clarification'],
                             citations=citations,attempts=attempts,model_calls=calls,context_usage=usage)
             guarded = validate_sql(proposed.get('sql'))
@@ -235,6 +248,7 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
                  'Orders already contains completed sales. Reject a customer-ID filter on total sales unless the request requires it. '
                  'AVG(order_amount) is a valid AOV on orders: amounts are non-null; anonymous invoices are already included. '
                  'Check the SQL text itself for country/time filters. A present country filter is not missing. '
+                 'For product_listing, review product_id and description from sales_lines; orders has neither column. '
                  'Approve a correct query; reject only a concrete discrepancy, not missing optional syntax. '
                  'A grouped result may have several dimensions and measures; that is not an extra-column error '
                  'when the question requests them. Citation membership is already checked by code. '

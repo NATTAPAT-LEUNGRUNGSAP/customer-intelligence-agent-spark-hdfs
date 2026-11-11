@@ -22,6 +22,16 @@ class AggregationAnswerabilityTests(unittest.TestCase):
     def test_unrequested_grouping_is_still_rejected(self):
         with self.assertRaises(ValueError):
             validate_semantics('ยอดขายรวมเท่าไร ตลอดช่วงข้อมูลทั้งหมด','SELECT country,SUM(order_amount) FROM orders GROUP BY country')
+    def test_each_product_can_return_revenue_and_units_together(self):
+        question = 'มีสินค้าอะไรบ้าง และยอดขายแต่ละอย่างเท่าไรและจำนวนเท่าไร'
+        sql = ("SELECT product_id, description, SUM(line_amount) AS sales, SUM(quantity) AS units "
+               "FROM sales_lines WHERE transaction_type = 'sale' "
+               "GROUP BY product_id, description ORDER BY product_id")
+        validate_sql(sql)
+        validate_semantics(question, sql)
+        validate_business_sql(question, sql)
+        validate_metric_expression(question, sql)
+        self.assertIn('product_sales_and_units', request_constraints(question))
     def test_wrong_source_period_and_writes_still_reject(self):
         for sql in ('DELETE FROM orders','SELECT * FROM secret_customers'):
             with self.assertRaises(ValueError):validate_sql(sql)

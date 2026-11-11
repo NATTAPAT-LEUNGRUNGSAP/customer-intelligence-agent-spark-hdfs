@@ -37,8 +37,14 @@ def day_bucket(text):
     return bool(re.search(r'\b(?:by|per) day\b|\bdaily\b|highest.sales day|day with (?:the )?highest sales|รายวัน|แยก(?:ตาม)?วัน|วันยอดขายสูงสุด', text))
 
 
+def product_breakdown(text):
+    return bool(re.search(r'สินค้า', text) and re.search(r'แต่ละ(?:อย่าง|รายการ|ตัว)', text))
+
+
 def has_breakdown(text):
     text=text.lower()
+    if product_breakdown(text):
+        return True
     if ranking_limit(text) is not None or day_bucket(text):
         return True
     if re.search(r'(?:ตาม|แต่ละ|แยก(?:ตาม)?)\s*(?:ประเทศ|สินค้า|ลูกค้า|เดือน|ปี|ไตรมาส|สัปดาห์|วัน|ชั่วโมง|กลุ่ม)',text):
@@ -69,6 +75,12 @@ def request_constraints(question):
     from semantic_contracts import requested_period
     text=question.lower()
     constraints={}
+    if product_breakdown(text) and 'ยอดขาย' in text and re.search(r'จำนวน|กี่ชิ้น', text):
+        constraints['product_sales_and_units'] = (
+            "Return both sales revenue and units sold per product. Use sale rows from sales_lines, "
+            "group by product_id, and aggregate line_amount for revenue and quantity for units. "
+            "Include a description when listing product names. Preserve requested filters."
+        )
     top_n=ranking_limit(text)
     if top_n is not None:constraints['ranking_limit']=top_n
     period=requested_period(question)

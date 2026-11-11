@@ -2,6 +2,16 @@
 import re
 
 
+def is_product_listing(question):
+    """Recognize a plain catalog request, leaving category and ranking intents alone."""
+    first_line = question.partition('\n')[0].strip().lower().rstrip('?？!.').strip()
+    return bool(re.fullmatch(
+        r'(?:มีสินค้าอะไร(?:บ้าง)?|ดูรายชื่อสินค้า|ขอรายชื่อสินค้า|แสดงรายชื่อสินค้า|'
+        r'what products (?:are available|do you have)|(?:show|list) (?:the )?products)',
+        first_line,
+    ))
+
+
 def unavailable_product_categories(question, schema):
     """A missing product taxonomy cannot be supplied by choosing a time range."""
     text=question.lower()
