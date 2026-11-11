@@ -7,15 +7,40 @@ def invoice_share_target(text):
     return bool(re.search(r'anonymous invoice fraction|fraction of invoices|single.product invoice fraction|สัดส่วนคำสั่งซื้อ',text))
 
 
+RANK_WORDS = dict(zip('one two three four five six seven eight nine ten'.split(), range(1, 11)))
+
+
 def ranking_limit(text):
     match = re.search(r'\btop\s+(\d+)\b|'
                       r'(\d+)\s*(?:ประเทศ|สินค้า|ลูกค้า).{0,50}(?:สูงสุด|มากที่สุด|ขายดีที่สุด)|'
                       r'(?:ประเทศ|สินค้า|ลูกค้า)\s*(\d+)\s*อันดับ',text)
-    return int(next(value for value in match.groups() if value is not None)) if match else None
+    if match:
+        return int(next(value for value in match.groups() if value is not None))
+    word = re.search(r'\btop\s+(' + '|'.join(RANK_WORDS) + r')\b', text)
+    return RANK_WORDS[word[1]] if word else None
+
+
+def invoice_population(text):
+    if not re.search(r'fraction|share|percent|ratio|สัดส่วน|ร้อยละ', text) and re.search(
+        r'(?=.*(?:\bsales\b|\brevenue\b|ยอดขาย))(?=.*(?:anonymous invoices?|invoices? without (?:a )?customer id|(?:ใบสั่งซื้อ|คำสั่งซื้อ)ที่ไม่มีรหัสลูกค้า))',
+        text,
+    ):
+        return 'anonymous'
+    if re.search(r'highest.sales day|day with (?:the )?highest sales|วันยอดขายสูงสุด', text) and not re.search(
+        r'customer|anonymous|ลูกค้า|รหัส', text,
+    ):
+        return 'all'
+    return None
+
+
+def day_bucket(text):
+    return bool(re.search(r'\b(?:by|per) day\b|\bdaily\b|highest.sales day|day with (?:the )?highest sales|รายวัน|แยก(?:ตาม)?วัน|วันยอดขายสูงสุด', text))
 
 
 def has_breakdown(text):
     text=text.lower()
+    if ranking_limit(text) is not None or day_bucket(text):
+        return True
     if re.search(r'(?:ตาม|แต่ละ|แยก(?:ตาม)?)\s*(?:ประเทศ|สินค้า|ลูกค้า|เดือน|ปี|ไตรมาส|สัปดาห์|วัน|ชั่วโมง|กลุ่ม)',text):
         return True
     if re.search(r'(?:แสดง|คืนค่า)\s*(?:ชื่อ)?ประเทศ\s*(?:และ|กับ)\s*(?:ยอดขาย|จำนวน|ค่า)|'
@@ -25,6 +50,8 @@ def has_breakdown(text):
 
 
 def expected_columns(text):
+    if re.search(r'คืนวันที่และจำนวน|return day and count|คืนวันและยอด|return the highest.sales day.*and its sales|product.line counts by transaction_type|จำนวนแถวสินค้าแยก transaction_type', text):
+        return 2
     if re.search(r'แสดงรหัสและค่า|output (?:customer|product) id and value|แสดงเฉพาะเดือนและค่า|output only month and|each country and its fraction|แต่ละประเทศกับสัดส่วน',text):return 2
     if re.search(r'\bfraction\b|สัดส่วน',text) and not has_breakdown(text):return 1
     # Do not guess a hard column count from one metric keyword. A question may
@@ -51,6 +78,14 @@ def request_constraints(question):
             'columns':{'orders':'order_ts','sales_lines':'invoice_ts'}}
     columns=expected_columns(text)
     if columns:constraints['output_column_count']=columns
+    if day_bucket(text):
+        constraints['time_bucket_unit']='DAY'
+        constraints['time_bucket_hint']="Use DATE_TRUNC('DAY', timestamp) for a day bucket. A month in the filter does not add a month output column."
+    population=invoice_population(text)
+    if population=='anonymous':
+        constraints['invoice_population']='Anonymous invoices only: orders.customer_id IS NULL. Orders already contains completed sales only.'
+    elif population=='all':
+        constraints['invoice_population']='Use all invoices in the requested period and country, including anonymous invoices. No customer ID filter.'
     if re.search(r'total units|units sold|units purchased|show units\b|จำนวนสินค้าที่ขาย|จำนวนสินค้าที่ซื้อ',text) and not re.search(r'product ids?|สินค้า\s*\d',text):
         constraints['metric']={'meaning':'sold/purchased unit quantity, not money','source':'orders.total_units','aggregation':'SUM'}
     if re.search(r'ordered by country|เรียงประเทศ|เรียงชื่อประเทศ',text):constraints['final_order']='country ASC'
@@ -92,6 +127,18 @@ def validate_metric_expression(question,sql):
     text=question.lower()
     tree=parse_one(sql,read='spark')
     checks=[]
+    population=invoice_population(text)
+    if population:
+        filters=[node for where in tree.find_all(exp.Where) for node in where.find_all(exp.Column)
+                 if node.name.lower()=='customer_id']
+        if population=='anonymous' and not any(
+            isinstance(node.parent,exp.Is) and isinstance(node.parent.expression,exp.Null)
+            and not isinstance(node.parent.parent,exp.Not) for node in filters
+        ):
+            raise ValueError('Anonymous invoice sales require customer_id IS NULL in WHERE.')
+        if population=='all' and filters:
+            raise ValueError('Daily sales include anonymous invoices. Remove the unrequested customer ID filter.')
+        checks.append('requested_invoice_population')
     top_n=ranking_limit(text)
     if top_n is not None:
         limit=tree.args.get('limit')

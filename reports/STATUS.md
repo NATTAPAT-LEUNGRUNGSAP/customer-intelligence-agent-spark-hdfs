@@ -1,3 +1,16 @@
+# SQL evaluation follow-up — 11 November 2026
+
+Development SQL 144/160 before fixes. After fixes, prior set 16/16 (was 11/16)
+and new follow-up 11/12. The explanation judge caught 2/8 unsupported controls.
+See BENCHMARK_FOLLOWUP.md and FAITHFULNESS_EVIDENCE_AUDIT.md.
+
+# Tool lifecycle hooks — 5 November 2026
+
+Shared synchronous Spark hooks added to Agent and Dashboard; see
+../docs/TOOL_HOOKS.md. Targeted 34 tests and focused Ruff passed using mocks.
+Full discovery interrupted at MCP SDK test; no full-suite pass claimed.
+Not yet verified against live Spark/OPA/Ollama or deployed by this change.
+
 # Integrated deployment — 3 November 2026
 
 Main8090 now serves the integrated dashboard/AI application as ci_analyst.

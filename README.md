@@ -1,5 +1,9 @@
 # Customer Intelligence Agent with Spark & HDFS
 
+ดูวิธีประเมินความสอดคล้องกับหลักฐานและความถูกต้องของ SQL แยกกันใน [คู่มือ Langfuse](docs/LANGFUSE_EVALUATION.md)
+
+Agent และ Dashboard มี [tool lifecycle hooks](docs/TOOL_HOOKS.md) กลางสำหรับตรวจนโยบายก่อนรัน Spark ตรวจผลลัพธ์หลังรัน และบันทึกขั้นตอนที่เกิดข้อผิดพลาด
+
 New: [business overview dashboard](docs/dashboard.md) with shared date/country filters, four KPI cards, four charts and the existing AI analysis/evidence flow.
 
 Latest local improvements: [storage roles, bounded follow-ups, charts, metadata and validation](docs/platform-improvements.md). Use `analytics-job` for read-only queries; `spark-job` is the ETL role. Earlier benchmark tables below are historical and predate these changes.

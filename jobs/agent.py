@@ -10,7 +10,7 @@ from urllib.request import Request, urlopen
 from retrieval import retrieve_context
 from sql_guard import validate_sql
 from context_budget import check_budget, ContextBudgetExceeded
-from context_engine import assemble_evidence, repair_messages, compact_json
+from context_engine import assemble_evidence, repair_messages
 from result_contracts import validate_result, validate_semantics
 from result_contracts import result_violations
 from semantic_contracts import validate_business_sql
@@ -20,6 +20,7 @@ from question_scope import resolve_scope, validate_month_comparison, apply_time_
 from formula_intent import requested_formula, formula_response
 from metric_contracts import validate_metric_expression, request_constraints
 from input_guard import validate_question, UNTRUSTED_INPUT_RULE
+from tool_hooks import ToolHooks
 
 
 def generate(messages, model, endpoint, timeout=90, max_tokens=768):
@@ -153,7 +154,7 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
         'Champions and high-value are different definitions. Inactive includes high-value customers too. '
         'An explicitly requested NOT high-value subgroup must use is_high_value=false; '
         'the rule against adding this filter applies only when the user did not request it. '
-        "Use DATE_TRUNC('MONTH', timestamp_column), unit first, or half-open TIMESTAMP bounds. "
+        'Use DATE_TRUNC(unit, timestamp_column) with the requested bucket and half-open TIMESTAMP filter bounds. '
         'Generate SQL yourself; no query-template catalog is available. SELECT/WITH only on allowed views. '
         'Before SQL you may inspect metadata. For a metadata turn return only '
         '{"plan":["inspect schema"],"tools":[{"name":"describe_table","table":"orders"}]}. '
@@ -175,6 +176,8 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
         'Never put internal reasoning or a promised SQL correction inside clarification. '
         'If a rejected query has a schema/logic error, repair the SQL directly using the supplied facts. '
         'Use deterministic ordering. GBP never implies a country filter. '
+        'Orders already contains completed-sale invoices. If requested, anonymous-only means customer_id IS NULL. '
+        'Unspecified customer status means include both identified and anonymous invoices. '
         'For identified customer rankings, exclude NULL customer_id BEFORE grouping and ranking. '
         'For a repeat customer fraction: first count invoices per identified customer in the requested '
         'period/country; then divide the count with frequency>=2 by COUNT of ALL those customers. '
@@ -188,6 +191,7 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
     attempts, calls, usage, last_valid_citations = [], 0, [], []
     policy_trace=[]
     base['policy_trace']=policy_trace
+    base['hook_trace']=[]
     for attempt in range(3):
         proposed={}
         try:
@@ -212,7 +216,6 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
             semantic_contract = validate_business_sql(question,proposed['sql'])
             semantic_contract['metric_checks']=validate_metric_expression(question,proposed['sql'])
             if scope:validate_month_comparison(proposed['sql'])
-            policy_trace.append(authorize(policy_facts(proposed['sql'],attempt+1)))
             review = generate([
                 {'role':'system','content':
                  UNTRUSTED_INPUT_RULE +
@@ -224,6 +227,8 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
                  'Use orders for invoice counts; use exact rfm_segment labels for segment counts. '
                  'Honor explicit NOT high-value with is_high_value=false; reject only unrequested filters. '
                  'COUNT(*) over orders without a customer_id filter includes anonymous orders already. '
+                 'Honor verified invoice_population. An explicit request for invoices without a customer ID requires customer_id IS NULL. '
+                 'Orders already contains completed sales. Reject a customer-ID filter on total sales unless the request requires it. '
                  'AVG(order_amount) is a valid AOV on orders: amounts are non-null; anonymous invoices are already included. '
                  'Check the SQL text itself for country/time filters. A present country filter is not missing. '
                  'Approve a correct query; reject only a concrete discrepancy, not missing optional syntax. '
@@ -251,12 +256,19 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
             if review.get('approved') is not True:
                 raise ValueError('Evidence consistency review rejected SQL: '+str(review.get('reason')))
             base['agent_trace'].append({'stage':'review','attempt':attempt+1,'status':'approved'})
-            result = execute(guarded)
+            contracts = {}
+            def before_spark(_context):
+                policy_trace.append(authorize(policy_facts(proposed['sql'],attempt+1)))
+            def after_spark(_context, output):
+                policy_trace.append(authorize(policy_facts(proposed['sql'],attempt+1,'post',
+                    result_violations(question,output,proposed['sql']))))
+                contracts['result'] = validate_result(question,output,proposed['sql'])
+            hooks = ToolHooks(before_tool=(before_spark,), after_tool=(after_spark,),
+                              events=base['hook_trace'])
+            result = hooks.run('spark_sql', lambda: execute(guarded), attempt=attempt+1)
             base['agent_trace'].append({'stage':'observe','attempt':attempt+1,
                 'row_count':len(result.get('rows',[])), 'truncated':result.get('truncated',False)})
-            policy_trace.append(authorize(policy_facts(proposed['sql'],attempt+1,'post',
-                                        result_violations(question,result,proposed['sql']))))
-            contract = validate_result(question,result,proposed['sql'])
+            contract = contracts['result']
             return dict(base,status='executed',sql=proposed['sql'],executed_sql=guarded,
                         explanation=proposed.get('explanation'),grain=proposed.get('grain'),
                         citations=citations,review=review,result=result,result_contract=contract,

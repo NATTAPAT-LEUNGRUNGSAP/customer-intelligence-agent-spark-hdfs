@@ -7,8 +7,10 @@ process diagrams, connectors, text and tables. It includes the implemented
 RDF/OWL domain ontology with SHACL, mandatory OPA/Rego decisions before/after
 Spark, semantic and result checks, and current measured outcomes.
 
-Current measurements: 60/60 newly authored combinations, 80/80 exposed regression,
-53 unit tests and 3 actual OPA integration tests. Context uses 12 distinct questions
+The current SQL slides separate the 200-question development run before the SQL
+fixes from the 16-question regression rerun and the 12-question follow-up. The
+faithfulness slide reports the judge's performance on 16 controls. See
+[benchmark follow-up](../reports/BENCHMARK_FOLLOWUP.md). Context uses 12 distinct questions
 in 3 conditions, 36 trials total, with RAG in every condition. All measurements and
 limits are documented in reports/GOVERNANCE_REPORT.md. No software/release labels
 or delivery time-box framing appear on the slides.

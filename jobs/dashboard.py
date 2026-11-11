@@ -5,6 +5,7 @@ from sqlglot.optimizer.scope import traverse_scope
 from sql_guard import validate_sql
 from policy_engine import authorize, policy_facts
 from result_contracts import validate_result
+from tool_hooks import ToolHooks
 
 
 def filters(selection, country, metadata, countries):
@@ -46,12 +47,16 @@ def queries(scope, snapshot):
 
 def guarded_query(sql, execute):
     guarded=validate_sql(sql)
-    pre=authorize(policy_facts(sql,1))
-    result=execute(guarded)
-    contract=validate_result('',result,sql)
-    post=authorize(policy_facts(sql,1,'post',[]))
-    return {'status':'executed','result':result,'result_contract':contract,
-            'sql':sql,'policy_trace':[pre,post]}
+    state={}
+    def before(_context):
+        state['pre']=authorize(policy_facts(sql,1))
+    def after(_context, result):
+        state['contract']=validate_result('',result,sql)
+        state['post']=authorize(policy_facts(sql,1,'post',[]))
+    hooks=ToolHooks(before_tool=(before,),after_tool=(after,))
+    result=hooks.run('spark_sql',lambda: execute(guarded))
+    return {'status':'executed','result':result,'result_contract':state['contract'],
+            'sql':sql,'policy_trace':[state['pre'],state['post']], 'hook_trace':hooks.events}
 
 
 def validate_country_scope(sql, country):

@@ -23,3 +23,5 @@ reports/archive/
 reports/checkout-verification/
 presentation/customer-intelligence-v2.2.pptx
 presentation/customer-intelligence-v2.4.pptx
+/reports/langfuse-*.json
+/reports/langfuse-*.json.pending
