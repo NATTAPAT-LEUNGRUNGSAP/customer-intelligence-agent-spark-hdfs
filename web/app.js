@@ -44,6 +44,7 @@ $('question-form').addEventListener('submit', async event => {
     const stageNames={retrieve:'ค้นหลักฐาน',plan:'วางแผน / ตรวจ metadata',review:'SQL ผ่าน reviewer',observe:'รับผลจาก Spark',repair:'ส่งข้อผิดพลาดกลับเพื่อแก้',stop:'หยุดตามข้อจำกัด'};
     (data.agent_trace || []).forEach(step=>{const li=document.createElement('li');li.textContent=(stageNames[step.stage] || step.stage)+(step.attempt ? ` · รอบ ${step.attempt}`:'')+(step.row_count!==undefined?` · ${step.row_count} แถว`:'');$('agent-steps').append(li);});
     $('answer-heading').textContent = data.intent==='unavailable_product_categories' ? 'ชุดข้อมูลไม่มีหมวดหมู่สินค้า' : data.intent==='formula' && data.status==='information' ? 'สูตรและวิธีคำนวณ' : ({information:'ข้อมูลที่มีและคำถามที่รองรับ',executed:'ผลการวิเคราะห์',clarification:'ต้องการข้อมูลเพิ่มเติม',failed:'ยังตอบคำถามนี้ไม่ได้'}[data.status] || data.status);
+    if (data.intent === 'column_discovery') $('answer-heading').textContent = 'คอลัมน์ที่ใช้งานได้';
     $('message').textContent = data.message || data.error || data.explanation || '';
     if (data.analysis_scope) $('message').textContent += '\n' + data.analysis_scope.note;
     if (data.selected_country) $('message').textContent += '\nประเทศที่เลือก: '+data.selected_country;

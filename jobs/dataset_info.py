@@ -44,6 +44,50 @@ def is_dataset_discovery(question):
         r'what can (?:i ask|you do)|show (?:the )?(?:available tables|dataset overview))',text))
 
 
+PUBLIC_TABLES = ('sales_lines', 'orders', 'customer_summary')
+
+
+def requested_schema(question):
+    """Return the requested public table names, or None for a non-schema question."""
+    text = question.strip().lower().rstrip('?？!.').strip()
+    tables = '|'.join(PUBLIC_TABLES)
+    match = re.fullmatch(
+        r'(?:มีคอลัมน์(?:ชื่อ)?อะไร(?:บ้าง)?|(?:ขอ|ดู|แสดง)(?:รายชื่อ|ชื่อ)?คอลัมน์)'
+        r'(?:\s*(?:ใน|ของ)?\s*(?:ฐานข้อมูล|ข้อมูล|แต่ละตาราง))?'
+        rf'(?:\s*(?:ใน|ของ)?\s*(?:ตาราง\s*)?({tables}))?'
+        rf'|(?:list|show|what are) (?:the )?(?:column names|columns)'
+        rf'(?: (?:in|for|of) (?:the )?(?:database|dataset|({tables})))?',
+        text,
+    )
+    if not match:
+        return None
+    table = next((name for name in match.groups() if name), None)
+    return (table,) if table else PUBLIC_TABLES
+
+
+def column_overview(schema, tables, question):
+    thai = bool(re.search(r'[\u0e00-\u0e7f]', question))
+    rows = []
+    for table in tables:
+        if table not in schema:
+            continue
+        fields = schema.get('_table_metadata', {}).get(table, {}).get('columns', [])
+        if fields:
+            rows.extend([table, field['name'], field['type'] if isinstance(field['type'], str)
+                         else field['type']['type']] for field in fields)
+        else:
+            rows.extend([table, name, kind] for name, kind in
+                        re.findall(r'(?:<|,)(\w+):([^,>()]+(?:\(\d+,\d+\))?)', schema[table]))
+    message = ('รายชื่อคอลัมน์และชนิดข้อมูลจากตารางที่ระบบโหลดจริง' if thai else
+               'Column names and types from the loaded tables.')
+    if not rows:
+        message = 'ยังไม่มีข้อมูลคอลัมน์ของตารางที่ขอ' if thai else 'No column metadata is available.'
+    return {'status': 'information', 'intent': 'column_discovery', 'message': message,
+            'result': {'columns': ['ตาราง', 'คอลัมน์', 'ชนิดข้อมูล'] if thai else
+                       ['Table', 'Column', 'Data type'], 'rows': rows, 'truncated': False},
+            'source': 'loaded_schema', 'model_calls': 0, 'attempts': [], 'sql_executed': False}
+
+
 def overview(schema):
     metadata=schema.get('_dataset_metadata',{})
     descriptions={

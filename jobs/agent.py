@@ -17,6 +17,7 @@ from semantic_contracts import validate_business_sql
 from policy_engine import authorize, policy_facts, PolicyUnavailable
 from dataset_info import is_dataset_discovery, overview, localize_policy, unavailable_product_categories
 from dataset_info import is_product_listing
+from dataset_info import requested_schema, column_overview
 from question_scope import resolve_scope, validate_month_comparison, apply_time_selection
 from formula_intent import requested_formula, formula_response
 from metric_contracts import validate_metric_expression, request_constraints
@@ -108,15 +109,19 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
             return dict(base,status='clarification',intent='formula',message='ยังไม่มีนิยามสูตรนี้ในคลังความรู้ กรุณาระบุ metric ที่รองรับ',citations=['policy.availability'],model_calls=0,attempts=[])
         chunk=next(c for c in context if c['id']==formula)
         return dict(base,**formula_response(formula,chunk))
-    if is_dataset_discovery(question):
+    schema_tables = requested_schema(question)
+    if schema_tables is not None or is_dataset_discovery(question):
         from retrieval import index
-        ids={'schema.'+table for table in ('orders','sales_lines','customer_summary') if table in schema}
+        tables = schema_tables if schema_tables is not None else ('orders','sales_lines','customer_summary')
+        ids={'schema.'+table for table in tables if table in schema}
         known={c['id']:c for c in index(knowledge)[0]}
         for ident in sorted(ids):
             if ident not in known:raise ValueError('Dataset overview requires knowledge section: '+ident)
             if ident not in {c['id'] for c in context}:context.append(known[ident])
         retrieval['context_ids']=[c['id'] for c in context]
         retrieval['context_characters']=sum(len(c['text']) for c in context)
+        if schema_tables is not None:
+            return dict(base,**column_overview(schema,tables,question),citations=sorted(ids))
         return dict(base,**overview(schema),citations=sorted(ids),intent='dataset_discovery')
     unavailable=unavailable_product_categories(question,schema)
     if unavailable:

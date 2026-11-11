@@ -5,8 +5,19 @@ from metric_contracts import validate_metric_expression,request_constraints
 from result_contracts import validate_semantics,result_violations
 from semantic_contracts import validate_business_sql
 from sql_guard import validate_sql
+from dataset_info import requested_schema, column_overview
 ROOT=Path(__file__).resolve().parents[1]
 class AggregationAnswerabilityTests(unittest.TestCase):
+    def test_schema_question_lists_loaded_public_columns_without_sql(self):
+        tables = requested_schema('มีคอลัมน์ชื่ออะไรบ้างในฐานข้อมูล')
+        schema = {'orders': 'struct<order_amount:decimal(18,4),invoice_id:string>',
+                  'internal': 'struct<secret:string>'}
+        info = column_overview(schema, tables, 'มีคอลัมน์ชื่ออะไรบ้างในฐานข้อมูล')
+        self.assertEqual(info['result']['rows'],
+                         [['orders', 'order_amount', 'decimal(18,4)'], ['orders', 'invoice_id', 'string']])
+        self.assertFalse(info['sql_executed'])
+        self.assertEqual(requested_schema('แสดงคอลัมน์ของตาราง orders'), ('orders',))
+        self.assertIsNone(requested_schema('ยอดขายตามคอลัมน์ country เท่าไร'))
     def test_valid_diagnostic_aggregations_are_not_false_rejected(self):
         for case in json.loads((ROOT/'reports/aggregation-contract-audit.json').read_text(encoding='utf-8'))['cases']:
             with self.subTest(case=case['id']):
