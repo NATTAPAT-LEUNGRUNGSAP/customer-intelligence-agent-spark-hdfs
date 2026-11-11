@@ -52,7 +52,7 @@ def requested_schema(question):
     text = question.strip().lower().rstrip('?？!.').strip()
     tables = '|'.join(PUBLIC_TABLES)
     match = re.fullmatch(
-        r'(?:มีคอลัมน์(?:ชื่อ)?อะไร(?:บ้าง)?|(?:ขอ|ดู|แสดง)(?:รายชื่อ|ชื่อ)?คอลัมน์)'
+        r'(?:มีคอลัม(?:น์|ป์)(?:ชื่อ)?อะไร(?:บ้าง)?|(?:ขอ|ดู|แสดง)(?:รายชื่อ|ชื่อ)?คอลัม(?:น์|ป์))'
         r'(?:\s*(?:ใน|ของ)?\s*(?:ฐานข้อมูล|ข้อมูล|แต่ละตาราง))?'
         rf'(?:\s*(?:ใน|ของ)?\s*(?:ตาราง\s*)?({tables}))?'
         rf'|(?:list|show|what are) (?:the )?(?:column names|columns)'

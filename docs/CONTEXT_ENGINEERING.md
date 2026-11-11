@@ -85,3 +85,24 @@ Do not substitute this design description for a completed experiment.
 Both experiments are now complete; reports/CONTEXT_REPORT.md records actual results.
 The original V1 packing module is retained in docs/experiments/ with a byte hash
 matching its pre-run fingerprint. The current production default is Context v2.
+## Context budget audit — 11 November 2026
+
+The local web audit read 103 saved request traces. It found 119 model calls
+with both the app estimate and Ollama's `prompt_eval_count`, from several
+iterations of the app. For calls with the current recorded message shapes,
+the estimate-to-observed median was 2.49× for initial SQL generation
+(47 calls), 2.43× for SQL review (34), and 2.47× for repair (17).
+The largest observed input in these three groups was 2,771 tokens.
+
+Two requests stopped at preflight, both schema questions using the spelling
+“คอลัมป์”. They reached the SQL prompt rather than the metadata answer path.
+Their estimates were 7,583 and 7,172, above the 6,000 input limit. The first
+included 5,692 UTF-8 bytes of evidence out of roughly 14.9 KB of message
+content. There are no observed token counts for either blocked request.
+
+The metadata matcher now accepts both “คอลัมน์” and “คอลัมป์”. The limits
+remain unchanged. Successful calls reveal that the heuristic is conservative
+on those prompts, but cannot show whether a blocked SQL prompt would fit.
+Calibrate any new estimate on held-out SQL prompts by stage, including long
+Thai inputs and repair prompts. Verify actual token counts and Gold SQL
+results before changing the preflight rule.
