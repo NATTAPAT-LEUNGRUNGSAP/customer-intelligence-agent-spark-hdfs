@@ -1,8 +1,15 @@
-# Current integrated system — 3 November 2026
+# Current system
+
+The latest evaluation follow-up is dated 11 November 2026. See
+[benchmark follow-up](../reports/BENCHMARK_FOLLOWUP.md) for the 200-item
+development run before the SQL fixes, the regression retest (16/16) and the
+12-item follow-up (11/12). The [55-minute presentation](../presentation/customer-intelligence-talk.pptx)
+summarizes SQL Correctness and the separate faithfulness judge audit.
+
+## Integration snapshot — 3 November 2026
 
 The two chats now use one integrated checkout and main web service at **http://localhost:8090**.
 The former preview container at 8091 was stopped after main-service checks passed.
-The original current deck remains 31 slides; its runtime diagrams/metrics have not been updated for these features.
 
 ## Incorporated work
 
@@ -24,7 +31,8 @@ The original current deck remains 31 slides; its runtime diagrams/metrics have n
 - AI October2040 → September1837 follow-up and Germany58 matched expected invoice counts.
 - Main dashboard visually inspected in browser; screenshot integrated-dashboard-main.png.
 - Other-chat claims of independent15/15 section gold, MCP9/9 and writer/reader checks are retained as historical source validation, not relabelled as a rerun of this merged revision.
-- No complete 200-question run or new independent holdout on this integrated revision. Previous196/200 and aggregation3/8→6/8 refer to their recorded prior sources.
+- At the time of this integration snapshot, the 200-question bank had not yet
+  been rerun. The follow-up at the top records subsequent runs and their scope.
 
 ## Limits and operational notes
 
