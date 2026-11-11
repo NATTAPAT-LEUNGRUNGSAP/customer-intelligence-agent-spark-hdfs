@@ -1,5 +1,7 @@
 # Customer Intelligence Agent with Spark & HDFS
 
+[คู่มืออ่านโค้ดและส่งต่องาน](docs/CODE_HANDOFF.md) ไล่เส้นทางจากหน้าเว็บไปถึง Spark และชุดประเมิน
+
 ดูวิธีประเมินความสอดคล้องกับหลักฐานและความถูกต้องของ SQL แยกกันใน [คู่มือ Langfuse](docs/LANGFUSE_EVALUATION.md)
 
 Agent และ Dashboard มี [tool lifecycle hooks](docs/TOOL_HOOKS.md) กลางสำหรับตรวจนโยบายก่อนรัน Spark ตรวจผลลัพธ์หลังรัน และบันทึกขั้นตอนที่เกิดข้อผิดพลาด
@@ -12,7 +14,7 @@ Latest local improvements: [storage roles, bounded follow-ups, charts, metadata 
 
 ผลลัพธ์แสดงเป็นตาราง พร้อม SQL และหลักฐานที่ใช้ เพื่อให้ผู้ใช้ตรวจสอบวิธีคำนวณและที่มาของคำตอบได้
 
-[Presentation](presentation/customer-intelligence-system-guide.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/BILINGUAL_ANALYTICS_REPORT.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
+[สไลด์นำเสนอ](presentation/customer-intelligence-talk.pptx) · [คู่มือระบบฉบับเต็ม](presentation/customer-intelligence-system-guide.pptx) · [Architecture](reports/ARCHITECTURE.md) · [ผลประเมิน](reports/BENCHMARK_FOLLOWUP.md) · [วิธีใช้งานเว็บ](docs/WEB_APP.md)
 
 ## ใช้ทำอะไรได้บ้าง
 

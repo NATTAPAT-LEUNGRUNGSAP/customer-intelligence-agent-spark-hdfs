@@ -69,6 +69,7 @@ class Application:
         finally:self.lock.release()
 
     def query(self, question, time_selection=None, *, session_id=None, follow_up=False, country=None):
+        """Turn a browser request into an Agent response and a local trace."""
         question = validate_question(question)
         validate_time_selection(time_selection)
         if not isinstance(follow_up,bool):raise ValueError('Invalid follow-up selection')
@@ -94,6 +95,8 @@ class Application:
             def execute(sql):
                 if country is not None:validate_country_scope(sql,country)
                 return run_query(self.spark,sql)
+            # The Agent validates proposals and calls execute only at the
+            # tool boundary; the callback also enforces the UI country filter.
             try:
                 result = answer(resolved,self.schema,
                     execute,self.model,self.endpoint,'/app/knowledge',time_selection=time_selection)

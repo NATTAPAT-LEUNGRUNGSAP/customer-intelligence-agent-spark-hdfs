@@ -8,6 +8,7 @@ from sql_guard import TABLES
 
 
 def load_views(spark, path):
+    """Register the passed build's Parquet tables as Spark SQL views and expose their schema."""
     manifest = json.loads(Path(path).read_text(encoding='utf-8'))
     root = manifest.get('root', '')
     if manifest.get('status') != 'passed' or not re.fullmatch(
@@ -50,6 +51,7 @@ def require_read_only(spark, root):
 
 
 def run_query(spark, sql, timeout=45, max_rows=200):
+    """Run caller-validated SQL and return a bounded table to the caller."""
     if not 1 <= timeout <= 300:
         raise ValueError('Query timeout must be 1..300 seconds')
     group = uuid.uuid4().hex

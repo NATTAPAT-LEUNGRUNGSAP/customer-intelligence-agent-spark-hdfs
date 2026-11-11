@@ -70,6 +70,8 @@ def main():
             if not args.retrieval_only:
                 try:
                     result=answer(c['question'],schema,lambda sql:run_query(spark,sql),model,endpoint,root/'knowledge')
+                    # Of the benchmark case fields, the Agent receives only the question. Gold stays in this
+                    # evaluator and is used after the Agent has returned.
                     if c.get('gold_sql'):
                         correct=result['status']=='executed' and same_result(result['result'],gold[c['pair_id']],c['ordered'])
                         row['gold']=gold[c['pair_id']]

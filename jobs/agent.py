@@ -189,6 +189,8 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
         json.dumps([c['id'] for c in context]))
     messages = [{'role':'system','content':instructions},{'role':'user','content':question}]
     attempts, calls, usage, last_valid_citations = [], 0, [], []
+    # All entry points supply the same execution interface. Only guarded SQL
+    # reaches it, after citation, business-rule and model review checks.
     policy_trace=[]
     base['policy_trace']=policy_trace
     base['hook_trace']=[]
@@ -216,6 +218,8 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
             semantic_contract = validate_business_sql(question,proposed['sql'])
             semantic_contract['metric_checks']=validate_metric_expression(question,proposed['sql'])
             if scope:validate_month_comparison(proposed['sql'])
+            # This second model call reviews the proposal before Spark runs.
+            # Offline faithfulness scoring of the answer is a separate job.
             review = generate([
                 {'role':'system','content':
                  UNTRUSTED_INPUT_RULE +
@@ -257,6 +261,8 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
                 raise ValueError('Evidence consistency review rejected SQL: '+str(review.get('reason')))
             base['agent_trace'].append({'stage':'review','attempt':attempt+1,'status':'approved'})
             contracts = {}
+            # Hooks surround the Spark call. A denial before it prevents
+            # execution; a denial after it prevents delivery of the rows.
             def before_spark(_context):
                 policy_trace.append(authorize(policy_facts(proposed['sql'],attempt+1)))
             def after_spark(_context, output):
@@ -288,7 +294,8 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
             if isinstance(error,PolicyUnavailable):
                 base['policy_blocked']=True
                 break
-            # Keep the original facts/question and only the latest repair state.
+            # Send the original evidence and latest failed proposal/error back
+            # to the next generation attempt without accumulating old repairs.
             messages = repair_messages(messages,proposed,error)
     base['agent_trace'].append({'stage':'stop','status':'failed','reason':
         'blocked' if base.get('policy_blocked') or base.get('context_blocked') else 'attempt_budget_exhausted'})

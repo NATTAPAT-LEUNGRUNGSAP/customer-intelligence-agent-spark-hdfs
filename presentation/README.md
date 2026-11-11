@@ -1,5 +1,10 @@
 # Presentation
 
+ฉบับนำเสนอ 55 นาที: [customer-intelligence-talk.pptx](customer-intelligence-talk.pptx).
+มีแผนเวลาใน Speaker Notes และเก็บรายละเอียด Docker สองหน้าไว้เป็นสไลด์ซ่อน
+หน้าสรุปการประเมินแสดง SQL Correctness คู่กับผลทดสอบตัวตรวจ Faithfulness
+และแยกคะแนนตามชุดทดสอบ
+
 Current deck: [customer-intelligence-system-guide.pptx](customer-intelligence-system-guide.pptx), 31 slides in Thai/English.
 
 The deck explains business terms in short on-slide notes and uses editable native
