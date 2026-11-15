@@ -102,6 +102,18 @@ def validate_business_sql(question, sql):
     if invoice_count and not snapshot and not line_metric:
         checks.append('invoice_source_grain')
     period = requested_period(question)
+    breakdown = re.search(r'\bby\s+transaction_type\b|แยก(?:ตาม)?\s*transaction_type\b', text)
+    monthly_output = re.search(r'\b(?:by\s+month|monthly|each\s+month|show\s+the\s+month)\b|รายเดือน|แต่ละเดือน|แยก(?:ตาม)?เดือน|แสดงเดือน', text)
+    if breakdown and period and not monthly_output and 'sales_lines' in tables:
+        first, last = map(dt.date.fromisoformat, period)
+        if first.strftime('%Y-%m') == (last - dt.timedelta(days=1)).strftime('%Y-%m'):
+            for column in tree.selects:
+                if column.alias_or_name.lower() == 'month' or any(
+                        str(node.args.get('unit')).upper() == 'MONTH'
+                        for node in column.find_all(exp.TimestampTrunc)):
+                    raise ValueError('For a single-month transaction-type breakdown, use the month only in WHERE. '
+                                     'Return transaction_type and the requested measures without a month column.')
+            checks.append('single_month_filter_only')
     for scope, source in sources:
         name = source.name.lower()
         where = scope.expression.args.get('where')
@@ -118,8 +130,7 @@ def validate_business_sql(question, sql):
                     for n in (conjuncts(where.this) if where else [])):
                 raise ValueError('customer_summary requires requested as_of_date equality in WHERE')
             checks.append('snapshot_filter')
-        if name == 'sales_lines' and line_metric:
-            breakdown=bool(re.search(r'by transaction_type|แยก transaction_type',text))
+        if name == 'sales_lines' and (line_metric or breakdown):
             explicit=re.search(r'(?:classified as|ประเภท)\s+(sale|cancellation|return|adjustment|invalid)\b',text)
             required = (explicit[1] if explicit else 'cancellation' if 'cancellation' in text else 'return' if
                         re.search(r'return.*(?:product )?lines', text) else 'sale')

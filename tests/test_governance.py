@@ -58,6 +58,15 @@ class BusinessTests(unittest.TestCase):
     def test_wrong_transaction_type(self):
         with self.assertRaisesRegex(ValueError,'transaction_type'):
             validate_business_sql('Count cancellation product lines in June 2011',self.good.replace('orders','sales_lines').replace('order_ts','invoice_ts'))
+    def test_single_month_transaction_breakdown_treats_month_as_filter(self):
+        question = 'เดือนมกราคม 2011 แสดงจำนวนแถวสินค้าแยก transaction_type เรียงประเภท'
+        where = "FROM sales_lines WHERE invoice_ts >= TIMESTAMP '2011-01-01' AND invoice_ts < TIMESTAMP '2011-02-01'"
+        sql = f'SELECT transaction_type, COUNT(*) {where} GROUP BY transaction_type'
+        self.assertIn('single_month_filter_only', validate_business_sql(question, sql)['checks'])
+        grouped = f"SELECT DATE_TRUNC('MONTH', invoice_ts) AS period, transaction_type, COUNT(*) {where} GROUP BY 1, 2"
+        with self.assertRaisesRegex(ValueError, 'without a month column'):
+            validate_business_sql(question, grouped)
+        validate_business_sql('Show monthly product lines by transaction_type in January 2011', grouped)
     def test_fanout(self):
         with self.assertRaisesRegex(ValueError,'fan-out'):
             validate_business_sql('Total sales all available data','SELECT sum(o.order_amount) FROM orders o JOIN sales_lines s ON o.invoice_id=s.invoice_id')
