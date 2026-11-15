@@ -2,6 +2,7 @@
 import argparse
 import os
 import json
+from typing import Any
 from agent_tools import observe_tools
 from pseudonymization import pseudonymize_result
 from input_guard import validate_question
@@ -33,6 +34,22 @@ def create_server(schema, ask, key):
         if response['status'] == 'clarification':
             exported['message'] = response.get('message','')
         return exported
+
+    return server
+
+
+def create_web_server(ask):
+    """Serve the full browser response on the container's loopback interface."""
+    from mcp.server.fastmcp import FastMCP
+    server = FastMCP('customer-intelligence-web', host='127.0.0.1',
+                     stateless_http=True, json_response=True)
+
+    @server.tool(structured_output=True)
+    def analyze(question: str, time_selection: dict | None = None,
+                country: str | None = None) -> dict[str, Any]:
+        """Analyze a browser question with its selected scope."""
+        result = ask(validate_question(question), time_selection, country)
+        return json.loads(json.dumps(result, ensure_ascii=False, default=str))
 
     return server
 

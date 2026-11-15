@@ -72,7 +72,8 @@ $('question-form').addEventListener('submit', async event => {
       if (data.result.truncated) $('message').textContent += ' · แสดงไม่เกิน 200 แถว ผลลัพธ์ยังไม่ครบ';
       if (!data.result.rows.length) $('message').textContent += ' · ไม่พบข้อมูลตามเงื่อนไข';
     }
-    $('trace').textContent=`Trace ${data.trace_id} · ${data.elapsed_seconds.toFixed(2)} วินาที · ${data.model}`;
+    const transport = data.analysis_transport === 'mcp' ? ' · MCP analyze' : '';
+    $('trace').textContent=`Trace ${data.trace_id} · ${data.elapsed_seconds.toFixed(2)} วินาที · ${data.model}${transport}`;
     $('sql').textContent=data.executed_sql || data.sql || (data.intent==='formula' ? 'แสดงนิยามสูตรและ SQL expression จาก RAG โดยยังไม่ได้รันคำนวณ' : data.status==='information' ? 'คำถามสำรวจชุดข้อมูล: อ่านจาก schema และข้อมูลกำกับที่โหลดไว้ จึงไม่ต้องรัน SQL' : 'ไม่มี SQL ที่รันสำเร็จ');
     $('evidence').replaceChildren();
     (data.references || []).forEach(item => { const p=document.createElement('p'); p.textContent=`${(data.citations || []).includes(item.id) ? '✓ ' : ''}${item.id}: ${item.text}`; $('evidence').append(p); });

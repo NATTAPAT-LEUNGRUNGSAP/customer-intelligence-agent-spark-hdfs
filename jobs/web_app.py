@@ -33,6 +33,20 @@ class Application:
         self.session_lock = threading.Lock()
         self.overview_cache = {}
         self.country_options = None
+        self.analysis = self.analyze
+
+    def analyze(self, question, time_selection, country):
+        validate_time_selection(time_selection)
+        if country is not None and country not in self.countries():
+            raise ValueError('Unknown country')
+
+        def execute(sql):
+            if country is not None:
+                validate_country_scope(sql, country)
+            return run_query(self.spark, sql)
+
+        return answer(question, self.schema, execute, self.model, self.endpoint,
+                      '/app/knowledge', time_selection=time_selection)
 
     def countries(self):
         if self.country_options is None:
@@ -92,14 +106,8 @@ class Application:
                 if not isinstance(country,str) or country not in self.countries():raise ValueError('Unknown country')
                 resolved=re.sub(r'\nSelected country:[^\n]*','',resolved)
                 resolved=validate_question(resolved+'\nSelected country: '+country)
-            def execute(sql):
-                if country is not None:validate_country_scope(sql,country)
-                return run_query(self.spark,sql)
-            # The Agent validates proposals and calls execute only at the
-            # tool boundary; the callback also enforces the UI country filter.
             try:
-                result = answer(resolved,self.schema,
-                    execute,self.model,self.endpoint,'/app/knowledge',time_selection=time_selection)
+                result = self.analysis(resolved, time_selection, country)
             except Exception as error:
                 result = {'status':'failed','error':str(error),'rag':True}
             result['resolved_question'] = resolved
@@ -190,6 +198,7 @@ def handler(app, static_root):
 
 def main():
     from pyspark.sql import SparkSession
+    from web_mcp import web_analysis_client
     parser=argparse.ArgumentParser()
     parser.add_argument('--manifest',required=True)
     parser.add_argument('--model',default='qwen3.5:9b')
@@ -204,9 +213,11 @@ def main():
         require_read_only(spark,manifest['root'])
         app=Application(spark,schema,manifest,args.model,args.endpoint,
                         fingerprint(endpoint=args.endpoint,model=args.model),'/app/reports')
-        server=ThreadingHTTPServer(('0.0.0.0',8090),handler(app,'/app/web'))
-        print('Customer Intelligence ready on port 8090',flush=True)
-        server.serve_forever()
+        with web_analysis_client(app.analyze) as analyze:
+            app.analysis = analyze
+            with ThreadingHTTPServer(('0.0.0.0',8090),handler(app,'/app/web')) as server:
+                print('Customer Intelligence ready on port 8090 (MCP analysis)',flush=True)
+                server.serve_forever()
     finally:
         spark.stop()
 

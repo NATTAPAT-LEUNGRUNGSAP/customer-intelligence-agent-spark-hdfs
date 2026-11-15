@@ -12,7 +12,7 @@
 | ลำดับ | เปิดไฟล์ไหน | ทำอะไรและส่งอะไรต่อ |
 |---|---|---|
 | 1 | [web/app.js](../web/app.js) | รับข้อความ ช่วงเวลาและตัวเลือกจากหน้าเว็บ ส่ง JSON ไป `POST /api/query` แล้วใช้คำตอบ JSON แสดงตาราง SQL และ trace |
-| 2 | [jobs/web_app.py](../jobs/web_app.py) → `Application.query` | ตรวจ input ประกอบบริบทจากตัวกรองหรือคำถามก่อนหน้า ส่งคำถามและฟังก์ชันรัน SQL ไปให้ `agent.answer` หลังจบเขียน `reports/web-agent-<trace_id>.json` และส่งผลกลับเบราว์เซอร์ |
+| 2 | [jobs/web_app.py](../jobs/web_app.py) → `Application.query` | ตรวจ input ประกอบบริบทจากตัวกรองหรือคำถามก่อนหน้า แล้วใช้ [MCP Client](../jobs/web_mcp.py) เรียก `analyze` ภายใน container เพื่อส่งงานให้ `agent.answer` หลังจบเขียน `reports/web-agent-<trace_id>.json` และตอบเบราว์เซอร์ |
 | 3 | [jobs/retrieval.py](../jobs/retrieval.py) และ [knowledge/](../knowledge/) | ค้นเอกสารเกี่ยวกับการนับใบสั่งซื้อ โครงสร้าง `orders` และเงื่อนไขเวลา ส่งข้อความกับรหัสหลักฐานให้ตัวประกอบบริบท |
 | 4 | [jobs/context_engine.py](../jobs/context_engine.py) → `assemble_evidence` | เลือกและจัดข้อความหลักฐานสำหรับ prompt ตัว Agent ส่ง prompt ให้ Ollama ผ่าน `generate` แล้วรับข้อเสนอ SQL และ citations กลับมา |
 | 5 | [jobs/agent.py](../jobs/agent.py) → `answer` | ตรวจรหัสหลักฐาน จากนั้นเรียก SQL guard, ตัวตรวจความหมายและสูตร และการทบทวนข้อเสนอด้วยโมเดล ก่อนส่ง SQL ที่ผ่านไปยังจุดเรียก Spark |
@@ -39,7 +39,7 @@
 | วันที่ ประเทศ หรือคำถามต่อเนื่อง | [question_scope.py](../jobs/question_scope.py) จัดช่วงข้อมูลและตัวเลือก ส่วน [conversation.py](../jobs/conversation.py) ใช้บริบทจากประวัติแบบจำกัด ส่งคำถามที่ตีความแล้วเข้า Agent |
 | SQL ถูกบล็อกหรือผลผิดรูป | [sql_guard.py](../jobs/sql_guard.py) ตรวจคำสั่งและตาราง [semantic_contracts.py](../jobs/semantic_contracts.py) และ [metric_contracts.py](../jobs/metric_contracts.py) ตรวจเงื่อนไขทางธุรกิจ ดู `attempts`, `policy_trace` และ `hook_trace` ประกอบ |
 | Dashboard และกราฟ | [dashboard.py](../jobs/dashboard.py) สร้างคำสั่ง SQL ภาพรวมและส่งผลให้ [dashboard.js](../web/dashboard.js) ส่วน [charts.js](../web/charts.js) วาดกราฟจากค่าที่ได้รับ |
-| เรียกจากโปรแกรมอื่น | [mcp_server.py](../jobs/mcp_server.py) เปิดเครื่องมือผ่าน MCP stdio โดย `analyze` เรียก Agent เดียวกัน ผลส่งกลับ MCP client เว็บปกติเรียก Python โดยตรง |
+| เรียกจากโปรแกรมอื่น | [mcp_server.py](../jobs/mcp_server.py) เปิดเครื่องมือให้ MCP Client ภายนอกผ่าน stdio โดย `analyze` เรียก Agent ตัวเดียวกับเว็บ |
 | Correctness และ Faithfulness | [evaluate_bilingual.py](../jobs/evaluate_bilingual.py) รันโจทย์และเทียบผลกับ Gold SQL ใน [evaluation/](../evaluation/) ตัววัด [evaluate_hallucination.py](../scripts/evaluate_hallucination.py) อ่านรายงานที่เสร็จแล้วและประเมินคำอธิบายแยกต่างหาก สรุปผลอยู่ใน [BENCHMARK_FOLLOWUP.md](../reports/BENCHMARK_FOLLOWUP.md) |
 | เปิดเว็บและแชร์ให้ทดลอง | [WEB_APP.md](WEB_APP.md) ระบุขั้นตอนเปิด Spark, Ollama และเว็บ ส่วน [FRIEND_ACCESS.md](FRIEND_ACCESS.md) อธิบายการเปิดและปิดลิงก์ชั่วคราว |
 

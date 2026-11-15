@@ -4,7 +4,7 @@ import tempfile
 import threading
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from http.server import ThreadingHTTPServer
@@ -14,6 +14,21 @@ from web_app import Application, handler
 
 
 class WebTests(unittest.TestCase):
+    def test_mcp_returns_structured_analysis_with_scope(self):
+        try:
+            import mcp
+        except ImportError:
+            self.skipTest('Install requirements-mcp.txt for MCP SDK test')
+        from web_mcp import web_analysis_client
+
+        answer = {'status': 'executed', 'result': {'columns': ['orders'], 'rows': [[1086]]}}
+        selection = {'start': '2011-01-01', 'end': '2011-01-31'}
+        analyze = Mock(return_value=answer)
+        with web_analysis_client(analyze) as call:
+            result = call('Count orders', selection, 'United Kingdom')
+        analyze.assert_called_once_with('Count orders', selection, 'United Kingdom')
+        self.assertEqual(result, dict(answer, analysis_transport='mcp'))
+
     def test_http_contract_and_trace(self):
         with tempfile.TemporaryDirectory() as directory:
             app=Application(None,{'_dataset_metadata':{}},{'run_id':'fixture'},'fixture','unused',{},directory)
