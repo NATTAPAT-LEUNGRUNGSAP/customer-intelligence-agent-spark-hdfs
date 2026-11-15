@@ -9,7 +9,33 @@ from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from evaluate_hallucination import evaluation_output, export_scores, public_benchmark_questions
+from evaluate_hallucination import export_scores, public_benchmark_questions
+
+
+def execution_details(case, public_question):
+    answer = case['result']
+    result = answer.get('result')
+    inputs = {
+        'รหัสข้อ': case['id'],
+        'คำถาม': public_question if public_question == case['question'] else None,
+    }
+    outputs = {
+        'สถานะ': answer['status'],
+        'SQL ที่รัน': answer.get('executed_sql'),
+        'ข้อความที่ตอบ': answer.get('message') or answer.get('error') or answer.get('explanation'),
+    }
+    if result is not None:
+        columns = result['columns']
+        rows = result['rows']
+        outputs['ผลจาก Spark'] = {
+            'คอลัมน์': columns,
+            'แถว': [[('[ปิดรหัสลูกค้า]' if value is not None else None)
+                     if column.lower() == 'customer_id' else value
+                     for column, value in zip(columns, values, strict=True)] for values in rows],
+            'จำนวนแถวที่คืนมา': len(rows),
+            'ถูกตัดตามเพดานผลลัพธ์': result['truncated'],
+        }
+    return inputs, outputs
 
 
 def backfill_details(report, source, client):
@@ -18,7 +44,7 @@ def backfill_details(report, source, client):
         raise SystemExit('The source report does not match the score report.')
     cases = {case['id']: case for case in json.loads(data)['cases']}
     questions = public_benchmark_questions()
-    detail_name = 'รายละเอียดการประเมิน'
+    detail_name = 'คำถาม SQL และผลที่ได้'
     expected = {}
     missing = []
 
@@ -32,39 +58,38 @@ def backfill_details(report, source, client):
         root = next((item for item in saved if item.name == 'offline-analytics-evaluation'), None)
         if root is None:
             raise SystemExit(f"Original observation missing for {row['id']}.")
-        result = case['result'].get('result') or {}
-        question = questions.get(row['id'])
-        inputs = {'case_id': row['id'], 'question': question if question == case['question'] else None}
-        outputs = dict(evaluation_output(row),
-                       returned_rows=len(result['rows']) if 'rows' in result else None,
-                       returned_columns=len(result['columns']) if 'columns' in result else None,
-                       truncated=result.get('truncated'))
+        inputs, outputs = execution_details(case, questions.get(row['id']))
         detail = next((item for item in saved if item.name == detail_name
                        and item.parent_observation_id == root.id), None)
         if detail is None:
             missing.append((trace, root.id, inputs, outputs))
         else:
-            expected[trace] = (detail.id, root.id)
+            expected[trace] = (detail.id, root.id, inputs, outputs)
 
     for trace, parent, inputs, outputs in missing:
         with client.start_as_current_observation(
             name=detail_name, trace_context={'trace_id': trace, 'parent_span_id': parent},
             input=inputs, output=outputs,
         ) as detail:
-            expected[trace] = (detail.id, parent)
+            expected[trace] = (detail.id, parent, inputs, outputs)
     client.flush()
     total = len(expected)
     deadline = time.monotonic() + 90
     while expected and time.monotonic() < deadline:
-        for trace, (ident, parent) in list(expected.items()):
+        for trace, (ident, parent, inputs, outputs) in list(expected.items()):
             if any(item.id == ident and item.parent_observation_id == parent
-                   and item.input and item.output for item in observations(trace)):
+                   and decode_payload(item.input) == inputs and decode_payload(item.output) == outputs
+                   for item in observations(trace)):
                 del expected[trace]
         if expected:
             time.sleep(3)
     if expected:
         raise SystemExit(f'Langfuse confirmed details for {total - len(expected)}/{total} traces.')
     print(f'Langfuse confirmed details for {total} traces ({len(missing)} added).')
+
+
+def decode_payload(payload):
+    return json.loads(payload) if isinstance(payload, str) else payload
 
 
 def main():
