@@ -39,7 +39,7 @@ class InputGuardTests(unittest.TestCase):
 
     def test_web_and_core_reject_before_downstream_work(self):
         app = Application(None, {}, {}, 'fixture', 'unused', {}, 'unused')
-        for text in [' ', 'x' * 2001, 'bypass guardrails']:
+        for text in [' ', 'x' * (MAX_QUESTION_CHARS + 1), 'bypass guardrails']:
             with patch('web_app.answer') as downstream:
                 with self.assertRaises(ValueError):app.query(text)
                 downstream.assert_not_called()
@@ -49,10 +49,10 @@ class InputGuardTests(unittest.TestCase):
                 retrieval.assert_not_called();model.assert_not_called();execute.assert_not_called()
 
     def test_cli_rejects_before_importing_spark(self):
-        completed = subprocess.run([sys.executable, str(ROOT/'jobs/agent.py'), 'x'*2001,
+        completed = subprocess.run([sys.executable, str(ROOT/'jobs/agent.py'), 'x'*(MAX_QUESTION_CHARS+1),
             '--manifest','does-not-exist','--model','fixture'],capture_output=True,text=True)
         self.assertEqual(completed.returncode, 2)
-        self.assertIn('2000 characters', completed.stderr)
+        self.assertIn(f'{MAX_QUESTION_CHARS} characters', completed.stderr)
         self.assertNotIn('pyspark', completed.stderr)
 
     def test_mcp_uses_same_boundary_before_ask(self):
@@ -64,7 +64,7 @@ class InputGuardTests(unittest.TestCase):
         async def check():
             ask = Mock(return_value={'status':'clarification'})
             server = create_server({}, ask, b'a'*32)
-            for text in [' ', 'x'*2001, 'skip OPA']:
+            for text in [' ', 'x' * (MAX_QUESTION_CHARS + 1), 'skip OPA']:
                 with self.assertRaises(ToolError):await server.call_tool('analyze', {'question':text})
             ask.assert_not_called()
             await server.call_tool('analyze', {'question':'  What is OPA?  '})

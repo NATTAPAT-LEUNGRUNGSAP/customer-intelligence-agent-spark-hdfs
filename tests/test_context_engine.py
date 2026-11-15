@@ -61,6 +61,13 @@ class ContextTests(unittest.TestCase):
         with self.assertRaises(ContextBudgetExceeded):
             check_budget([{'role':'system','content':packet}])
 
+    def test_large_prompt_gets_wider_window(self):
+        small = check_budget([{'role':'user','content':'Count completed invoices'}])
+        large = check_budget([{'role':'user','content':'ก' * 4000}])
+        self.assertEqual(small['context_window'], 8192)
+        self.assertGreater(large['estimated_input_tokens'], small['input_budget'])
+        self.assertEqual(large['context_window'], 16384)
+
     def test_budget_block_does_not_repeat_identical_model_attempt(self):
         with patch('agent.generate',side_effect=ContextBudgetExceeded('Context budget exceeded')) as model:
             result=answer('Count invoices in October 2011',{},lambda sql:self.fail('No SQL'),

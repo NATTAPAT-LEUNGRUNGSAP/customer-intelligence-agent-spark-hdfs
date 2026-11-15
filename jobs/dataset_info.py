@@ -1,5 +1,6 @@
 """Grounded dataset discovery, separate from time-bound analytical questions."""
 import re
+import unicodedata
 
 
 def is_product_listing(question):
@@ -49,10 +50,12 @@ PUBLIC_TABLES = ('sales_lines', 'orders', 'customer_summary')
 
 def requested_schema(question):
     """Return the requested public table names, or None for a non-schema question."""
-    text = question.strip().lower().rstrip('?？!.').strip()
+    text = unicodedata.normalize('NFKC', question).strip().lower().rstrip('?？!.').strip()
+    text = re.sub(r'\s*(?:หน่อย(?:ครับ|ค่ะ|คะ)?|ครับ|ค่ะ|คะ)$', '', text)
     tables = '|'.join(PUBLIC_TABLES)
     match = re.fullmatch(
-        r'(?:มีคอลัม(?:น์|ป์)(?:ชื่อ)?อะไร(?:บ้าง)?|(?:ขอ|ดู|แสดง)(?:รายชื่อ|ชื่อ)?คอลัม(?:น์|ป์))'
+        r'(?:มี\s*(?:คอลัม(?:น์|ป์)?|คอมลัม(?:น์|ป์))\s*(?:ชื่อ)?\s*อะไร(?:บ้าง)?|'
+        r'(?:ขอ(?:ดู)?|ดู|แสดง)\s*(?:รายชื่อ|ชื่อ)?\s*(?:คอลัม(?:น์|ป์)?|คอมลัม(?:น์|ป์)))'
         r'(?:\s*(?:ใน|ของ)?\s*(?:ฐานข้อมูล|ข้อมูล|แต่ละตาราง))?'
         rf'(?:\s*(?:ใน|ของ)?\s*(?:ตาราง\s*)?({tables}))?'
         rf'|(?:list|show|what are) (?:the )?(?:column names|columns)'

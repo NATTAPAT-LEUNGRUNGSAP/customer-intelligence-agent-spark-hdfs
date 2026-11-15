@@ -173,7 +173,7 @@ def handler(app, static_root):
                 return self.send(415,{'error':'JSON required'})
             try:
                 size=int(self.headers.get('Content-Length','0'))
-                if not 0<size<=12000:
+                if not 0<size<=32768:
                     raise ValueError('Invalid request size')
                 body=json.loads(self.rfile.read(size))
                 if self.path=='/api/dashboard':

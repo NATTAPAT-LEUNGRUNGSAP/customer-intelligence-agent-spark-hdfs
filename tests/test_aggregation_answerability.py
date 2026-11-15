@@ -18,6 +18,7 @@ class AggregationAnswerabilityTests(unittest.TestCase):
         self.assertFalse(info['sql_executed'])
         self.assertEqual(requested_schema('มีคอลัมป์ชื่ออะไรบ้างในฐานข้อมูล'), tables)
         self.assertEqual(requested_schema('มีคอลัมป์อะไรบ้างในฐานข้อมูล'), tables)
+        self.assertEqual(requested_schema('ขอดูชื่อคอมลัมป์ของตาราง orders หน่อยครับ'), ('orders',))
         self.assertEqual(requested_schema('แสดงคอลัมน์ของตาราง orders'), ('orders',))
         self.assertIsNone(requested_schema('ยอดขายตามคอลัมน์ country เท่าไร'))
     def test_valid_diagnostic_aggregations_are_not_false_rejected(self):

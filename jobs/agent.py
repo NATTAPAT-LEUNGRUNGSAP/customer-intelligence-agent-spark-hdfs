@@ -27,13 +27,14 @@ from tool_hooks import ToolHooks
 
 def generate(messages, model, endpoint, timeout=90, max_tokens=768):
     budget = check_budget(messages,max_tokens)
+    window = budget['context_window']
     request = Request(endpoint.rstrip('/')+'/api/chat', data=json.dumps({
         'model':model,'messages':messages,'stream':False,'format':'json','think':False,
-        'options':{'temperature':0,'num_predict':max_tokens,'num_ctx':8192}}).encode(),
+        'options':{'temperature':0,'num_predict':max_tokens,'num_ctx':window}}).encode(),
         headers={'Content-Type':'application/json'})
     with urlopen(request,timeout=timeout) as response:
         envelope = json.load(response)
-        if envelope.get('prompt_eval_count',0) + max_tokens > 8192:
+        if (envelope.get('prompt_eval_count') or 0) + max_tokens > window:
             raise ContextBudgetExceeded('Observed prompt token count leaves insufficient output reserve; no SQL executed',
                 network_calls=1,usage=dict(budget,prompt_eval_count=envelope.get('prompt_eval_count'),
                                           eval_count=envelope.get('eval_count'),stage='postflight'))
@@ -307,6 +308,11 @@ def answer(question, schema, execute, model, endpoint, knowledge, *,
                 if error.usage:
                     usage.append(error.usage)
                 base['context_blocked']=True
+                base['message'] = ('คำถามกับข้อมูลอ้างอิงรวมกันยาวเกินที่โมเดลรับได้ '
+                                   'ลองเก็บเฉพาะเงื่อนไขที่ต้องใช้ หรือแบ่งเป็นคำถามย่อยครับ'
+                                   if re.search(r'[\u0e00-\u0e7f]', question) else
+                                   'The question and required evidence exceed the model context budget. '
+                                   'Keep the necessary filters or split the question.')
                 break
             if isinstance(error,PolicyUnavailable):
                 base['policy_blocked']=True
