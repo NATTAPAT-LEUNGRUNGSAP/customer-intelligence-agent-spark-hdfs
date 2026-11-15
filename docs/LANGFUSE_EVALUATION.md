@@ -45,6 +45,21 @@ IDs, SQL, evidence, returned rows, and judge's claim text stay local.
 & "C:/Users/Admin/anaconda3/python.exe" scripts/evaluate_hallucination.py --upload-report reports/langfuse-pilot-scores.json
 ```
 
+The local instance runs at `http://localhost:3000`. Its Docker Compose files
+and generated login credentials are stored under ignored `.private/langfuse/`.
+To upload and verify results on this machine, run:
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path .private/langfuse/sdk).Path
+& "C:/Users/Admin/anaconda3/python.exe" scripts/local_langfuse.py reports/langfuse-expanded-40-scores.json
+```
+
+The command reads bootstrap API keys from the local environment file and
+checks the values by reading them back through the Scores API. On 15 November
+2026 the local instance returned all 144 expected score records for 40 cases.
+These are the stored development results, including the uncalibrated judge's
+scores. The control results below describe the limits of that judge.
+
 In Langfuse, find traces named `offline-analytics-evaluation`, filter by
 `run_id`, and compare the two scores by language or question family.
 [Langfuse score documentation](https://langfuse.com/docs/evaluation/evaluation-methods/scores-via-sdk)
@@ -62,7 +77,7 @@ the model's overall hallucination rate.
 
 Raw input and score reports are local under `reports/langfuse-*.json`. Three
 unit tests passed, including a mocked SDK export that checks raw claim text is
-excluded. Live Langfuse upload remains unverified pending a configured project.
+excluded. A subsequent local upload and read-back verified the 40-case report.
 
 To render a completed score report as an offline table by language and question
 family, run:
