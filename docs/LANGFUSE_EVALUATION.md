@@ -60,6 +60,12 @@ checks the values by reading them back through the Scores API. On 15 November
 These are the stored development results, including the uncalibrated judge's
 scores. The control results below describe the limits of that judge.
 
+To compare on the same SQL cases, rerun the local upload command with
+`--faithfulness-pass` after the base upload. The separate score counts full
+judge support as 1 and a lower or missing score as 0. Read-back confirmed
+32 passes across 40 SQL traces. In Score Analytics select
+`sql_result_correctness` and `faithfulness_pass`.
+
 In Langfuse, find traces named `offline-analytics-evaluation`, filter by
 `run_id`, and compare the two scores by language or question family.
 [Langfuse score documentation](https://langfuse.com/docs/evaluation/evaluation-methods/scores-via-sdk)

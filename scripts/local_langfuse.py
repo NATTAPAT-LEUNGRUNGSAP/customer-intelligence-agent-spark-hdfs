@@ -15,6 +15,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('report', type=Path)
     parser.add_argument('--env-file', type=Path, default=Path('.private/langfuse/.env'))
+    parser.add_argument('--faithfulness-pass', action='store_true',
+                        help='Add pass/fail scores to previously uploaded SQL cases.')
     args = parser.parse_args()
     config = dict(line.split('=', 1) for line in args.env_file.read_text().splitlines()
                   if line.strip() and not line.startswith('#'))
@@ -24,18 +26,43 @@ def main():
     os.environ.update(LANGFUSE_BASE_URL=base, LANGFUSE_HOST=base,
                       LANGFUSE_PUBLIC_KEY=public, LANGFUSE_SECRET_KEY=secret)
     report = json.loads(args.report.read_bytes())
-    export_scores(report)
+    if report.get('status') != 'completed' or not report.get('cases'):
+        parser.error('A completed score report is required.')
 
     from langfuse import get_client
+
+    client = get_client()
+    if args.faithfulness_pass:
+        if not client.auth_check():
+            raise SystemExit('Langfuse authentication failed.')
+    else:
+        export_scores(report)
 
     wanted = {}
     trace_ids = []
     for row in report['cases']:
-        trace = get_client().create_trace_id(seed=f"{report['run_id']}:{row['id']}")
+        trace = client.create_trace_id(seed=f"{report['run_id']}:{row['id']}")
+        if args.faithfulness_pass and row['sql_result_correctness'] is None:
+            continue
         trace_ids.append(trace)
+        if args.faithfulness_pass:
+            name = 'faithfulness_pass'
+            ident = f'{trace}-{name}'
+            value = float(row['faithfulness'] == 1.0)
+            wanted[ident] = value
+            client.create_score(name=name, value=value, data_type='NUMERIC',
+                                trace_id=trace, score_id=ident,
+                                comment=('Unscored explanation counts as a fail under the reporting rule.'
+                                         if row['faithfulness'] is None else
+                                         'Pass requires full support according to the automated judge.'))
+            continue
         for name in ('faithfulness', 'sql_result_correctness', 'case_correctness', 'has_ungrounded_claim'):
             if row[name] is not None:
                 wanted[f'{trace}-{name}'] = float(row[name])
+    if not wanted:
+        raise SystemExit('No eligible scores found.')
+    if args.faithfulness_pass:
+        client.flush()
     auth = base64.b64encode(f'{public}:{secret}'.encode()).decode()
     pending = dict(wanted)
     deadline = time.monotonic() + 90
@@ -54,6 +81,8 @@ def main():
     if pending:
         raise SystemExit(f'Langfuse read-back confirmed {len(wanted)-len(pending)}/{len(wanted)} scores.')
     print(f'Langfuse read-back confirmed {len(wanted)} scores for {len(trace_ids)} cases.')
+    if args.faithfulness_pass:
+        print(f'Faithfulness pass: {sum(wanted.values()):.0f}/{len(wanted)}.')
 
 
 if __name__ == '__main__':
