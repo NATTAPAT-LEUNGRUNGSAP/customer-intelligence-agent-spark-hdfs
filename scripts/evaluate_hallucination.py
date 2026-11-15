@@ -109,6 +109,22 @@ def summarize(rows):
     }
 
 
+def public_benchmark_questions():
+    bank = Path(__file__).resolve().parents[1] / 'evaluation' / 'bilingual_200.json'
+    return {case['id']: case['question'] for case in json.loads(bank.read_bytes())}
+
+
+def evaluation_output(row):
+    return {
+        'answer_status': row['status'],
+        'sql_matches_reference': row['sql_result_correctness'],
+        'case_passed': row['case_correctness'],
+        'faithfulness': row['faithfulness'],
+        'faithfulness_judge_status': row['judge_status'],
+        'claim_counts': row.get('counts'),
+    }
+
+
 def export_scores(report):
     if report.get('status') != 'completed' or not report.get('cases'):
         raise SystemExit('A completed score report is required for upload.')
@@ -124,6 +140,8 @@ def export_scores(report):
         trace_id = client.create_trace_id(seed=f"{report['run_id']}:{row['id']}")
         with client.start_as_current_observation(
             name='offline-analytics-evaluation', trace_context={'trace_id': trace_id},
+            input={'case_id': row['id'], 'question': row.get('public_question')},
+            output=evaluation_output(row),
             metadata={
                 'run_id': report['run_id'], 'case_id': row['id'], 'language': row['language'],
                 'family': row['family'], 'source_sha256': report['source_sha256'],
@@ -169,8 +187,11 @@ def main():
         'judge_model': args.judge_model, 'rubric_sha256': hashlib.sha256(RUBRIC.encode()).hexdigest(),
         'status': 'running', 'cases': [],
     }
+    public_questions = public_benchmark_questions()
     for case in cases:
         row = evaluate_case(case, lambda packet: judge(packet, args.endpoint, args.judge_model))
+        if public_questions.get(case['id']) == case['question']:
+            row['public_question'] = case['question']
         report['cases'].append(row)
         if len(report['cases']) == len(cases):
             report['status'] = 'completed'

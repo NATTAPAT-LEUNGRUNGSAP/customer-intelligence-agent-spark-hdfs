@@ -1,6 +1,7 @@
 """Upload saved Customer Intelligence scores to the local Langfuse instance."""
 import argparse
 import base64
+import hashlib
 import json
 import os
 import time
@@ -8,14 +9,72 @@ from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from evaluate_hallucination import export_scores
+from evaluate_hallucination import evaluation_output, export_scores, public_benchmark_questions
+
+
+def backfill_details(report, source, client):
+    data = source.read_bytes()
+    if hashlib.sha256(data).hexdigest() != report['source_sha256']:
+        raise SystemExit('The source report does not match the score report.')
+    cases = {case['id']: case for case in json.loads(data)['cases']}
+    questions = public_benchmark_questions()
+    detail_name = 'รายละเอียดการประเมิน'
+    expected = {}
+    missing = []
+
+    def observations(trace):
+        return client.api.observations.get_many(trace_id=trace, fields='core,basic,io').data
+
+    for row in report['cases']:
+        case = cases[row['id']]
+        trace = client.create_trace_id(seed=f"{report['run_id']}:{row['id']}")
+        saved = observations(trace)
+        root = next((item for item in saved if item.name == 'offline-analytics-evaluation'), None)
+        if root is None:
+            raise SystemExit(f"Original observation missing for {row['id']}.")
+        result = case['result'].get('result') or {}
+        question = questions.get(row['id'])
+        inputs = {'case_id': row['id'], 'question': question if question == case['question'] else None}
+        outputs = dict(evaluation_output(row),
+                       returned_rows=len(result['rows']) if 'rows' in result else None,
+                       returned_columns=len(result['columns']) if 'columns' in result else None,
+                       truncated=result.get('truncated'))
+        detail = next((item for item in saved if item.name == detail_name
+                       and item.parent_observation_id == root.id), None)
+        if detail is None:
+            missing.append((trace, root.id, inputs, outputs))
+        else:
+            expected[trace] = (detail.id, root.id)
+
+    for trace, parent, inputs, outputs in missing:
+        with client.start_as_current_observation(
+            name=detail_name, trace_context={'trace_id': trace, 'parent_span_id': parent},
+            input=inputs, output=outputs,
+        ) as detail:
+            expected[trace] = (detail.id, parent)
+    client.flush()
+    total = len(expected)
+    deadline = time.monotonic() + 90
+    while expected and time.monotonic() < deadline:
+        for trace, (ident, parent) in list(expected.items()):
+            if any(item.id == ident and item.parent_observation_id == parent
+                   and item.input and item.output for item in observations(trace)):
+                del expected[trace]
+        if expected:
+            time.sleep(3)
+    if expected:
+        raise SystemExit(f'Langfuse confirmed details for {total - len(expected)}/{total} traces.')
+    print(f'Langfuse confirmed details for {total} traces ({len(missing)} added).')
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('report', type=Path)
     parser.add_argument('--env-file', type=Path, default=Path('.private/langfuse/.env'))
-    parser.add_argument('--faithfulness-pass', action='store_true',
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--backfill-details', type=Path, metavar='SOURCE_REPORT',
+                      help='Add details to existing traces using the original benchmark report.')
+    mode.add_argument('--faithfulness-pass', action='store_true',
                         help='Add pass/fail scores to previously uploaded SQL cases.')
     args = parser.parse_args()
     config = dict(line.split('=', 1) for line in args.env_file.read_text().splitlines()
@@ -32,6 +91,9 @@ def main():
     from langfuse import get_client
 
     client = get_client()
+    if args.backfill_details:
+        backfill_details(report, args.backfill_details, client)
+        return
     if args.faithfulness_pass:
         if not client.auth_check():
             raise SystemExit('Langfuse authentication failed.')
