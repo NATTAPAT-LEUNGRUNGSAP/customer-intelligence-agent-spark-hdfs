@@ -106,9 +106,12 @@ class PolicyTests(unittest.TestCase):
             with self.assertRaises(PolicyUnavailable):authorize(policy_facts('SELECT count(*) FROM orders',1))
     def test_agent_never_executes_if_opa_unavailable(self):
         proposal={'sql':BusinessTests.good,'citations':['metric.orders']}
-        with patch('agent.generate',return_value=proposal),patch('agent.authorize',side_effect=PolicyUnavailable('offline')):
+        review={'approved':True,'citations':['metric.orders']}
+        with patch('agent.generate',side_effect=[proposal,review]), \
+                patch('agent.authorize',side_effect=PolicyUnavailable('offline')) as authorize_policy:
             r=answer(BusinessTests.question,{},lambda sql:self.fail('Must not execute'),
                      'fixture','unused',Path(__file__).resolve().parents[1]/'knowledge')
+        authorize_policy.assert_called_once()
         self.assertEqual(r['status'],'failed')
         self.assertTrue(r['policy_blocked'])
         self.assertEqual(len(r['attempts']),1)
