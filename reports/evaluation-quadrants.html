@@ -1,0 +1,18 @@
+<!doctype html><html lang="th"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Correctness × Faithfulness</title>
+<style>
+body{margin:0;background:#f8fafb;color:#183044;font:16px/1.6 'Segoe UI',Tahoma,sans-serif}main{max-width:800px;padding:26px 18px;margin:auto}h1{font-size:clamp(23px,5vw,34px);margin:0}.chart{display:grid;grid-template-columns:auto 1fr;gap:12px;margin:24px 0}.y{writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-weight:bold}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}section{border-radius:12px;padding:clamp(9px,3vw,22px);min-height:108px}h2{font-size:1rem;margin:0}h2 span{display:block;font-size:1.9rem}section p{margin:.3em 0}.Q1{background:#c6e7f3}.Q2{background:#d6ebe2}.Q3{background:#f8dddd}.Q4{background:#fae8c9}.x{grid-column:2;text-align:center;font-weight:bold}small{color:#40576a}
+</style><style>
+.summary{border-collapse:collapse;width:100%;margin:18px 0;background:white}.summary th,.summary td{text-align:left;padding:12px;border-bottom:1px solid #dce6eb}.summary thead{background:#eaf0f3}.summary strong{white-space:nowrap}details{margin:24px 0}summary{cursor:pointer;font-weight:bold}
+.action{display:inline-block;margin:8px 0;padding:10px 16px;border-radius:8px;background:#174f64;color:#fff;text-decoration:none;font-weight:600}.action:focus-visible{outline:3px solid #216582;outline-offset:3px}
+</style><main><h1>ผลประเมินชุดทดลอง 40 ข้อ</h1>
+<table class="summary"><thead><tr><th scope="col">ตรวจอะไร</th><th scope="col">ผลที่ได้</th></tr></thead><tbody>
+<tr><th scope="row">ตารางตอบตรงโจทย์ไหม<br><small>SQL Correctness เทียบกับ Gold SQL</small></th><td><strong>36 จาก 40 ข้อ (90%)</strong></td></tr>
+<tr><th scope="row">คำอธิบายตรงกับหลักฐานไหม<br><small>Faithfulness ตามเกณฑ์ครบทุกข้อ</small></th><td><strong>32 จาก 40 ข้อ (80%)</strong></td></tr>
+</tbody></table>
+<p>สองคะแนนใช้คำถามชุดเดียวกัน ข้อที่ไม่มีคำอธิบายให้ตรวจนับเป็นไม่ผ่าน Faithfulness</p>
+<a class="action" href="http://localhost:3000/project/customer-intelligence-evaluation/scores/analytics?score1=sql_result_correctness-NUMERIC-API&amp;objectType=trace&amp;dateRange=7d&amp;score2=faithfulness_pass-NUMERIC-API">เปิดคะแนนทั้งสองใน Langfuse</a>
+<details><summary>ดูกราฟสี่ช่องและรายละเอียด</summary><div class="chart"><div class="y">Faithfulness สูงขึ้น ↑</div><div class="grid"><section class="Q2"><h2>Q2 <span>2 ข้อ</span></h2><p>ผลไม่ตรงโจทย์<br>คำอธิบายมีหลักฐานรองรับ</p></section><section class="Q1"><h2>Q1 <span>30 ข้อ</span></h2><p>ผลตรงโจทย์<br>คำอธิบายมีหลักฐานรองรับ</p></section><section class="Q3"><h2>Q3 <span>2 ข้อ</span></h2><p>ผลไม่ตรงโจทย์<br>ไม่ผ่านเกณฑ์ Faithfulness</p></section><section class="Q4"><h2>Q4 <span>6 ข้อ</span></h2><p>ผลตรงโจทย์<br>ไม่ผ่านเกณฑ์ Faithfulness</p></section></div><div class="x">Correctness สูงขึ้น →</div></div>
+<p><strong>8 ข้อที่ไม่มีคำอธิบายให้ตรวจนับเป็นไม่ผ่าน</strong> เพราะ 6 ข้อคืนเฉพาะตารางและ 2 ข้อถามกลับ</p>
+<p><small>เกณฑ์ของหน้านี้: Correctness สูง = ตรงกับ Gold SQL ส่วน Faithfulness สูง = ผู้ตรวจให้ผ่านทุกข้ออ้าง กลุ่มต่ำรวมข้อที่ไม่มีคำอธิบายให้ตรวจด้วย</small></p>
+<p><small>Q2 ในชุดนี้: ตัวเลขตรง แต่ตารางมีคอลัมน์เดือนเกินจากที่ขอ ส่วนคำอธิบายสอดคล้องกับ SQL ที่รัน</small></p>
+</details></main></html>

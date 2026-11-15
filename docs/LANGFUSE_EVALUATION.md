@@ -1,5 +1,8 @@
 # Faithfulness and correctness evaluation
 
+For a quick local overview, open [the 40-case summary](../reports/evaluation-quadrants.html).
+Its Langfuse link preselects SQL Correctness and Faithfulness Pass.
+
 Run the bilingual benchmark first, then score its saved answers offline.
 Gold SQL stays in the evaluation bank. The Agent and the faithfulness judge
 never receive the gold query or gold rows.
