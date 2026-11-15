@@ -1,39 +1,6 @@
-# Presentation
+# สไลด์นำเสนอ
 
-ฉบับนำเสนอ 55 นาที: [customer-intelligence-talk.pptx](customer-intelligence-talk.pptx).
-มีแผนเวลาใน Speaker Notes และเก็บรายละเอียด Docker สองหน้าไว้เป็นสไลด์ซ่อน
-หน้าสรุปการประเมินแสดง SQL Correctness คู่กับผลทดสอบตัวตรวจ Faithfulness
-และแยกคะแนนตามชุดทดสอบ
+- [ฉบับนำเสนอ 55 นาที](customer-intelligence-talk.pptx) ใช้เปิดนำเสนอ มีเวลาในบันทึกผู้พูดและรายละเอียด Docker สองหน้าที่ซ่อนไว้สำหรับตอบคำถาม
+- [คู่มือระบบฉบับเต็ม](customer-intelligence-system-guide.pptx) ใช้เปิดดูรายละเอียดทางเทคนิค
 
-Current deck: [customer-intelligence-system-guide.pptx](customer-intelligence-system-guide.pptx), 31 slides in Thai/English.
-
-The deck explains business terms in short on-slide notes and uses editable native
-process diagrams, connectors, text and tables. It includes the implemented
-RDF/OWL domain ontology with SHACL, mandatory OPA/Rego decisions before/after
-Spark, semantic and result checks, and current measured outcomes.
-
-The current SQL slides separate the 200-question development run before the SQL
-fixes from the 16-question regression rerun and the 12-question follow-up. The
-faithfulness slide reports the judge's performance on 16 controls. See
-[benchmark follow-up](../reports/BENCHMARK_FOLLOWUP.md). Context uses 12 distinct questions
-in 3 conditions, 36 trials total, with RAG in every condition. All measurements and
-limits are documented in reports/GOVERNANCE_REPORT.md. No software/release labels
-or delivery time-box framing appear on the slides.
-
-Text, including table cells, is in slide-text-system-guide.json. Live object IDs and
-source notes are in outline-system-guide.ndjson. Earlier decks were removed from the working tree; their history remains in Git.
-User-supplied reference images are not embedded or published. The original 32 slides were
-rendered and reviewed. The file was not opened in Microsoft PowerPoint.
-
-The live deck and exported PowerPoint are the same presentation, not alternative
-content. Use only the current deck linked above for the next review.
-
-Added a benefit/evidence summary and seven topic examples for RAG, ontology, SQL semantics, OPA/post-tool checks, context, the web API and evaluation. Short code excerpts are labeled where simplified. The eight added slides were rendered and visually reviewed; other layouts are preserved with updated page numbers. This presentation-only edit does not rerun or relabel the existing runtime benchmarks.
-
-Docker pages 5-7 explain all configured service roles, long-running versus job containers, named volumes versus host bind mounts, temporary Spark data, host-side Ollama and the driver/master/executor distinction. These three pages were rendered and visually checked. Contents were verified against Compose and HDFS configuration; no new runtime test is claimed for this slide-only change.
-
-Page 5 adds the unified data/question architecture and page 16 explains SHACL with actual sourceTable cardinality/class constraints. README and architecture Mermaid diagrams were reconciled against current code. SHACL and governance checks were actually rerun: 22 passed (architecture-shacl-check.txt). Source-grain agreement is explicitly a separate Python check; SHACL does not prove SQL answer correctness. The two added pages were rendered and inspected.
-
-Removed the final demonstration/future-development slide at the user’s request. The current deck has 31 slides. Verified the remaining 31 slide XML parts are byte-identical and all retained internal package relationships resolve. No layout changes were made.
-
-Only the current PowerPoint, its outline and extracted text remain in this directory. Removed old deck exports and obsolete companion files during disk cleanup.
+ตัวเลขในสไลด์อ้างอิง [ผลประเมินที่รันจริง](../reports/BENCHMARK_FOLLOWUP.md)

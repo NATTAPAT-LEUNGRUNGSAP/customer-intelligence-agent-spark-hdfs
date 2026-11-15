@@ -1,125 +1,26 @@
-# Faithfulness and correctness evaluation
+# ดูผลประเมินใน Langfuse
 
-For a quick local overview, open [the 40-case summary](../reports/evaluation-quadrants.html).
-Its Langfuse link preselects SQL Correctness and Faithfulness Pass.
+เริ่มจาก [หน้าสรุป 40 ข้อ](../reports/evaluation-quadrants.html) แล้วกด **เปิดคะแนนทั้งสองใน Langfuse** ลิงก์ตั้งตัวกรองให้แล้ว ต้องเปิดบริการ Langfuse ที่ `localhost:3000` และเข้าสู่ระบบก่อน
 
-Run the bilingual benchmark first, then score its saved answers offline.
-Gold SQL stays in the evaluation bank. The Agent and the faithfulness judge
-never receive the gold query or gold rows.
+| คะแนน | วิธีวัด | ผลชุดทดลอง |
+|---|---|---|
+| `sql_result_correctness` | เทียบผล Spark กับ Gold SQL ที่รันแยกบนข้อมูลเดียวกัน | 36/40 |
+| `faithfulness_pass` | คำอธิบายผ่านเมื่อโมเดลผู้ตรวจให้ว่าทุกข้ออ้างมีหลักฐานรองรับ ข้อที่ไม่มีคะแนนนับเป็นไม่ผ่าน | 32/40 |
+| `faithfulness` | คะแนนดิบเฉพาะข้อที่มีคำอธิบายให้ตรวจ | เฉลี่ย 1.00 จาก 32 ข้อ |
 
-| Score | What it compares |
-|---|---|
-| `faithfulness` | Supported factual claims divided by all claims the judge identifies in the displayed Agent explanation. The judge sees the selected RAG evidence, executed SQL, and returned Spark rows. |
-| `has_ungrounded_claim` | At least one unsupported or contradicted claim in the explanation. |
-| `sql_result_correctness` | Whether the live Spark result matches the independent Gold SQL result in the source benchmark. |
-| `case_correctness` | The benchmark verdict for any case type, including formulas and clarification. |
+Langfuse เก็บและแสดงคะแนน ตัววัด Correctness ใช้โค้ด Python ส่วนตัวตรวจ Faithfulness ใช้ `qwen2.5:7b` ผ่าน Ollama ตัวตรวจจับข้อความผิดได้ 2 จาก 8 ในชุดควบคุม [ผลตรวจโดยละเอียด](../reports/FAITHFULNESS_EVIDENCE_AUDIT.md)
 
-Both metrics use a 0–1 scale. The report averages faithfulness across answers
-with a score and divides matching SQL results by the number of SQL cases for
-correctness. The summary includes the denominators for each language and overall.
-An empty denominator produces no score.
+## ส่งคะแนนจากเครื่องที่ตั้งค่าแล้ว
 
-The judge runs in local Ollama and defaults to `qwen2.5:7b`, a different model
-from the answering model. A faithfulness score is an automated judgment of the
-explanation, so manually audit claims and failures before interpreting it as a
-hallucination rate. A result can be faithful to its returned rows yet incorrect
-against Gold SQL. Missing context, oversized inputs, no factual claims, and
-failed judge calls are reported separately. Always read scored coverage alongside
-the mean. A previous benchmark report measures the source that produced it.
-
-From the repository root, with Spark, HDFS, OPA, and Ollama running:
+ไฟล์ Compose และคีย์ของบริการในเครื่องอยู่ใน `.private/langfuse/` ใช้ Python ที่ติดตั้ง [Langfuse SDK](../requirements-langfuse.txt) แล้วรันสองคำสั่งตามลำดับ
 
 ```powershell
-docker compose --profile jobs run --rm --no-deps --use-aliases analytics-job --master local[2] /app/jobs/evaluate_bilingual.py --ids pair002-th pair002-en pair011-th pair011-en pair016-th pair016-en pair026-th pair026-en --output /app/reports/langfuse-pilot-source.json
-& "C:/Users/Admin/anaconda3/python.exe" scripts/evaluate_hallucination.py --report reports/langfuse-pilot-source.json --output reports/langfuse-pilot-scores.json
+python scripts/local_langfuse.py reports/langfuse-expanded-40-scores.json
+python scripts/local_langfuse.py reports/langfuse-expanded-40-scores.json --faithfulness-pass
 ```
 
-Omit `--ids` to evaluate the full 200-question development bank. This is an
-exposed benchmark, so use independently prepared questions for holdout claims.
-Saved benchmark reports can contain customer IDs and should remain local.
+ถ้าติดตั้ง SDK ใน `.private/langfuse/sdk` ให้ตั้ง `$env:PYTHONPATH = (Resolve-Path .private/langfuse/sdk).Path` ก่อนรัน การอ่านกลับจาก API ยืนยันคะแนนเดิม 144 รายการ และคะแนนผ่านเกณฑ์เพิ่มอีก 40 รายการ ข้อมูลที่ส่งมีเฉพาะคะแนนและข้อมูลกำกับการประเมิน ส่วนคำถาม SQL และผลรายลูกค้าเก็บในเครื่อง
 
-For Langfuse, install the optional dependency and set `LANGFUSE_PUBLIC_KEY`,
-`LANGFUSE_SECRET_KEY` and `LANGFUSE_BASE_URL` in the environment. Export sends
-only case IDs, labels, model, source digest, and scores. The questions, customer
-IDs, SQL, evidence, returned rows, and judge's claim text stay local.
+หากจะให้คะแนนรอบใหม่ ให้ใช้ `python scripts/evaluate_hallucination.py --report <ผลชุดทดสอบที่รันเสร็จ> --output <ไฟล์คะแนนใหม่>` แล้วส่งไฟล์คะแนนใหม่นั้นเข้า Langfuse
 
-```powershell
-& "C:/Users/Admin/anaconda3/python.exe" -m pip install -r requirements-langfuse.txt
-& "C:/Users/Admin/anaconda3/python.exe" scripts/evaluate_hallucination.py --upload-report reports/langfuse-pilot-scores.json
-```
-
-The local instance runs at `http://localhost:3000`. Its Docker Compose files
-and generated login credentials are stored under ignored `.private/langfuse/`.
-To upload and verify results on this machine, run:
-
-```powershell
-$env:PYTHONPATH = (Resolve-Path .private/langfuse/sdk).Path
-& "C:/Users/Admin/anaconda3/python.exe" scripts/local_langfuse.py reports/langfuse-expanded-40-scores.json
-```
-
-The command reads bootstrap API keys from the local environment file and
-checks the values by reading them back through the Scores API. On 15 November
-2026 the local instance returned all 144 expected score records for 40 cases.
-These are the stored development results, including the uncalibrated judge's
-scores. The control results below describe the limits of that judge.
-
-To compare on the same SQL cases, rerun the local upload command with
-`--faithfulness-pass` after the base upload. The separate score counts full
-judge support as 1 and a lower or missing score as 0. Read-back confirmed
-32 passes across 40 SQL traces. In Score Analytics select
-`sql_result_correctness` and `faithfulness_pass`.
-
-In Langfuse, find traces named `offline-analytics-evaluation`, filter by
-`run_id`, and compare the two scores by language or question family.
-[Langfuse score documentation](https://langfuse.com/docs/evaluation/evaluation-methods/scores-via-sdk)
-
-## Local pilot
-
-On 11 November 2026, a live Spark local-mode run over HDFS, with OPA and
-`qwen3.5:9b`, matched Gold SQL in all 8 cases (4 Thai, 4 English). The
-`qwen2.5:7b` judge scored 5 of the 8 explanations and marked all 22 extracted
-claims supported. Three answers returned a result table without prose and
-received no faithfulness score. A separate two-example control scored the
-supported answer 1.0 and the deliberately wrong amount 0.0. This pilot covers
-four question families from the exposed development bank. It does not establish
-the model's overall hallucination rate.
-
-Raw input and score reports are local under `reports/langfuse-*.json`. Three
-unit tests passed, including a mocked SDK export that checks raw claim text is
-excluded. A subsequent local upload and read-back verified the 40-case report.
-
-To render a completed score report as an offline table by language and question
-family, run:
-
-```powershell
-& "C:/Users/Admin/anaconda3/python.exe" scripts/render_evaluation_report.py reports/langfuse-pilot-scores.json reports/evaluation-scores.html
-```
-
-## Full benchmark and judge calibration
-
-- Run `evaluate_bilingual.py` without `--ids` for the 200-item development
-  bank. Run `scripts/summarize_benchmark.py REPORT BANK` to report SQL,
-  formula, and clarification separately. It verifies the bank hash and checks
-  that every expected question has one recorded outcome.
-- Generate the 16-item project-authored SQL holdout with
-  `scripts/prepare_evaluation_holdout.py reports/langfuse-heldout-bank.json`.
-  Mount that file over `/app/evaluation/bilingual_200.json` in a separate
-  analytics-job container. The Agent receives only each question and its
-  usual RAG evidence. Use the holdout bank path when summarizing the results.
-- Run `scripts/calibrate_faithfulness.py SOURCE OUTPUT --manifest MANIFEST`
-  against the 40-question source report. The controls contain both supported
-  and deliberately changed statements. A positive label means at least one
-  claim is unsupported or contradicted. Keep the confusion counts and
-  unscored examples separate from the Agent's SQL accuracy. These controls
-  were authored within this project and are not independently reviewed by
-  humans.
-
-The 16-control run with `qwen2.5:7b` returned TP 2, FN 6, TN 8, FP 0,
-and no unscored controls. It caught 2/8 unsupported statements while passing
-8/8 supported statements. These are synthetic controls, so the 25% recall
-applies to this set only. In particular, a perfect score from this judge
-should not be presented as evidence that the Agent made no unsupported claims.
-A blinded worksheet for an independent check is stored locally in
-`.private/langfuse-human-review.tsv`. Reviewers can fill `review_verdict`
-with `supported`, `unsupported`, or `uncertain` and leave their reasoning in
-`review_note`. The join key and judge output are stored separately.
+ดู [วิธีรันชุดประเมิน](../evaluation/README.md) และ [ผลชุดเต็ม](../reports/BENCHMARK_FOLLOWUP.md)

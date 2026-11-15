@@ -93,7 +93,7 @@ Evaluator รัน SQL อ้างอิง 80 คำสั่งบนข้�
 คำสั่งรันใน Docker (ใช้ทรัพยากร Spark ร่วมกับเว็บ):
 
 ```powershell
-docker compose run --rm --no-deps spark-job --master spark://spark-master:7077 --conf spark.driver.host=spark-job --conf spark.driver.bindAddress=0.0.0.0 --conf spark.executor.memory=512m /app/jobs/evaluate_bilingual.py --output /app/reports/bilingual-development-new-run.json
+docker compose --profile jobs run --rm --no-deps --use-aliases analytics-job --master local[2] /app/jobs/evaluate_bilingual.py --output /app/reports/langfuse-bilingual-new-run.json
 ```
 
 ใช้ชื่อรายงานใหม่เพื่อรักษาผลรอบเดิมไว้ ไม่เขียนทับผลที่เผยแพร่แล้ว.

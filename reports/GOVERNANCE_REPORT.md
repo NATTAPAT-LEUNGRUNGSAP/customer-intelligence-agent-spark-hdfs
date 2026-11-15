@@ -1,6 +1,6 @@
-> Historical result: this report predates the bilingual analytics expansion. See [latest development results](BILINGUAL_ANALYTICS_REPORT.md).
+ผลย้อนหลังจากรอบก่อนเพิ่มชุดคำถามสองภาษา ดู [ผลประเมินที่ใช้สรุปปัจจุบัน](BENCHMARK_FOLLOWUP.md)
 
-# ผลทดสอบระบบปัจจุบัน
+# ผลทดสอบ Ontology และ OPA ย้อนหลัง
 
 หลักฐานดิบ: `acceptance-376b19a376714e218c6197ab5c9b27c4.json`
 Fingerprint ก่อนและหลังรันตรงกัน: **True**

@@ -1,66 +1,21 @@
-> Integrated deployment update: see [current system](../docs/CURRENT_STATE.md). Optional MCP stdio adapter now exists; web still uses direct Python. The earlier audit below describes its inspected prior source.
+# สถาปัตยกรรม Customer Intelligence
 
-# Customer Intelligence
-
-> [MCP / Agentic AI audit, 3 Nov 2026](../docs/AGENTIC_MCP_AUDIT.md): MCP adapters/client and mandatory pseudonymization are proposed, not implemented. See the audit for source evidence and the instructor mapping.
-
-### เส้นทางเตรียมข้อมูล
+Spark ETL อ่าน Online Retail II แล้วเขียนตาราง Parquet บน HDFS ไฟล์ manifest ระบุชุดข้อมูลที่ผ่านการเตรียม เว็บโหลดตารางจาก manifest ตอนเริ่มงาน
 
 ```mermaid
 flowchart LR
-    Raw[Online Retail II] --> Stage[CSV staging]
-    Stage --> ETL[Spark ETL and reconciliation]
-    ETL --> HDFS[Parquet on HDFS]
+    UI["เว็บ: คำถาม"] --> RAG["RAG ค้นนิยาม"]
+    RAG --> Q["Qwen สร้าง SQL"]
+    Q --> G["ตรวจ SQL และทบทวนด้วยโมเดล"]
+    G --> P["OPA ก่อนรัน"]
+    P --> S["Spark คำนวณ"]
+    H["Parquet บน HDFS"] --> S
+    S --> R["ตรวจผลและ OPA หลังรัน"]
+    R --> T["คืนตาราง SQL หลักฐาน และ trace"]
 ```
 
-### เส้นทางตอบคำถาม
+เมื่อข้อผิดพลาดแก้ได้ Agent ส่ง SQL กับเหตุผลล่าสุดกลับให้โมเดลภายในงบสามรอบ คำถามดู schema ใช้ข้อมูลที่โหลดไว้ ส่วน Dashboard ใช้ SQL ภาพรวมที่เตรียมไว้
 
-```mermaid
-flowchart TD
-    UI[Web UI: question] --> RAG[RAG selects definitions and schema]
-    KB[Knowledge corpus] --> RAG
-    Ont[OWL ontology validated by SHACL] --> RAG
-    RAG --> Route[Overview, formula definition, or analysis]
-    Route -->|overview| Info[Loaded schema and manifest summary]
-    Route -->|formula| Formula[Grounded formula and SQL expression]
-    Route -->|analysis| Policy[Period and data availability check]
-    Info --> Output
-    Formula --> Output
-    Policy -->|insufficient or unavailable| Clarify[Clarification to user]
-    Policy -->|sufficient| Context[Complete evidence text, request constraints and latest repair state]
-    Context --> LLM[LLM generates SQL and citations]
-    LLM --> Pre[Citations, SQL AST, semantic contracts, OPA pre-check]
-    Pre --> Review[Same-model evidence consistency review]
-    Review --> Spark[Spark driver and executors]
-    HDFS[Parquet on HDFS] --> Spark
-    Spark --> Post[Result violations, OPA post-check, result contracts]
-    Post --> Output[Web UI: table, SQL, evidence and trace]
-    Pre -->|repairable rejection| Repair[Latest SQL and error; at most 3 attempts]
-    Review -->|repairable rejection| Repair
-    Spark -->|execution error| Repair
-    Post -->|repairable rejection| Repair
-    Repair --> Context
-    Repair -->|attempts exhausted| Stop
-    Context -->|budget exceeded| Stop
-    Pre -->|OPA unavailable| Stop[Stop without answer]
-    Post -->|OPA unavailable| Stop
-```
+ใน Docker เว็บรับคำถาม Spark จัดสรรและประมวลผลงาน HDFS เก็บข้อมูล และ OPA ตัดสินนโยบาย Ollama รันโมเดลบนเครื่องหลัก MCP แบบ stdio เรียก Agent เดียวกันผ่านช่องทางเสริม
 
-RAG ค้นก่อนเริ่มวงรอบแก้ SQL ส่วนรอบแก้เก็บเอกสารเดิมและสถานะล่าสุด การเตรียมข้อมูลเป็นอีกงานหนึ่ง ไม่ได้ทำ ETL ใหม่ทุกคำถาม SHACL ตรวจกราฟนิยาม ส่วน SQL guards, OPA และ result checks ตรวจการเรียกเครื่องมือและผลลัพธ์คนละหน้าที่
-
-
-HDFS has one NameNode and two DataNodes, replication 2. Spark has one master
-and two workers. Everything runs on one physical Windows host under Docker
-Desktop Linux, while Ollama runs on the Windows host GPU. This demonstrates
-multiple processes/nodes, not resilience to loss of the physical machine.
-
-SQL is generated dynamically. Gold SQL in evaluation is exclusively a test oracle,
-not an agent query catalog. Model prose is not measured evidence; Spark rows,
-build reconciliation and evaluation reports are the evidence. SQL guard reduces
-the allowed query surface, but the unauthenticated local stack is not a production
-security boundary. A local web application now calls the same guarded agent path.
-Heuristic context budgeting rejects oversize prompts; repair history retains only
-the latest rejected proposal/error. Exact token preflight is not implemented. Production deployment
-is separate. See PRESENTATION_BRIEF.md for the revised delivery requirements.
-
-Current source results: GOVERNANCE_REPORT.md. OPA decisions are required; unavailable or undefined decisions block execution/delivery. The ontology covers the project domain; it does not automatically map an unknown enterprise schema.
+[อ่านโค้ดตามลำดับ](../docs/CODE_HANDOFF.md) · [จุดตรวจก่อนและหลัง Spark](../docs/TOOL_HOOKS.md)
